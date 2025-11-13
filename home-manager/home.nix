@@ -125,6 +125,10 @@
 
   programs.home-manager.enable = true;
 
+  users.users.srcres = {
+    shell = pkgs.fish;
+  };
+
   # Nicely reload system units when changing configs
   systemd.user.startServices = "sd-switch";
 
