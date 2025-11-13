@@ -109,8 +109,14 @@
     modesetting.enable = true;
   };
 
+  programs.fish.enable = true;
+
   users.users = {
+    root = {
+      shell = pkgs.bash;
+    };
     srcres = {
+      shell = pkgs.fish;
       initialPassword = "hhw19731213";
       isNormalUser = true;
       openssh.authorizedKeys.keys = [

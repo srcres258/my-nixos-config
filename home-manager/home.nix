@@ -58,8 +58,6 @@
     "Xft.dpi" = 172;
   };
   home.packages = with pkgs; [
-    fish
-
     neofetch
     fastfetch
     nnn
@@ -119,15 +117,8 @@
     userName = "srcres";
     userEmail = "src.res.211@gmail.com";
   };
-  programs.fish = {
-    enable = true;
-  };
 
   programs.home-manager.enable = true;
-
-  users.users.srcres = {
-    shell = pkgs.fish;
-  };
 
   # Nicely reload system units when changing configs
   systemd.user.startServices = "sd-switch";
