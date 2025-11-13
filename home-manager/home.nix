@@ -58,6 +58,8 @@
     "Xft.dpi" = 172;
   };
   home.packages = with pkgs; [
+    fish
+
     neofetch
     fastfetch
     nnn
@@ -117,22 +119,8 @@
     userName = "srcres";
     userEmail = "src.res.211@gmail.com";
   };
-
-  programs.starship = {
-    enable = false;
-  };
-
-  programs.alacritty = {
+  programs.fish = {
     enable = true;
-    settings = {
-      env.TERM = "xterm-256color";
-      font = {
-        size = 12;
-        draw_bold_text_with_bright_colors = true;
-      };
-      scrolling.multiplier = 5;
-      selection.save_to_clipboard = true;
-    };
   };
 
   programs.home-manager.enable = true;
