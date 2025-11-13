@@ -73,12 +73,14 @@
       enable = true;
       device = "nodev";
       efiSupport = true;
-      extraEntries = ''
-        menuentry "Windows" {
-          search --file --no-floppy --set=root /EFI/Microsoft/Boot/bootmgfw.efi
-          chainloader (''${root})/EFI/Microsoft/Boot/bootmgfw.efi
-        }
-      '';
+      useOSProber = true;
+      gfxmodeEfi = "1024x768";
+      #extraEntries = ''
+      #  menuentry "Windows" {
+      #    search --file --no-floppy --set=root /EFI/Microsoft/Boot/bootmgfw.efi
+      #    chainloader (''${root})/EFI/Microsoft/Boot/bootmgfw.efi
+      #  }
+      #'';
     };
     efi = {
       canTouchEfiVariables = true;
