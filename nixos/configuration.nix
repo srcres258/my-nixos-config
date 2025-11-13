@@ -101,18 +101,17 @@
     git # Flakes depends on git to pull its dependencies.
     vim
     wget
-  ]
+  ];
   # Set the default editor to vim.
   environment.variables.EDITOR = "vim";
   # config for Nvidia GPU
   services.xserver.videoDrivers = ["nvidia"];
   hardware.opengl.enable = true;
   hardware.nvidia = {
+    open = false;
     package = config.boot.kernelPackages.nvidiaPackages.stable;
     modesetting.enable = true;
   };
-
-  networking.hostName = "srcres-computer";
 
   users.users = {
     srcres = {
