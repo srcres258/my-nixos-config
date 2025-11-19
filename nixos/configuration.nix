@@ -22,7 +22,18 @@
 
     # Import your generated (nixos-generate-config) hardware configuration
     ./hardware-configuration.nix
+
+    # Import home-manager's NixOS module.
+    #inputs.home-manager.nixosModules.home-manager
   ];
+
+  home-manager = {
+    extraSpecialArgs = { inherit inputs; };
+    users = {
+      # Import home-manager configuration.
+      srcres = import ../home-manager/home.nix;
+    };
+  };
 
   nixpkgs = {
     # You can add overlays here

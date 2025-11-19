@@ -45,9 +45,9 @@
     };
   };
 
-  home = {
+  home = rec {
     username = "srcres";
-    homeDirectory = "/home/srcres";
+    homeDirectory = "/home/${username}";
   };
 
   # Add stuff for your user as you see fit:
@@ -120,13 +120,13 @@
     firefox
   ];
 
-  xdg.configFile."niri/config.kdl".source = builtins.toPath "${config.home.homeDirectory}/Coding/Projects/my-nixos-config/home-manager/config.kdl";
+  xdg.configFile."niri/config.kdl".source = ./config.kdl;
 
   programs.alacritty.enable = true; # Super+T in the default setting (terminal)
   programs.fuzzel.enable = true; # Super+D in the default setting (app launcher)
   programs.swaylock.enable = true; # Super+Alt+L in the default setting (screen locker)
   programs.waybar.enable = true; # launch on startup in the default setting (bar)
-  services.mako.enable = true; # notification daemon
+  #services.mako.enable = true; # notification daemon
   services.swayidle.enable = true; # idle management daemon
   services.polkit-gnome.enable = true; # polkit
 
