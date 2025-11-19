@@ -88,20 +88,21 @@
   };
   time.timeZone = "Asia/Shanghai";
   i18n.defaultLocale = "en_US.UTF-8";
-  services = {
-    xserver.enable = true;
-    displayManager.sddm.enable = true;
-    desktopManager.plasma6.enable = true;
-  };
   environment.systemPackages = with pkgs; [
     git # Flakes depends on git to pull its dependencies.
     vim
+    nano
     wget
+    libgcc
+    curl
+    unzip
+    unrar
+
+    niri
   ];
   # Set the default editor to vim.
   environment.variables.EDITOR = "vim";
   # config for Nvidia GPU
-  services.xserver.videoDrivers = ["nvidia"];
   hardware.opengl.enable = true;
   hardware.nvidia = {
     open = false;
@@ -109,6 +110,10 @@
     modesetting.enable = true;
   };
 
+  programs.java = {
+    enable = true;
+    package = pkgs.temurin-bin;
+  };
   programs.fish.enable = true;
 
   users.users = {
@@ -123,6 +128,20 @@
         # TODO: Add your SSH public key(s) here, if you plan on using SSH to connect
       ];
       extraGroups = ["wheel" "srcres" "uucp" "wireshark" "ollama"];
+    };
+  };
+
+  # Graphics configuration
+  programs.niri.enable = true;
+
+  xdg.portal.config.niri."org.freedesktop.impl.portal.FileChooser" = "gtk";
+
+  services.greetd = {
+    enable = true;
+    settings = {
+      default_session = {
+        command = "${pkgs.greetd.tuigreet}/bin/tuigreet --time --asterisks --remember --remember-session --sessions ${config.services.displayManager.sessionData.desktops}/share/wayland-sessions";
+      };
     };
   };
 

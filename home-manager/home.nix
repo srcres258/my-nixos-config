@@ -58,6 +58,10 @@
     "Xft.dpi" = 172;
   };
   home.packages = with pkgs; [
+    waybar
+    swaybg
+    wlogout
+
     neofetch
     fastfetch
     nnn
@@ -110,12 +114,30 @@
     ethtool
     pciutils
     usbutils
+
+    vscode
+
+    firefox
   ];
+
+  xdg.configFile."niri/config.kdl".source = builtins.toPath "${config.home.homeDirectory}/Coding/Projects/my-nixos-config/home-manager/config.kdl";
+
+  programs.alacritty.enable = true; # Super+T in the default setting (terminal)
+  programs.fuzzel.enable = true; # Super+D in the default setting (app launcher)
+  programs.swaylock.enable = true; # Super+Alt+L in the default setting (screen locker)
+  programs.waybar.enable = true; # launch on startup in the default setting (bar)
+  services.mako.enable = true; # notification daemon
+  services.swayidle.enable = true; # idle management daemon
+  services.polkit-gnome.enable = true; # polkit
 
   programs.git = {
     enable = true;
     userName = "srcres";
     userEmail = "src.res.211@gmail.com";
+  };
+  
+  programs.vscode = {
+    enable = true;
   };
 
   programs.home-manager.enable = true;
