@@ -51,9 +51,6 @@
   # Enable the X11 windowing system.
   # services.xserver.enable = true;
 
-
-  
-
   # Configure keymap in X11
   # services.xserver.xkb.layout = "us";
   # services.xserver.xkb.options = "eurosign:e,caps:escape";
@@ -122,10 +119,15 @@
     ethtool
     pciutils
     usbutils
+
+    wireplumber
+    brightnessctl
   ];
   environment.variables.EDITOR = "vim";
 
   programs.fish.enable = true;
+
+  programs.niri.enable = true;
 
   # Some programs need SUID wrappers, can be configured further or are
   # started in user sessions.
@@ -148,6 +150,42 @@
     openFirewall = true;
   };
 
+  services.greetd = {
+    enable = true;
+    settings = {
+      default_session = {
+        command = "${pkgs.greetd.tuigreet}/bin/tuigreet " +
+          "--time --asterisks --remember --remember-session " +
+          "--sessions ${config.services.displayManager.sessionData.desktops}/share/wayland-sessions";
+      };
+    };
+  };
+
+  fonts = {
+    packages = with pkgs; [
+      adwaita-fonts
+      
+      noto-fonts-color-emoji
+      nerd-fonts.symbols-only
+      
+      noto-fonts-cjk-sans
+      noto-fonts-cjk-serif
+      
+      source-code-pro
+      hack-font
+      jetbrains-mono
+      maple-mono.variable
+    ];
+  };
+
+  i18n.inputMethod = {
+    enable = true;
+    type = "ibus";
+    ibus.engines = with pkgs.ibus-engines; [
+      libpinyin
+    ];
+  };
+
   # Open ports in the firewall.
   # networking.firewall.allowedTCPPorts = [ ... ];
   # networking.firewall.allowedUDPPorts = [ ... ];
@@ -158,6 +196,9 @@
   # (/run/current-system/configuration.nix). This is useful in case you
   # accidentally delete configuration.nix.
   # system.copySystemConfiguration = true;
+
+  # This enables microcode updates for CPUs, which may improve performance.
+  hardware.enableRedistributableFirmware = true;
 
   # This option defines the first version of NixOS you have installed on this particular machine,
   # and is used to maintain compatibility with application data (e.g. databases) created on older NixOS versions.
@@ -177,6 +218,5 @@
   #
   # For more information, see `man configuration.nix` or https://nixos.org/manual/nixos/stable/options#opt-system.stateVersion .
   system.stateVersion = "25.05"; # Did you read the comment?
-
 }
 
