@@ -77,9 +77,6 @@
     isNormalUser = true;
     description = "src_resources";
     extraGroups = [ "wheel" "networkmanager" "audio" ]; # Enable ‘sudo’ for the user.
-    packages = with pkgs; [
-      tree
-    ];
     shell = pkgs.fish;
   };
 
@@ -117,6 +114,9 @@
     wget
     git
     fish
+
+    tree
+    pstree
 
     zip
     xz
