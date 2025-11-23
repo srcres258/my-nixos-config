@@ -26,6 +26,7 @@
       efiSysMountPoint = "/boot";
     };
   };
+  boot.initrd.kernelModules = [ "amdgpu" ];
 
   networking = {
     hostName = "srcres-computer";
@@ -90,6 +91,8 @@
   # List packages installed in system profile.
   # You can use https://search.nixos.org/ to find more packages (and options).
   environment.systemPackages = with pkgs; [
+    home-manager
+
     vim # Do not forget to add an editor to edit configuration.nix! The Nano editor is also installed by default.
     wget
     git
@@ -124,6 +127,9 @@
 
     wireplumber
     brightnessctl
+
+    amdgpu_top
+    mesa
   ];
   environment.variables.EDITOR = "vim";
 

@@ -30,21 +30,6 @@
     enable = true;
     settings = {
       mainBar = {
-        # layer = "top";
-        # modules-left = [ "sway/workspaces" "sway/mode" ];
-        # modules-center = [ "sway/window" ];
-        # modules-right = [ "battery" "clock" ];
-        # "sway/window" = {
-        #   max-length = 50;
-        # };
-        # battery = {
-        #   format = "{capacity}% {icon}";
-        #   format-icons = [ "1" "2" "3" "4" "5" ];
-        # };
-        # clock = {
-        #   format-alt = "{:%a, %d. %b  %h:%m}";
-        # };
-
         layer = "top";
         position = "top";
         autohide = true;
@@ -77,7 +62,7 @@
 
         # === Modules Left ===
         "custom/archicon" = {
-          format = "Arch";
+          format = "Start";
           on-click = "wofi --show drun";
           tooltip = false;
         };
@@ -205,6 +190,13 @@
   programs.firefox = {
     enable = true;
     languagePacks = [ "zh-CN" ];
+  };
+
+  programs.wofi = {
+    enable = true;
+    settings = {
+      term = "kitty";
+    };
   };
 
   fonts.fontconfig = {
