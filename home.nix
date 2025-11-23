@@ -13,15 +13,21 @@
   nixpkgs.config.allowUnfree = true;
 
   home.packages = with pkgs; [
+    pavucontrol
     kdePackages.dolphin
     kdePackages.kate
 
     cascadia-code
+
+    bilibili
+    mission-center
+    hmcl
   ];
 
   home.sessionVariables = {
     XMODIFIERS = lib.mkForce "@im=fcitx";
     QT_IM_MODULE = lib.mkForce "fcitx";
+    DISPLAY = ":0";
   };
 
   xdg.configFile."niri/config.kdl".source = ./config.kdl;
@@ -143,6 +149,7 @@
           tooltip = false;
         };
         pulseaudio = {
+          on-click = "pavucontrol";
           format = "{volume}% {icon}";
           format-muted = "M {format_source}";
           format-icons = {

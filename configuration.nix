@@ -3,6 +3,7 @@
 # https://search.nixos.org/options and in the NixOS manual (`nixos-help`).
 
 {
+  inputs,
   config,
   lib,
   pkgs,
@@ -60,12 +61,10 @@
   # services.printing.enable = true;
 
   # Enable sound.
-  # services.pulseaudio.enable = true;
-  # OR
-  # services.pipewire = {
-  #   enable = true;
-  #   pulse.enable = true;
-  # };
+  services.pipewire = {
+    enable = true;
+    pulse.enable = true;
+  };
 
   # Enable touchpad support (enabled default in most desktopManager).
   # services.libinput.enable = true;
@@ -75,7 +74,7 @@
     initialPassword = "hhw19731213";
     isNormalUser = true;
     description = "src_resources";
-    extraGroups = [ "wheel" "networkmanager" ]; # Enable ‘sudo’ for the user.
+    extraGroups = [ "wheel" "networkmanager" "audio" ]; # Enable ‘sudo’ for the user.
     packages = with pkgs; [
       tree
     ];
@@ -86,7 +85,26 @@
 
   nix.settings.experimental-features = [ "nix-command" "flakes" ];
 
-  nixpkgs.config.allowUnfree = true;
+  /*nixpkgs = {
+    overlays = [
+      (final: _prev: {
+        unstable = import inputs.nixpkgs-unstable {
+          system = final.system;
+          services.hardware.deepcool-digital-linux = {
+            enable = true;
+            extraArgs = [
+              "--pid 4"
+              "--update 500"
+              "--alarm"
+            ];
+          };
+        };
+      })
+    ];
+    config = {
+      allowUnfree = true;
+    };
+  };*/
 
   # List packages installed in system profile.
   # You can use https://search.nixos.org/ to find more packages (and options).
