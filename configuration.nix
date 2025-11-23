@@ -37,6 +37,8 @@
 
   # Set your time zone.
   time.timeZone = "Asia/Shanghai";
+  # Use local RTC time inside the hardware.
+  time.hardwareClockInLocalTime = true;
 
   # Configure network proxy if necessary
   # networking.proxy.default = "http://user:password@proxy:port/";
