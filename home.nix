@@ -22,6 +22,7 @@
     bilibili
     mission-center
     hmcl
+    wpsoffice-cn
   ];
 
   home.sessionVariables = {
