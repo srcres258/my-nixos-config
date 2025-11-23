@@ -206,6 +206,16 @@
     };
   };
 
+  programs.vscode = {
+    enable = true;
+    # TODO
+  };
+
+  programs.yazi = {
+    enable = true;
+    # TODO
+  };
+
   fonts.fontconfig = {
     defaultFonts = {
       emoji = [ "Noto Color Emoji" ];

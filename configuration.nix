@@ -148,12 +148,21 @@
 
     amdgpu_top
     mesa
+
+    python312
+
+    bluez-experimental
   ];
   environment.variables.EDITOR = "vim";
 
   programs.fish.enable = true;
 
   programs.niri.enable = true;
+
+  programs.java = {
+    enable = true;
+    package = pkgs.javaPackages.compiler.temurin-bin.jdk-21;
+  };
 
   # Some programs need SUID wrappers, can be configured further or are
   # started in user sessions.
@@ -217,6 +226,22 @@
 
   # This enables microcode updates for CPUs, which may improve performance.
   hardware.enableRedistributableFirmware = true;
+
+  # Set up Bluetooth.
+  hardware.bluetooth = {
+    enable = true;
+    powerOnBoot = true;
+    settings = {
+      General = {
+        Experimental = true;
+        FastConnectable = true;
+      };
+      Policy = {
+        AutoEnable = true;
+      };
+    };
+  };
+  services.blueman.enable = true;
 
   # This option defines the first version of NixOS you have installed on this particular machine,
   # and is used to maintain compatibility with application data (e.g. databases) created on older NixOS versions.
