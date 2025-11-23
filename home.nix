@@ -10,6 +10,8 @@
     homeDirectory = "/home/${username}";
   };
 
+  nixpkgs.config.allowUnfree = true;
+
   home.packages = with pkgs; [
     kdePackages.dolphin
     kdePackages.kate
