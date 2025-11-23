@@ -171,6 +171,9 @@
       runScript = "bash";
       extraOutputsToInstall = ["dev"];
     }))
+
+    gcc
+    clang
   ];
   environment.variables.EDITOR = "vim";
 
