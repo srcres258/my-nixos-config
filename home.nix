@@ -18,9 +18,8 @@
   ];
 
   home.sessionVariables = {
-    GTK_IM_MODULE = "ibus";
-    XMODIFIERS = "@im=ibus";
-    QT_IM_MODULE = "ibus";
+    XMODIFIERS = lib.mkForce "@im=fcitx";
+    QT_IM_MODULE = lib.mkForce "fcitx";
   };
 
   xdg.configFile."niri/config.kdl".source = ./config.kdl;
@@ -223,6 +222,21 @@
         "Noto Serif CJK SC"
         "Source Han Serif SC"
         "DejaVu Serif"
+      ];
+    };
+  };
+
+  i18n.inputMethod = {
+    enable = true;
+    type = "fcitx5";
+    fcitx5 = {
+      addons = with pkgs; [
+        fcitx5-chinese-addons
+        fcitx5-mozc
+        fcitx5-gtk
+        fcitx5-material-color
+        fcitx5-pinyin-moegirl
+        fcitx5-pinyin-zhwiki
       ];
     };
   };

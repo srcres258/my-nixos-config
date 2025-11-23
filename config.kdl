@@ -409,24 +409,25 @@ environment {
     LC_TELEPHONE "en_US.UTF-8"
     LC_MEASUREMENT "en_US.UTF-8"
     LC_IDENTIFICATION "en_US.UTF-8"
-    LC_ALL null
+    LC_ALL "en_US.UTF-8"
     // XDG_DATA_DIRS "$HOME/.local/share" "$XDG_DATA_DIRS"
     // GTK_IM_MODULE "fcitx"
-    QT_IM_MODULE "ibus"
+    QT_IM_MODULE "fcitx"
 
     // https://fcitx-im.org/wiki/Using_Fcitx_5_on_Wayland#Sway
-    XMODIFIERS "@im=ibus"
-    QT_IM_MODULES "wayland;ibus"
+    XMODIFIERS "@im=fcitx"
+    QT_IM_MODULES "wayland;fcitx"
 
-    GTK_IM_MODULE "ibus"
-    SDL_IM_MODULE "ibus"
-    GLFW_IM_MODULE "ibus"
+    GTK_IM_MODULE "fcitx"
+    SDL_IM_MODULE "fcitx"
+    GLFW_IM_MODULE "fcitx"
 }
 
 spawn-at-startup "niri-switch-daemon"
 spawn-at-startup "waybar"
 spawn-at-startup "kitty"
-spawn-sh-at-startup "ibus-daemon -drx"
+spawn-sh-at-startup "fcitx5 -d -r"
+spawn-sh-at-startup "fcitx5-remote -r"
 
 // To run a shell command (with variables, pipes, etc.), use spawn-sh-at-startup:
 // spawn-sh-at-startup "qs -c ~/source/qs/MyAwesomeShell"
