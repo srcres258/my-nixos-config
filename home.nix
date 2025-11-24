@@ -25,6 +25,7 @@
     wpsoffice-cn
 
     qemu
+    vlc
   ];
 
   home.sessionVariables = {
