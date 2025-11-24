@@ -174,6 +174,7 @@
 
     gcc
     clang
+    gnumake
   ];
   environment.variables.EDITOR = "vim";
 
