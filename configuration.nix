@@ -27,6 +27,7 @@
       efiSysMountPoint = "/boot";
     };
   };
+  boot.kernelPackages = pkgs.linuxKernel.packages.linux_zen;
   boot.initrd.kernelModules = [ "amdgpu" ];
   # Enable cross-compile toolchains by emulation.
   boot.binfmt.emulatedSystems = [ "riscv64-linux" ];
