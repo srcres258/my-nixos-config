@@ -23,6 +23,8 @@
     mission-center
     hmcl
     wpsoffice-cn
+
+    qemu
   ];
 
   home.sessionVariables = {
