@@ -21,7 +21,6 @@
 
     bilibili
     mission-center
-    hmcl
     wpsoffice-cn
 
     qemu
@@ -32,6 +31,10 @@
     telegram-desktop
     discord
     wechat
+
+    # Minecraft launchers
+    hmcl
+    prismlauncher
   ];
 
   home.sessionVariables = {
