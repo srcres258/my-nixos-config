@@ -28,6 +28,10 @@
     vlc
 
     fastfetch
+
+    telegram-desktop
+    discord
+    wechat
   ];
 
   home.sessionVariables = {
