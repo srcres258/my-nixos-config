@@ -26,6 +26,8 @@
 
     qemu
     vlc
+
+    fastfetch
   ];
 
   home.sessionVariables = {
