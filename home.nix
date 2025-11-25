@@ -223,6 +223,11 @@
     # TODO
   };
 
+  programs.neovim = {
+    enable = true;
+    # TODO
+  };
+
   fonts.fontconfig = {
     defaultFonts = {
       emoji = [ "Noto Color Emoji" ];
