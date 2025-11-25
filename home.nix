@@ -37,12 +37,6 @@
     prismlauncher
   ];
 
-  home.sessionVariables = {
-    XMODIFIERS = lib.mkForce "@im=fcitx";
-    QT_IM_MODULE = lib.mkForce "fcitx";
-    DISPLAY = ":0";
-  };
-
   xdg.configFile."niri/config.kdl".source = ./config.kdl;
 
   programs.waybar = {

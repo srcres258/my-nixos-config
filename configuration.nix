@@ -113,6 +113,10 @@
   environment.systemPackages = with pkgs; [
     home-manager
 
+    # Use Niri as the desktop environment.
+    niri
+    xwayland-satellite
+
     vim # Do not forget to add an editor to edit configuration.nix! The Nano editor is also installed by default.
     wget
     git
@@ -167,9 +171,9 @@
         (base.targetPkgs pkgs) ++ (with pkgs; [
           pkg-config
           ncurses
+
           # ... add more dependencies here ...
-        ]
-      );
+        ]);
       profile = "export FHS=1";
       runScript = "bash";
       extraOutputsToInstall = ["dev"];
@@ -178,6 +182,10 @@
     gcc
     clang
     gnumake
+
+    # Java
+    jetbrains.jdk
+    javaPackages.compiler.temurin-bin.jdk-21
   ];
   environment.variables.EDITOR = "vim";
 
@@ -187,7 +195,7 @@
 
   programs.java = {
     enable = true;
-    package = pkgs.javaPackages.compiler.temurin-bin.jdk-21;
+    package = pkgs.jetbrains.jdk; # Use Jetbrains' JDK by default.
   };
 
   # Some programs need SUID wrappers, can be configured further or are
