@@ -93,7 +93,7 @@ binds {
     Mod+D hotkey-overlay-title="Open the File Manager" { spawn "dolphin"; }
     Mod+L hotkey-overlay-title="Lock the Screen: hyprlock" { spawn "hyprlock"; }
     Mod+Return hotkey-overlay-title="Open a Terminal" { spawn "kitty"; }
-    Mod+A hotkey-overlay-title="Run an Application" { spawn "vicinae" "toggle"; }
+    Mod+A hotkey-overlay-title="Run an Application" { spawn-sh "wofi --show drun"; }
     Mod+X hotkey-overlay-title="Open a browser: zen" { spawn "google-chrome-stable"; }
     Mod+K hotkey-overlay-title="Open screenkey" { spawn "wshowkeys" "-a" "right" "-a" "bottom" "-F" "ComicShannsMono Nerd Font 30"; }
     Mod+Shift+K hotkey-overlay-title="Close screenkey" { spawn "killall" "wshowkeys"; }
