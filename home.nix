@@ -207,65 +207,73 @@
       strip_trailing_spaces = "smart";
 
       # Cursor animations
-      cursor_blink_interval = "-1 ease-in-out";
-      cursor_stop_blinking_after = 0;
-      cursor_trail = 1;
-      cursor_trail_decay = "0.1 0.4";
-      cursor_trail_start_threshold = 5;
-      cursor_trail_color = "none";
-    };
-  };
+              cursor_blink_interval = "-1 ease-in-out";
+              cursor_stop_blinking_after = 0;
+              cursor_trail = 1;
+              cursor_trail_decay = "0.1 0.4";
+              cursor_trail_start_threshold = 5;
+              cursor_trail_color = "none";
+            };
+          };
 
-  programs.firefox = {
-    enable = true;
-    languagePacks = [ "zh-CN" ];
-  };
+          programs.firefox = {
+            enable = true;
+            languagePacks = [ "zh-CN" ];
+          };
 
-  programs.wofi = {
-    enable = true;
-    settings = {
-      term = "kitty";
-    };
-  };
+          programs.wofi = {
+            enable = true;
+            settings = {
+              term = "kitty";
+            };
+          };
 
-  programs.vscode = {
-    enable = true;
-    # TODO
-  };
+          programs.vscode = {
+            enable = true;
+            # TODO
+          };
 
-  programs.yazi = {
-    enable = true;
-    # TODO
-  };
+          programs.yazi = {
+            enable = true;
+            # TODO
+          };
 
-  programs.neovim = let
-    treesitter-parsers = pkgs.symlinkJoin {
-      name = "treesitter-parsers";
-      paths = with pkgs.vimPlugins.nvim-treesitter.builtGrammars; [
-        bash c cpp css dockerfile go html java javascript json
-        lua nix python regex rust toml typescript vim yaml markdown
-      ];
-    };
-  in {
-    enable = true;
-    plugins = with pkgs.vimPlugins; [
-      nvim-treesitter
-      nvim-treesitter-textobjects
-      nvim-treesitter-context
-      playground
+          programs.neovim = let
+            treesitter-parsers = pkgs.symlinkJoin {
+              name = "treesitter-parsers";
+              paths = with pkgs.vimPlugins.nvim-treesitter.builtGrammars; [
+                bash c cpp css dockerfile go html java javascript json
+                lua nix python regex rust toml typescript vim yaml markdown
+              ];
+            };
+          in {
+            enable = true;
+            plugins = with pkgs.vimPlugins; [
+              nvim-treesitter
+              nvim-treesitter-textobjects
+              nvim-treesitter-context
+              playground
 
-      nvim-lspconfig
-      lsp-zero-nvim
+              nvim-lspconfig
+              lsp-zero-nvim
 
-      nvim-cmp
-      cmp-nvim-lsp
-      cmp-buffer
-      cmp-path
-      cmp-cmdline
-      luasnip
-      cmp_luasnip
+              nvim-cmp
+              cmp-nvim-lsp
+              cmp-buffer
+              cmp-path
+              cmp-cmdline
+              luasnip
+              cmp_luasnip
 
-      friendly-snippets
+              friendly-snippets
+
+              blink-cmp
+
+              #blink-cmp-cmdline
+              #blink-cmp-diagnostic
+              #blink-cmp-buffer
+              #blink-cmp-path
+              #blink-cmp-snippers
     ];
     extraLuaConfig = (builtins.readFile ./init.lua) + ''
       require('nvim-treesitter.configs').setup {
@@ -306,9 +314,9 @@
     extraConfig = ''
       set expandtab
       set nosmarttab
-      set shiftwidth=4
-      set tabstop=4
-      set softtabstop=4
+      set shiftwidth=2
+      set tabstop=2
+      set softtabstop=2
 
       set number
     '';
