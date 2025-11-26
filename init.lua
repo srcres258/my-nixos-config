@@ -1,4 +1,4 @@
-vim.wo.cursorline = true
+
 vim.opt.list = true
 vim.opt.listchars = { tab = ">-", trail = "-" }
 
@@ -20,7 +20,6 @@ lsp_zero.on_attach(function(client, bufnr)
   vim.keymap.set("n", "<leader>vrn", vim.lsp.buf.rename, opts)
   vim.keymap.set("i", "<C-h>", vim.lsp.buf.signature_help, opts)
 end)
-
 
 require('lsp-zero').extend_lspconfig({
   sign_text = true,
@@ -96,4 +95,43 @@ blink.setup({
     end
   },
 })
+
+require('catppuccin').setup({
+  --transparent_background = true,
+  custom_highlights = function(colors)
+    return {
+      LineNr = { fg = colors.surface2 },
+      Visual = { bg = colors.overlay0 },
+      Search = { bg = colors.surface2 },
+      IncSearch = { bg = colors.lavender },
+      CurSearch = { bg = colors.lavender },
+      MarchParen = { bg = colors.lavender, fg = colors.base, bold = true }
+    }
+  end,
+  integrations = {
+    barbar = true,
+    blink_cmp = true,
+    gitsigns = true,
+    noice = true,
+    notify = true,
+    nvimtree = true,
+    rainbow_delimiters = true
+  }
+})
+
+require('lualine')
+
+vim.g.barbar_auto_setup = false
+require('barbar').setup({
+  animation = true,
+  auto_hide = false,
+  tabpages = true,
+  clickable = true
+})
+
+require('nvim-tree')
+
+require('rainbow-delimiters')
+
+require('noice')
 
