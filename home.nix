@@ -231,9 +231,40 @@
     # TODO
   };
 
-  programs.neovim = {
+  programs.neovim = let
+    treesitter-parsers = pkgs.symlinkJoin {
+      name = "treesitter-parsers";
+      paths = with pkgs.vimPlugins.nvim-treesitter.builtGrammars; [
+        bash c cpp css dockerfile go html java javascript json
+        lua nix python regex rust toml typescript vim yaml markdown
+      ];
+    };
+  in {
     enable = true;
-    # TODO
+    plugins = with pkgs.vimPlugins; [
+      nvim-treesitter
+      nvim-treesitter-textobjects
+      nvim-treesitter-context
+      playground
+    ];
+    extraLuaConfig = (builtins.readFile ./init.lua) + ''
+      require('nvim-treesitter.configs').setup {
+        ensure_installed = {},
+        parser_install_dir = "${treesitter-parsers}",
+        highlight = { enable = true },
+        indent = { enable = true },
+        incremental_selection = { enable = true }
+      }
+
+      vim.opt.rtp:prepend("${treesitter-parsers}")
+    '';
+    extraConfig = ''
+      set expandtab
+      set nosmarttab
+      set shiftwidth=4
+      set tabstop=4
+      set softtabstop=4
+    '';
   };
 
   fonts.fontconfig = {
