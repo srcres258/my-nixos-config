@@ -35,6 +35,13 @@
     # Minecraft launchers
     hmcl
     prismlauncher
+
+    nil
+    lua-language-server
+    rust-analyzer
+    pyright
+    taplo
+    marksman
   ];
 
   xdg.configFile."niri/config.kdl".source = ./config.kdl;
@@ -246,6 +253,19 @@
       nvim-treesitter-textobjects
       nvim-treesitter-context
       playground
+
+      nvim-lspconfig
+      lsp-zero-nvim
+
+      nvim-cmp
+      cmp-nvim-lsp
+      cmp-buffer
+      cmp-path
+      cmp-cmdline
+      luasnip
+      cmp_luasnip
+
+      friendly-snippets
     ];
     extraLuaConfig = (builtins.readFile ./init.lua) + ''
       require('nvim-treesitter.configs').setup {
@@ -253,17 +273,44 @@
         parser_install_dir = "${treesitter-parsers}",
         highlight = { enable = true },
         indent = { enable = true },
-        incremental_selection = { enable = true }
+        incremental_selection = { enable = true },
+
+        textobjects = {
+          select = {
+            enable = true,
+            lookahead = true,
+            keymaps = {
+              ["af"] = "@function.outer",
+              ["if"] = "@function.inner",
+              ["ac"] = "@class.outer",
+              ["ic"] = "@class.inner"
+            }
+          },
+          move = {
+            enable = true,
+            set_jumps = true, -- enable function-jumping features by ']m' or '[m'
+            goto_next_start = { ["]m"] = "@function.outer" },
+            goto_previous_start = { ["[m"] = "@function.outer" }
+          }
+        },
+
+        -- commonly used features in addition
+        context_commentstring = { enable = true }, -- integration with nvim-ts-context-commentstring
+        autotag = { enable = true }, -- integration with nvim-ts-autotag to close up HTML/JSX tags automatically
+        rainbow = { enable = true, extended_mode = true } -- rainbow blankets (requires nvim-ts-rainbow2)
       }
 
       vim.opt.rtp:prepend("${treesitter-parsers}")
     '';
+    # These configurations disables auto blank-to-TAB convertion.
     extraConfig = ''
       set expandtab
       set nosmarttab
       set shiftwidth=4
       set tabstop=4
       set softtabstop=4
+
+      set number
     '';
   };
 
