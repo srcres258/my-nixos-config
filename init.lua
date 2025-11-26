@@ -7,20 +7,20 @@ vim.g.maplocalleader = "\\"
 
 local lsp_zero = require('lsp-zero')
 
---[[lsp_zero.on_attach(function(client, bufnr)
-  local opts = {buffer = bufnr, remap = false}
+lsp_zero.on_attach(function(client, bufnr)
+  local opts = { buffer = bufnr, remap = false }
   vim.keymap.set("n", "gd", vim.lsp.buf.definition, opts)
   vim.keymap.set("n", "K",  vim.lsp.buf.hover, opts)
   vim.keymap.set("n", "<leader>vws", vim.lsp.buf.workspace_symbol, opts)
-  vim.keymap.set("n", "<leader>vd", vim.lsp.buf.open_float, opts)
-  vim.keymap.set("n", "[d", vim.lsp.buf.goto_next, opts)
-  vim.keymap.set("n", "]d", vim.lsp.buf.goto_prev, opts)
+  --vim.keymap.set("n", "<leader>vd", vim.lsp.buf.open_float, opts)
+  --vim.keymap.set("n", "[d", vim.lsp.buf.goto_next, opts)
+  --vim.keymap.set("n", "]d", vim.lsp.buf.goto_prev, opts)
   vim.keymap.set("n", "<leader>vca", vim.lsp.buf.code_action, opts)
   vim.keymap.set("n", "<leader>vrr", vim.lsp.buf.references, opts)
   vim.keymap.set("n", "<leader>vrn", vim.lsp.buf.rename, opts)
   vim.keymap.set("i", "<C-h>", vim.lsp.buf.signature_help, opts)
 end)
---]]
+
 
 require('lsp-zero').extend_lspconfig({
   sign_text = true,
@@ -64,6 +64,36 @@ cmp.setup({
     expand = function(args)
       require('luasnip').lsp_expand(args.body)
     end,
+  },
+})
+
+local blink = require('blink.cmp')
+
+blink.setup({
+  appearance = {
+    nerd_font_variant = "normal",
+    use_nvim_cmp_as_default = false
+  },
+
+  keymap = {
+    preset = 'default',
+
+    -- TODO
+  },
+
+  sources = {
+    default = {
+      'lsp',
+      'path',
+      'snippets',
+      'buffer'
+    }
+  },
+
+  snippets = {
+    expand = function(snippet)
+      vim.snippet.expand(snippet)
+    end
   },
 })
 
