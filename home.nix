@@ -198,6 +198,14 @@
       allow_remote_control = "yes";
 
       strip_trailing_spaces = "smart";
+
+      # Cursor animations
+      cursor_blink_interval = "-1 ease-in-out";
+      cursor_stop_blinking_after = 0;
+      cursor_trail = 1;
+      cursor_trail_decay = "0.1 0.4";
+      cursor_trail_start_threshold = 5;
+      cursor_trail_color = "none";
     };
   };
 
