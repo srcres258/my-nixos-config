@@ -74,6 +74,7 @@ blink.setup({
 })
 
 require('catppuccin').setup({
+  transparent_background = true,
   custom_highlights = function(colors)
     return {
       LineNr = { fg = colors.surface2 },
@@ -95,10 +96,41 @@ require('catppuccin').setup({
   }
 })
 
-require('lualine').setup()
+require('lualine').setup({
+  options = {
+    theme = "catppuccin",
+    always_divide_middle = false,
+    component_separators = { left = "", right = "" },
+    section_seperators = { left = "", right = "" }
+  },
+  sections = {
+    lualine_a = { "mode" },
+    lualine_b = { "branch", "diff", "diagnostics" },
+    lualine_c = { "filename" },
+    lualine_x = { },
+    lualine_y = { "encoding", "fileformat", "filetype", "progress" },
+    lualine_z = { "location" }
+  },
+  winbar = {
+    lualine_a = {
+      "filename"
+    },
+    lualine_b = {
+      { function() return " " end, color = 'Comment' }
+    },
+    lualine_x = {
+      "lsp_status"
+    }
+  },
+  inactive_winbar = {
+    -- Always show winbar.
+    lualine_b = { function() return " " end }
+  }
+})
 
 vim.g.barbar_auto_setup = false
-require('barbar').setup({
+local barbar = require('barbar')
+barbar.setup({
   animation = true,
   auto_hide = false,
   tabpages = true,
@@ -131,7 +163,29 @@ vim.g.rainbow_delimiters = {
   }
 };
 
-require('noice').setup()
+require('noice').setup({
+  popmenu = {
+    enabled = false
+  },
+  lsp = {
+    override = {
+      ["vim.lsp.util.convert_input_to_markdown_lines"] = true,
+      ["vim.lsp.util.stylize_markdown"] = true,
+      ["cmp.entry.get_documentation"] = true
+    }
+  },
+  presets = {
+    bottom_search = false,
+    command_palette = true,
+    long_message_to_split = true,
+    inc_rename = false,
+    lsp_doc_border = true
+  },
+  routes = {
+    { filter = { event = "msg_show", kind = "search_count" }, opts = { skip = true } },
+    { filter = { event = "msg_show", kind = "" }, opts = { skip = true } }
+  }
+})
 
 -- Shortcut keys setup.
 local lsp_zero = require('lsp-zero')
@@ -194,4 +248,21 @@ vim.keymap.set({ "n", "x" }, "Q", "<CMD>:qa<CR>")
 vim.keymap.set({ "n", "x" }, "qq", "<CMD>:q<CR>")
 
 vim.keymap.set("n", "<A-z>", "<CMD>set wrap!<CR>", { desc = "Toggle line wrap" })
+
+vim.keymap.set("n", "<A-<>", "<CMD>BufferMovePrevious<CR>", { desc = "[Buffer] Move buffer left" })
+vim.keymap.set("n", "<A->>", "<CMD>BufferMoveNext<CR>", { desc = "[Buffer] Move buffer right" })
+vim.keymap.set("n", "<A-1>", "<CMD>BufferGoto 1<CR>", { desc = "[Buffer] Go to buffer 1" })
+vim.keymap.set("n", "<A-2>", "<CMD>BufferGoto 2<CR>", { desc = "[Buffer] Go to buffer 2" })
+vim.keymap.set("n", "<A-3>", "<CMD>BufferGoto 3<CR>", { desc = "[Buffer] Go to buffer 3" })
+vim.keymap.set("n", "<A-4>", "<CMD>BufferGoto 4<CR>", { desc = "[Buffer] Go to buffer 4" })
+vim.keymap.set("n", "<A-5>", "<CMD>BufferGoto 5<CR>", { desc = "[Buffer] Go to buffer 5" })
+vim.keymap.set("n", "<A-6>", "<CMD>BufferGoto 6<CR>", { desc = "[Buffer] Go to buffer 6" })
+vim.keymap.set("n", "<A-7>", "<CMD>BufferGoto 7<CR>", { desc = "[Buffer] Go to buffer 7" })
+vim.keymap.set("n", "<A-8>", "<CMD>BufferGoto 8<CR>", { desc = "[Buffer] Go to buffer 8" })
+vim.keymap.set("n", "<A-9>", "<CMD>BufferGoto 9<CR>", { desc = "[Buffer] Go to buffer 9" })
+vim.keymap.set("n", "<A-h>", "<CMD>BufferPrevious<CR>", { desc = "[Buffer] Previous buffer" })
+vim.keymap.set("n", "<A-l>", "<CMD>BufferNext<CR>", { desc = "[Buffer] Next buffer" })
+vim.keymap.set("n", "<A-w>", "<CMD>BufferClose<CR>", { desc = "[Buffer] Go to buffer 1" })
+
+vim.keymap.set("n", "<leader>e", "<CMD>NvimTreeToggle<CR>", { desc = "[NvimTree] Toggle NvimTree" })
 
