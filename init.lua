@@ -226,8 +226,6 @@ snacks.setup({
     }
   },
   input = { enabled = true },
-  picker = { enabled = true },
-  notifier = { enabled = true },
   quickfile = { enabled = true },
   scope = { enabled = true },
   scroll = { enabled = true },
@@ -238,6 +236,56 @@ snacks.setup({
     enabled = true,
     doc = { inline = false, float = false, max_width = 80, max_height = 40 },
     math = { latex = { font_size = "small" } }
+  },
+
+  lazygit = {
+    enabled = true,
+    configure = false
+  },
+
+  notifier = {
+    enabled = true,
+    style = "notification"
+  },
+
+  picker = {
+    enabled = true,
+    previewers = {
+      diff = {
+        builtin = false,
+        cmd = { "delta" }
+      },
+      git = {
+        builtin = false,
+        args = {}
+      }
+    },
+    sources = {
+      spelling = {
+        layout = { preset = "select" }
+      }
+    },
+    win = {
+      input = {
+        keys = {
+          ["<Tab>"] = { "select_and_prev", mode = { "i", "n" } },
+          ["<S-Tab>"] = { "select_and_next", mode = { "i", "n" } },
+          ["<A-Up>"] = { "history_back", mode = { "i", "n" } },
+          ["<A-Down>"] = { "history_forward", mode = { "i", "n" } },
+          ["<A-j>"] = { "list_down", mode = { "i", "n" } },
+          ["<A-k>"] = { "list_up", mode = { "i", "n" } },
+          ["<C-u>"] = { "preview_scroll_up", mode = { "i", "n" } },
+          ["<C-d>"] = { "preview_scroll_down", mode = { "i", "n" } },
+          ["<A-u>"] = { "list_scroll_up", mode = { "i", "n" } },
+          ["<A-d>"] = { "list_scroll_down", mode = { "i", "n" } },
+          ["<c-j>"] = {},
+          ["<c-k>"] = {}
+        }
+      }
+    },
+    layout = {
+      preset = "telescope"
+    }
   }
 })
 vim.api.nvim_create_autocmd("VimEnter", {
@@ -365,9 +413,26 @@ vim.keymap.set({ "n", "v" }, "<leader>cci", "<CMD>CodeCompanion<CR>", { desc = "
 vim.keymap.set({ "n", "v" }, "<leader>ccc", "<CMD>CodeCompanionChat Toggle<CR>", { desc = "CodeCompanion chat" })
 vim.keymap.set("v", "<leader>ccp", "<CMD>CodeCompanionChat Add<CR>", { desc = "CodeCompanion chat" })
 
-vim.keymap.set("n", "<A-w>", function() require("snacks").bufdelete() end, { desc = "[Snacks] Delete buffer" })
-vim.keymap.set("n", "<leader>sgb", function() require("snacks").git.blame_line() end, { desc = "[Snacks] Git blame list" })
-vim.keymap.set("n", "<leader>sgB", function() require("snacks").gitbrowse() end, { desc = "[Snacks] Git browse" })
-vim.keymap.set("n", "<leader>si", function() require("snacks").image.hover() end, { desc = "[Snacks] Display image" })
-vim.keymap.set("n", "<C-g>", function() require("snacks").lazygit() end, { desc = "[Snacks] Lazygit" })
+vim.keymap.set("n", "<A-w>", function() snacks.bufdelete() end, { desc = "[Snacks] Delete buffer" })
+vim.keymap.set("n", "<leader>si", function() snacks.image.hover() end, { desc = "[Snacks] Display image" })
+
+vim.keymap.set("n", "<leader>sn", function() snacks.picker.notifications() end, { desc = "[Snacks] Notifications" })
+vim.keymap.set("n", "<leader>n", function() snacks.notifier.show_history() end, { desc = "[Snacks] Notification history" })
+vim.keymap.set("n", "<leader>un", function() snacks.notifier.hide() end, { desc = "[Snacks] Dismiss all notifications" })
+
+vim.keymap.set("n", "<leader><space>", function() snacks.picker.smart() end, { desc = "[Snacks] Smart find files" })
+vim.keymap.set("n", "<leader>,", function() snacks.picker.buffers() end, { desc = "[Snacks] Buffers" })
+
+vim.keymap.set("n", "<leader>sb", function() snacks.picker.buffers() end, { desc = "[Snacks] Buffers" })
+vim.keymap.set("n", "<leader>sf", function() snacks.picker.files() end, { desc = "[Snacks] Find files" })
+vim.keymap.set("n", "<leader>sp", function() snacks.picker.projects() end, { desc = "[Snacks] Projects" })
+vim.keymap.set("n", "<leader>sr", function() snacks.picker.recent() end, { desc = "[Snacks] Recent" })
+
+vim.keymap.set("n", "<C-g>", function() snacks.lazygit() end, { desc = "[Snacks] Lazygit" })
+vim.keymap.set("n", "<leader>gl", function() snacks.picker.git_log() end, { desc = "[Snacks] Git log" })
+vim.keymap.set("n", "<leader>gd", function() snacks.picker.git_diff() end, { desc = "[Snacks] Git diff" })
+vim.keymap.set("n", "<leader>gb", function() snacks.git.blame_line() end, { desc = "[Snacks] Git blame line" })
+vim.keymap.set("n", "<leader>gB", function() snacks.gitbrowse() end, { desc = "[Snacks] Git browse" })
+
+vim.keymap.set("n", "<leader>sg", function() snacks.picker.grep() end, { desc = "[Snacks] Grep" })
 

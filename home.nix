@@ -45,6 +45,8 @@
 
     imagemagick
     tectonic
+    ripgrep
+    git-extras
   ];
   home.sessionVariables = {
     EDITOR = "nvim";
@@ -330,6 +332,8 @@
       vim.opt.rtp:prepend("${treesitter-parsers}")
     '';
   };
+
+  programs.lazygit.enable = true;
 
   fonts.fontconfig = {
     defaultFonts = {
