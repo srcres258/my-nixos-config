@@ -252,7 +252,7 @@
     };
   in {
     enable = true;
-    plugins = with pkgs.vimPlugins; [
+    plugins = (with pkgs.vimPlugins; [
       nvim-treesitter
       nvim-treesitter-textobjects
       nvim-treesitter-context
@@ -280,7 +280,21 @@
       rainbow-delimiters-nvim
       noice-nvim
       nvim-web-devicons
-    ];
+
+      codecompanion-nvim
+      nvim-cmp
+    ]) ++ (with pkgs.vimUtils; [
+      (buildVimPlugin {
+        pname = "fittencode.nvim";
+        version = "master";
+        src = pkgs.fetchFromGitHub {
+          owner = "luozhiya";
+          repo = "fittencode.nvim";
+          rev = "be2e6e8345bb76922fae37012af10c3cc51585b5";
+          hash = "sha256-5uwphoIaDyf4R4ZjZz4IWnaG7E3iPHyztYDbD3twbFA=";
+        };
+      })
+    ]);
     extraLuaConfig = (builtins.readFile ./init.lua) + ''
       require('nvim-treesitter.configs').setup {
         ensure_installed = {},

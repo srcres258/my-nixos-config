@@ -25,22 +25,37 @@ local cmp_action = require('lsp-zero').cmp_action()
 
 cmp.setup({
   sources = {
-    {name = 'nvim_lsp'},
-    {name = 'luasnip'},
-    {name = 'buffer'},
-    {name = 'path'},
+    { name = 'nvim_lsp' },
+    { name = 'luasnip' },
+    { name = 'buffer' },
+    { name = 'path' },
+    { name = 'fittencode', group_index = 1 }
   },
   mapping = cmp.mapping.preset.insert({
     ['<C-Space>'] = cmp.mapping.complete(),
     ['<CR>'] = cmp.mapping.confirm({select = true}),
     ['<Tab>'] = cmp_action.luasnip_supertab(),
     ['<S-Tab>'] = cmp_action.luasnip_shift_supertab(),
+    ['<C-y>'] = cmp.mapping.confirm({
+      behavior = cmp.ConfirmBehavior.Insert,
+      select = false
+    }),
+    ['<C-[>'] = cmp.mapping.select_prev_item(),
+    ['<C-]>'] = cmp.mapping.select_next_item()
   }),
   snippet = {
     expand = function(args)
       require('luasnip').lsp_expand(args.body)
     end,
   },
+  formatting = {
+    format = function(entry, vim_item)
+      if entry.source.name == 'fittencode' then
+        vim_item.kind = 'FittenCode'
+      end
+      return vim_item
+    end
+  }
 })
 
 local blink = require('blink.cmp')
@@ -187,6 +202,14 @@ require('noice').setup({
   }
 })
 
+require('codecompanion').setup({
+  log_level = "DEBUG"
+})
+
+require('fittencode').setup({
+  completion_mode = 'source'
+})
+
 -- Shortcut keys setup.
 local lsp_zero = require('lsp-zero')
 
@@ -223,6 +246,9 @@ vim.opt.smartindent = true
 vim.opt.shiftwidth = 2
 vim.opt.tabstop = 2
 vim.opt.softtabstop = 2
+
+vim.opt.splitbelow = true
+vim.opt.splitright = true
 
 vim.g.mapleader = " "
 vim.g.maplocalleader = "\\"
