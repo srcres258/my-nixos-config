@@ -180,6 +180,107 @@ require('fittencode').setup({
   completion_mode = 'source'
 })
 
+require('lazydev').setup({
+  library = {
+    { path = "${3rd}/luv/library", words = { "vim%.uv" } }
+  }
+})
+
+require('which-key').setup({
+  preset = "helix",
+  win = {
+    title = false,
+    width = 0.5
+  },
+  spec = {
+    { "<leader>cc", group = "<CodeCompanion>" },
+    { "<leader>s", group = "<Snacks>" },
+    { "<leader>t", group = "<Snacks> Toggle" }
+  },
+  expand = function(node)
+    return not node.desc
+  end
+})
+
+local snacks = require('snacks')
+snacks.setup({
+  bigfile = { enabled = true },
+  dashboard = { enabled = true },
+  explorer = { enabled = true },
+  indent = {
+    enabled = true,
+    animate = {
+      enabled = false
+    },
+    indent = {
+      only_scope = true
+    },
+    scope = {
+      enabled = true, -- enable highlighting of the current scope
+      underline = true, -- underline the start of the current scope
+    },
+    chunk = {
+      -- when enabled, scopes will be rendered as chunks,
+      -- except for the top-level scope, which will be rendered as a scope.
+      enabled = true
+    }
+  },
+  input = { enabled = true },
+  picker = { enabled = true },
+  notifier = { enabled = true },
+  quickfile = { enabled = true },
+  scope = { enabled = true },
+  scroll = { enabled = true },
+  statuscolumn = { enabled = true },
+  words = { enabled = true },
+
+  image = {
+    enabled = true,
+    doc = { inline = false, float = false, max_width = 80, max_height = 40 },
+    math = { latex = { font_size = "small" } }
+  }
+})
+vim.api.nvim_create_autocmd("VimEnter", {
+  pattern = "",
+  callback = function()
+    -- Setup some globals for debugging.
+    _G.dd = function(...)
+      snacks.debug.inspect(...)
+    end
+    _G.bt = function()
+      snacks.debug.backtrace()
+    end
+    vim.print = _G.dd
+
+    vim.g.snacks_animate = false
+    snacks.toggle.new({
+      id = "Animation",
+      name = "Animation",
+      get = function()
+        return snacks.animate.enabled()
+      end,
+      set = function(state)
+        vim.g.snacks_animate = state
+      end
+    }):map("<leader>ta")
+
+    -- Create some toggle mappings for snacks.
+    snacks.toggle.dim():map("<leader>tD")
+
+    snacks.toggle.option("spell", { name = "Spelling" }):map("<leader>ts")
+    snacks.toggle.option("wrap", { name = "Wrap" }):map("<ledaer>tw")
+    snacks.toggle.option("relativenumber", { name = "Relative Number" }):map("<leader>tL")
+    snacks.toggle.diagnostics():map("<leader>td")
+    snacks.toggle.line_number():map("<leader>tl")
+    snacks.toggle.option("conceallevel", { off = 0, om = vim.o.conceallevel > 0 and vim.o.conceallevel or 2 }):map("<leader>tc")
+    snacks.toggle.treesitter():map("<leader>tT")
+    snacks.toggle.option("background", { off = "light", on = "dark", name = "Dark Background" }):map("<leader>tb")
+    snacks.toggle.inlay_hints():map("<leader>th")
+    snacks.toggle.indent():map("<leader>tg")
+    snacks.toggle.dim():map("<leader>tD")
+  end
+})
+
 -- Shortcut keys setup.
 local lsp_zero = require('lsp-zero')
 
@@ -256,7 +357,6 @@ vim.keymap.set("n", "<A-8>", "<CMD>BufferGoto 8<CR>", { desc = "[Buffer] Go to b
 vim.keymap.set("n", "<A-9>", "<CMD>BufferGoto 9<CR>", { desc = "[Buffer] Go to buffer 9" })
 vim.keymap.set("n", "<A-h>", "<CMD>BufferPrevious<CR>", { desc = "[Buffer] Previous buffer" })
 vim.keymap.set("n", "<A-l>", "<CMD>BufferNext<CR>", { desc = "[Buffer] Next buffer" })
-vim.keymap.set("n", "<A-w>", "<CMD>BufferClose<CR>", { desc = "[Buffer] Go to buffer 1" })
 
 vim.keymap.set("n", "<leader>e", "<CMD>NvimTreeToggle<CR>", { desc = "[NvimTree] Toggle NvimTree" })
 
@@ -264,4 +364,10 @@ vim.keymap.set({ "n", "v" }, "<leader>cca", "<CMD>CodeCompanionActions<CR>", { d
 vim.keymap.set({ "n", "v" }, "<leader>cci", "<CMD>CodeCompanion<CR>", { desc = "CodeCompanion inline" })
 vim.keymap.set({ "n", "v" }, "<leader>ccc", "<CMD>CodeCompanionChat Toggle<CR>", { desc = "CodeCompanion chat" })
 vim.keymap.set("v", "<leader>ccp", "<CMD>CodeCompanionChat Add<CR>", { desc = "CodeCompanion chat" })
+
+vim.keymap.set("n", "<A-w>", function() require("snacks").bufdelete() end, { desc = "[Snacks] Delete buffer" })
+vim.keymap.set("n", "<leader>sgb", function() require("snacks").git.blame_line() end, { desc = "[Snacks] Git blame list" })
+vim.keymap.set("n", "<leader>sgB", function() require("snacks").gitbrowse() end, { desc = "[Snacks] Git browse" })
+vim.keymap.set("n", "<leader>si", function() require("snacks").image.hover() end, { desc = "[Snacks] Display image" })
+vim.keymap.set("n", "<C-g>", function() require("snacks").lazygit() end, { desc = "[Snacks] Lazygit" })
 

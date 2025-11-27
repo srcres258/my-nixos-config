@@ -42,6 +42,9 @@
     pyright
     taplo
     marksman
+
+    imagemagick
+    tectonic
   ];
   home.sessionVariables = {
     EDITOR = "nvim";
@@ -275,6 +278,10 @@
 
       codecompanion-nvim
       nvim-cmp
+
+      lazydev-nvim
+      which-key-nvim
+      snacks-nvim
     ]) ++ (with pkgs.vimUtils; [
       (buildVimPlugin {
         pname = "fittencode.nvim";
