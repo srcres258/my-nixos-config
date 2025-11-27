@@ -1,48 +1,3 @@
-
-vim.opt.list = true
-vim.opt.listchars = { tab = ">-", trail = "-" }
-
-vim.g.mapleader = " "
-vim.g.maplocalleader = "\\"
-
-local lsp_zero = require('lsp-zero')
-
-lsp_zero.on_attach(function(client, bufnr)
-  local opts = { buffer = bufnr, remap = false }
-  vim.keymap.set("n", "gd", vim.lsp.buf.definition, opts)
-  vim.keymap.set("n", "K",  vim.lsp.buf.hover, opts)
-  vim.keymap.set("n", "<leader>vws", vim.lsp.buf.workspace_symbol, opts)
-  --vim.keymap.set("n", "<leader>vd", vim.lsp.buf.open_float, opts)
-  --vim.keymap.set("n", "[d", vim.lsp.buf.goto_next, opts)
-  --vim.keymap.set("n", "]d", vim.lsp.buf.goto_prev, opts)
-  vim.keymap.set("n", "<leader>vca", vim.lsp.buf.code_action, opts)
-  vim.keymap.set("n", "<leader>vrr", vim.lsp.buf.references, opts)
-  vim.keymap.set("n", "<leader>vrn", vim.lsp.buf.rename, opts)
-  vim.keymap.set("i", "<C-h>", vim.lsp.buf.signature_help, opts)
-end)
-
-vim.keymap.set("i", "<C-h>", "<Left>")
-vim.keymap.set("i", "<C-l>", "<Right>")
-vim.keymap.set("i", "<C-j>", "<Down>")
-vim.keymap.set("i", "<C-k>", "<Up>")
-
-vim.keymap.set("i", "jk", "<Esc>")
-
-vim.keymap.set("n", "<C-h>", "<C-w>h")
-vim.keymap.set("n", "<C-l>", "<C-w>l")
-vim.keymap.set("n", "<C-j>", "<C-w>j")
-vim.keymap.set("n", "<C-k>", "<C-w>k")
-
-vim.keymap.set({ "n", "x" }, "<S-H>", "^", { desc = "Start of line" })
-vim.keymap.set({ "n", "x" }, "<S-L>", "$", { desc = "End of line" })
-vim.keymap.set("n", "y<S-H>", "y^", { desc = "Yank from start of line" })
-vim.keymap.set("n", "y<S-L>", "y$", { desc = "Yank to end of line" })
-
-vim.keymap.set({ "n", "x" }, "Q", "<CMD>:qa<CR>")
-vim.keymap.set({ "n", "x" }, "qq", "<CMD>:q<CR>")
-
-vim.keymap.set("n", "<A-z>", "<CMD>set wrap!<CR>", { desc = "Toggle line wrap" })
-
 require('lsp-zero').extend_lspconfig({
   sign_text = true,
   lsp_skip_setup = { },
@@ -119,7 +74,6 @@ blink.setup({
 })
 
 require('catppuccin').setup({
-  --transparent_background = true,
   custom_highlights = function(colors)
     return {
       LineNr = { fg = colors.surface2 },
@@ -178,4 +132,66 @@ vim.g.rainbow_delimiters = {
 };
 
 require('noice').setup()
+
+-- Shortcut keys setup.
+local lsp_zero = require('lsp-zero')
+
+lsp_zero.on_attach(function(client, bufnr)
+  local opts = { buffer = bufnr, remap = false }
+  vim.keymap.set("n", "gd", vim.lsp.buf.definition, opts)
+  vim.keymap.set("n", "K",  vim.lsp.buf.hover, opts)
+  vim.keymap.set("n", "<leader>vws", vim.lsp.buf.workspace_symbol, opts)
+  --vim.keymap.set("n", "<leader>vd", vim.lsp.buf.open_float, opts)
+  --vim.keymap.set("n", "[d", vim.lsp.buf.goto_next, opts)
+  --vim.keymap.set("n", "]d", vim.lsp.buf.goto_prev, opts)
+  vim.keymap.set("n", "<leader>vca", vim.lsp.buf.code_action, opts)
+  vim.keymap.set("n", "<leader>vrr", vim.lsp.buf.references, opts)
+  vim.keymap.set("n", "<leader>vrn", vim.lsp.buf.rename, opts)
+  vim.keymap.set("i", "<C-h>", vim.lsp.buf.signature_help, opts)
+end)
+
+vim.opt.list = true
+vim.opt.listchars = { tab = ">-", trail = "-" }
+
+vim.opt.hlsearch = true
+
+vim.opt.scrolloff = 15
+vim.opt.sidescrolloff = 10
+vim.opt.startofline = false
+
+vim.opt.number = true
+vim.wo.wrap = false
+
+-- These configurations disables auto blank-to-TAB convertion.
+vim.opt.expandtab = true
+vim.opt.smarttab = false
+vim.opt.smartindent = true
+vim.opt.shiftwidth = 2
+vim.opt.tabstop = 2
+vim.opt.softtabstop = 2
+
+vim.g.mapleader = " "
+vim.g.maplocalleader = "\\"
+
+vim.keymap.set("i", "<C-h>", "<Left>")
+vim.keymap.set("i", "<C-l>", "<Right>")
+vim.keymap.set("i", "<C-j>", "<Down>")
+vim.keymap.set("i", "<C-k>", "<Up>")
+
+vim.keymap.set("i", "jk", "<Esc>")
+
+vim.keymap.set("n", "<C-h>", "<C-w>h")
+vim.keymap.set("n", "<C-l>", "<C-w>l")
+vim.keymap.set("n", "<C-j>", "<C-w>j")
+vim.keymap.set("n", "<C-k>", "<C-w>k")
+
+vim.keymap.set({ "n", "x" }, "<S-H>", "^", { desc = "Start of line" })
+vim.keymap.set({ "n", "x" }, "<S-L>", "$", { desc = "End of line" })
+vim.keymap.set("n", "y<S-H>", "y^", { desc = "Yank from start of line" })
+vim.keymap.set("n", "y<S-L>", "y$", { desc = "Yank to end of line" })
+
+vim.keymap.set({ "n", "x" }, "Q", "<CMD>:qa<CR>")
+vim.keymap.set({ "n", "x" }, "qq", "<CMD>:q<CR>")
+
+vim.keymap.set("n", "<A-z>", "<CMD>set wrap!<CR>", { desc = "Toggle line wrap" })
 
