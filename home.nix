@@ -269,12 +269,6 @@
 
       blink-cmp
 
-      #blink-cmp-cmdline
-      #blink-cmp-diagnostic
-      #blink-cmp-buffer
-      #blink-cmp-path
-      #blink-cmp-snippers
-
       catppuccin-nvim
       lualine-nvim
       barbar-nvim

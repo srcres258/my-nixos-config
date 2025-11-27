@@ -21,6 +21,28 @@ lsp_zero.on_attach(function(client, bufnr)
   vim.keymap.set("i", "<C-h>", vim.lsp.buf.signature_help, opts)
 end)
 
+vim.keymap.set("i", "<C-h>", "<Left>")
+vim.keymap.set("i", "<C-l>", "<Right>")
+vim.keymap.set("i", "<C-j>", "<Down>")
+vim.keymap.set("i", "<C-k>", "<Up>")
+
+vim.keymap.set("i", "jk", "<Esc>")
+
+vim.keymap.set("n", "<C-h>", "<C-w>h")
+vim.keymap.set("n", "<C-l>", "<C-w>l")
+vim.keymap.set("n", "<C-j>", "<C-w>j")
+vim.keymap.set("n", "<C-k>", "<C-w>k")
+
+vim.keymap.set({ "n", "x" }, "<S-H>", "^", { desc = "Start of line" })
+vim.keymap.set({ "n", "x" }, "<S-L>", "$", { desc = "End of line" })
+vim.keymap.set("n", "y<S-H>", "y^", { desc = "Yank from start of line" })
+vim.keymap.set("n", "y<S-L>", "y$", { desc = "Yank to end of line" })
+
+vim.keymap.set({ "n", "x" }, "Q", "<CMD>:qa<CR>")
+vim.keymap.set({ "n", "x" }, "qq", "<CMD>:q<CR>")
+
+vim.keymap.set("n", "<A-z>", "<CMD>set wrap!<CR>", { desc = "Toggle line wrap" })
+
 require('lsp-zero').extend_lspconfig({
   sign_text = true,
   lsp_skip_setup = { },
@@ -119,7 +141,7 @@ require('catppuccin').setup({
   }
 })
 
-require('lualine')
+require('lualine').setup()
 
 vim.g.barbar_auto_setup = false
 require('barbar').setup({
@@ -129,9 +151,31 @@ require('barbar').setup({
   clickable = true
 })
 
-require('nvim-tree')
+require('nvim-tree').setup()
 
-require('rainbow-delimiters')
+vim.g.rainbow_delimiters = {
+  strategy = {
+    [''] = 'rainbow-delimiters.strategy.global',
+    vim = 'rainbow-delimiters.strategy.local'
+  },
+  query = {
+    [''] = 'rainbow-delimiters',
+    lua = 'rainbow-blocks'
+  },
+  priority = {
+    [''] = 110,
+    lua = 210
+  },
+  highlight = {
+    'RainbowDelimiterRed',
+    'RainbowDelimiterYellow',
+    'RainbowDelimiterBlue',
+    'RainbowDelimiterOrange',
+    'RainbowDelimiterGreen',
+    'RainbowDelimiterViolet',
+    'RainbowDelimiterCyan'
+  }
+};
 
-require('noice')
+require('noice').setup()
 
