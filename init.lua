@@ -20,44 +20,6 @@ require('lspconfig').pyright.setup{}
 require('lspconfig').ts_ls.setup{}
 require('lspconfig').nil_ls.setup{}
 
-local cmp = require('cmp')
-local cmp_action = require('lsp-zero').cmp_action()
-
-cmp.setup({
-  sources = {
-    { name = 'nvim_lsp' },
-    { name = 'luasnip' },
-    { name = 'buffer' },
-    { name = 'path' },
-    { name = 'fittencode', group_index = 1 }
-  },
-  mapping = cmp.mapping.preset.insert({
-    ['<C-Space>'] = cmp.mapping.complete(),
-    ['<CR>'] = cmp.mapping.confirm({select = true}),
-    ['<Tab>'] = cmp_action.luasnip_supertab(),
-    ['<S-Tab>'] = cmp_action.luasnip_shift_supertab(),
-    ['<C-y>'] = cmp.mapping.confirm({
-      behavior = cmp.ConfirmBehavior.Insert,
-      select = false
-    }),
-    ['<C-[>'] = cmp.mapping.select_prev_item(),
-    ['<C-]>'] = cmp.mapping.select_next_item()
-  }),
-  snippet = {
-    expand = function(args)
-      require('luasnip').lsp_expand(args.body)
-    end,
-  },
-  formatting = {
-    format = function(entry, vim_item)
-      if entry.source.name == 'fittencode' then
-        vim_item.kind = 'FittenCode'
-      end
-      return vim_item
-    end
-  }
-})
-
 local blink = require('blink.cmp')
 
 blink.setup({
@@ -77,7 +39,15 @@ blink.setup({
       'lsp',
       'path',
       'snippets',
-      'buffer'
+      'buffer',
+      'fittencode'
+    },
+
+    providers = {
+      fittencode = {
+        name = "fittencode",
+        module = "fittencode.sources.blink"
+      }
     }
   },
 
@@ -258,8 +228,6 @@ vim.keymap.set("i", "<C-l>", "<Right>")
 vim.keymap.set("i", "<C-j>", "<Down>")
 vim.keymap.set("i", "<C-k>", "<Up>")
 
-vim.keymap.set("i", "jk", "<Esc>")
-
 vim.keymap.set("n", "<C-h>", "<C-w>h")
 vim.keymap.set("n", "<C-l>", "<C-w>l")
 vim.keymap.set("n", "<C-j>", "<C-w>j")
@@ -291,4 +259,9 @@ vim.keymap.set("n", "<A-l>", "<CMD>BufferNext<CR>", { desc = "[Buffer] Next buff
 vim.keymap.set("n", "<A-w>", "<CMD>BufferClose<CR>", { desc = "[Buffer] Go to buffer 1" })
 
 vim.keymap.set("n", "<leader>e", "<CMD>NvimTreeToggle<CR>", { desc = "[NvimTree] Toggle NvimTree" })
+
+vim.keymap.set({ "n", "v" }, "<leader>cca", "<CMD>CodeCompanionActions<CR>", { desc = "CodeCompanion action" })
+vim.keymap.set({ "n", "v" }, "<leader>cci", "<CMD>CodeCompanion<CR>", { desc = "CodeCompanion inline" })
+vim.keymap.set({ "n", "v" }, "<leader>ccc", "<CMD>CodeCompanionChat Toggle<CR>", { desc = "CodeCompanion chat" })
+vim.keymap.set("v", "<leader>ccp", "<CMD>CodeCompanionChat Add<CR>", { desc = "CodeCompanion chat" })
 

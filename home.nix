@@ -261,14 +261,6 @@
       nvim-lspconfig
       lsp-zero-nvim
 
-      nvim-cmp
-      cmp-nvim-lsp
-      cmp-buffer
-      cmp-path
-      cmp-cmdline
-      luasnip
-      cmp_luasnip
-
       friendly-snippets
 
       blink-cmp
