@@ -201,7 +201,7 @@
     enable = true;
     settings = {
       font_family = "Cascadia Mono PL";
-      font_size = 18;
+      font_size = 15;
 
       background_opacity = 0.75;
       dynamic_background_opacity = "yes";
