@@ -43,6 +43,10 @@
     taplo
     marksman
   ];
+  home.sessionVariables = {
+    EDITOR = "nvim";
+    VISUAL = "nvim";
+  };
 
   xdg.configFile."niri/config.kdl".source = ./config.kdl;
 
