@@ -49,6 +49,8 @@
     git-extras
 
     codespell
+
+    mpv
   ];
   home.sessionVariables = {
     EDITOR = "nvim";
@@ -365,6 +367,12 @@
 
   programs.lazygit.enable = true;
 
+  programs.fzf.enable = true;
+
+  programs.mpvpaper = {
+    enable = true;
+  };
+
   fonts.fontconfig = {
     defaultFonts = {
       emoji = [ "Noto Color Emoji" ];
@@ -398,6 +406,23 @@
         fcitx5-pinyin-moegirl
         fcitx5-pinyin-zhwiki
       ];
+    };
+  };
+
+  systemd.user.services."mpvpaper" = {
+    Unit = {
+      Description = "mpvpaper dynamic wallpaper";
+    };
+
+    Service = {
+      Type = "simple";
+      ExecStart = "${pkgs.mpvpaper}/bin/mpvpaper -o 'loop=inf no-audio hwdec=auto' '*' /home/${config.home.username}/Videos/bg.mp4";
+      Restart = "on-failure";
+      RestartSec = 5;
+    };
+
+    Install = {
+      WantedBy = [ "graphical-session.target" ];
     };
   };
 
