@@ -129,7 +129,7 @@
     xz
     unzip
     p7zip
-    
+
     cowsay
     file
     which
@@ -225,7 +225,7 @@
     enable = true;
     settings = {
       default_session = {
-        command = "${pkgs.greetd.tuigreet}/bin/tuigreet " +
+        command = "${pkgs.tuigreet}/bin/tuigreet " +
           "--time --asterisks --remember --remember-session " +
           "--sessions ${config.services.displayManager.sessionData.desktops}/share/wayland-sessions";
       };
@@ -235,13 +235,13 @@
   fonts = {
     packages = with pkgs; [
       adwaita-fonts
-      
+
       noto-fonts-color-emoji
       nerd-fonts.symbols-only
-      
+
       noto-fonts-cjk-sans
       noto-fonts-cjk-serif
-      
+
       source-code-pro
       hack-font
       jetbrains-mono
