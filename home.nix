@@ -316,6 +316,8 @@
       # showkeys
       nvim-lightbulb
       nvim-ufo
+
+      lazy-nvim
     ]) ++ (with pkgs.vimUtils; [
       (buildVimPlugin {
         pname = "fittencode.nvim";
