@@ -47,6 +47,8 @@
     tectonic
     ripgrep
     git-extras
+
+    codespell
   ];
   home.sessionVariables = {
     EDITOR = "nvim";
@@ -255,6 +257,11 @@
         lua nix python regex rust toml typescript vim yaml markdown
       ];
     };
+    nvim-treesitter-parsers-plugins = with pkgs.vimPlugins.nvim-treesitter-parsers; [
+      bash c cpp css dockerfile go html java javascript json
+      lua nix python regex rust toml typescript vim yaml markdown
+      comment
+    ];
   in {
     enable = true;
     plugins = (with pkgs.vimPlugins; [
@@ -284,6 +291,20 @@
       lazydev-nvim
       which-key-nvim
       snacks-nvim
+      nvim-autopairs
+      trim-nvim
+      undotree
+      comment-nvim
+      smartyank-nvim
+      flash-nvim
+      plenary-nvim
+      todo-comments-nvim
+      mini-ai
+      # multicursor-nvim
+      vim-wakatime
+
+      nvim-lint
+      trouble-nvim
     ]) ++ (with pkgs.vimUtils; [
       (buildVimPlugin {
         pname = "fittencode.nvim";
@@ -295,7 +316,7 @@
           hash = "sha256-5uwphoIaDyf4R4ZjZz4IWnaG7E3iPHyztYDbD3twbFA=";
         };
       })
-    ]);
+    ]) ++ nvim-treesitter-parsers-plugins;
     extraLuaConfig = (builtins.readFile ./init.lua) + ''
       require('nvim-treesitter.configs').setup {
         ensure_installed = {},

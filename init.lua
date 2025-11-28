@@ -329,6 +329,21 @@ vim.api.nvim_create_autocmd("VimEnter", {
   end
 })
 
+require('nvim-autopairs').setup({
+  ignored_next_char = "[%w%.]" -- will ignore alphanumeric and `.` symbol
+})
+
+require('trim').setup({
+  trim_last_line = false
+})
+
+vim.api.nvim_create_autocmd({ "BufWritePost" }, {
+  callback = function()
+    require("lint").try_lint()
+    require("lint").try_lint("codespell")
+  end
+})
+
 -- Shortcut keys setup.
 local lsp_zero = require('lsp-zero')
 
@@ -345,6 +360,66 @@ lsp_zero.on_attach(function(client, bufnr)
   vim.keymap.set("n", "<leader>vrn", vim.lsp.buf.rename, opts)
   vim.keymap.set("i", "<C-h>", vim.lsp.buf.signature_help, opts)
 end)
+
+vim.cmd([[
+  if has("persistent_undo")
+    let target_path = expand("~/.undodir")
+
+    " create the directory and any parent directories if the location does not exist.
+    if !isdirectory(target_path)
+      call mkdir(target_path, "p", 0700)
+    endif
+
+    let &undodir = target_path
+    set undofile
+  endif
+]])
+
+require('Comment').setup()
+
+require('smartyank').setup({
+  highlight = {
+    timeout = 500 -- timeout for cleaning the highlight
+  },
+  clipboard = {
+    enable = true
+  },
+  osc52 = {
+    silent = true -- disable the "n chars copied" echo
+  }
+})
+
+require('flash').setup({
+  label = {
+    rainbow = {
+      enabled = true,
+      shade = 1
+    }
+  },
+  modes = {
+    char = {
+      enabled = false
+    }
+  }
+})
+
+require('todo-comments').setup({
+  highlight = {
+    keyword = "wide_bg",
+    before = "bg",
+    after = "fg"
+  }
+})
+
+-- local multicursor = require('multicursor-nvim')
+-- multicursor.setup()
+-- multicursor.addKeymapLayer(function(layerSet)
+--   layerSet("n", "<esc>", function()
+--     multicursor.clearCursors()
+--   end)
+-- end)
+
+require('trouble').setup({})
 
 vim.opt.list = true
 vim.opt.listchars = { tab = ">-", trail = "-" }
@@ -433,4 +508,54 @@ vim.keymap.set("n", "<leader>gb", function() snacks.git.blame_line() end, { desc
 vim.keymap.set("n", "<leader>gB", function() snacks.gitbrowse() end, { desc = "[Snacks] Git browse" })
 
 vim.keymap.set("n", "<leader>sg", function() snacks.picker.grep() end, { desc = "[Snacks] Grep" })
+vim.keymap.set("n", "<leader>su", function() snacks.picker.undo() end, { desc = "[Snacks] Undo history" })
+vim.keymap.set("n", "<leader>st", function() snacks.picker.todo_comments({ keywords = { "TODO", "FIX", "FIXME", "BUG", "FIXIT", "HACK" } }) end)
+vim.keymap.set("n", "<leader>sT", function() snacks.picker.todo_comments() end, { desc = "[TODO] Pick todos (with NOTE)" })
+
+vim.keymap.set("n", "<leader>ut", "<cmd>UndotreeToggle<cr>", { desc = "Toggle undo-tree" })
+
+vim.keymap.set("n", "<leader>/", function() require("Comment.api").toggle.linewise.current() end)
+vim.keymap.set("v", "<leader>/", "<esc><cmd>lua require('Comment.api').toggle.linewise(vim.fn.visualmode())<cr>")
+vim.keymap.set("n", "<C-_>", function() require("Comment.api").toggle.linewise.current() end)
+vim.keymap.set("v", "<C-_>", "<esc><cmd>lua require('Comment.api').toggle.linewise(vim.fn.visualmode())<cr>")
+
+vim.keymap.set({ "n", "x", "o" }, "<leader>f", function() require("flash").jump() end, { desc = "[Flash] Jump" })
+vim.keymap.set({ "n", "x", "o" }, "<leader>F", function() require("flash").treesitter() end, { desc = "[Flash] Treesitter" })
+vim.keymap.set("c", "<c-f>", function() require("flash").toggle() end, { desc = "[Flash] Toggle Search" })
+vim.keymap.set(
+  { "n", "x", "o" },
+  "<leader>j",
+  function()
+    require("flash").jump({
+      search = { mode = "search", max_length = 0 },
+      label = { after = { 0, 0 }, matches = false },
+      jump = { pos = "end" },
+      pattern = "^\\s*\\S\\?" -- match non-whitespace at stant plus any character (ignores empty lines)
+    })
+  end,
+  { desc = "[Flash] Line jump" }
+)
+vim.keymap.set(
+  { "n", "x", "o" },
+  "<leader>k",
+  function()
+    require("flash").jump({
+      search = { mode = "search", max_length = 0 },
+      label = { after = { 0, 0 }, matches = false },
+      jump = { pos = "end" },
+      pattern = "^\\s*\\S\\?" -- match non-whitespace at stant plus any character (ignores empty lines)
+    })
+  end,
+  { desc = "[Flash] Line jump" }
+)
+
+-- vim.keymap.set("x", "mI", function() multicursor.insertVisual() end, { desc = "Insert cursors at visual selection" })
+-- vim.keymap.set("x", "mA", function() multicursor.appendVisual() end, { desc = "Append cursors at visual selection" })
+
+vim.keymap.set("n", "<A-j>", function() vim.diagnostic.jump({ count = 1 }) end, { desc = "Go to next diagnostic" })
+vim.keymap.set("n", "<A-k>", function() vim.diagnostic.jump({ count = 1 }) end, { desc = "Go to previous diagnostic" })
+vim.keymap.set("n", "<leader>gd", "<CMD>Trouble diagnostics toggle<CR>", { desc = "[Trouble] Toggle buffer diagnostics" })
+vim.keymap.set("n", "<leader>gs", "<CMD>Trouble symbols toggle focus=false<CR>", { desc = "[Trouble] Toggle symbols" })
+vim.keymap.set("n", "<leader>gl", "<CMD>Trouble lsp toggle focus=false win.position=right<CR>", { desc = "[Trouble] Toggle LSP definitions/references/..." })
+vim.keymap.set("n", "<leader>gq", "<CMD>Trouble qflist toggle<CR>", { desc = "[Trouble] Quickfix List" })
 
