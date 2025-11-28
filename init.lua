@@ -344,6 +344,25 @@ vim.api.nvim_create_autocmd({ "BufWritePost" }, {
   end
 })
 
+require('scrollbar').setup({
+  handelers = {
+    gitsigns = true, -- Requires gitsigns
+    search = true, -- Requires hlslens
+  },
+  marks = {
+    Search = {
+      color = "#CBA6F7",
+    },
+    GitAdd = { text = "┃" },
+    GitChange = { text = "┃" },
+    GitDelete = { text = "_" }
+  }
+})
+
+require('hlslens').setup({
+  nearest_only = true
+})
+
 -- Shortcut keys setup.
 local lsp_zero = require('lsp-zero')
 
@@ -420,6 +439,206 @@ require('todo-comments').setup({
 -- end)
 
 require('trouble').setup({})
+
+require('gitsigns').setup({})
+
+require('gitsigns').setup({
+  signcolumn = false,
+  numhl = true,
+  -- word_diff = true,
+  current_line_blame = true,
+  attach_to_untracked = true,
+  preview_config = {
+    border = "rounded"
+  },
+  on_attach = function(bufnr)
+    local gitsigns = require("gitsigns")
+
+    local function map(mode, l, r, opts)
+      opts = opts or {}
+      opts.buffer = bufnr
+      vim.keymap.set(mode, l, r, opts)
+    end
+
+    -- Navigation
+    -- stylua: ignore
+    map("n", "]h", function() if vim.wo.diff then vim.cmd.normal({ "]h", bang = true }) else gitsigns.nav_hunk("next") end end, { desc = "[Git] Next hunk" })
+    -- stylua: ignore
+    map("n", "]H", function() if vim.wo.diff then vim.cmd.normal({ "]H", bang = true }) else gitsigns.nav_hunk("last") end end, { desc = "[Git] Last hunk" })
+    -- stylua: ignore
+    map("n", "[h", function() if vim.wo.diff then vim.cmd.normal({ "[h", bang = true }) else gitsigns.nav_hunk("prev") end end, { desc = "[Git] Prev hunk" })
+    -- stylua: ignore
+    map("n", "[H", function() if vim.wo.diff then vim.cmd.normal({ "[H", bang = true }) else gitsigns.nav_hunk("first") end end, { desc = "[Git] First hunk" })
+
+    -- Actions
+    map("n", "<leader>ggs", gitsigns.stage_hunk, { desc = "[Git] Stage hunk" })
+    -- stylua: ignore
+    map("v", "<leader>ggs", function() gitsigns.stage_hunk({ vim.fn.line("."), vim.fn.line("v") }) end, { desc = "[Git] Stage hunk (Visual)" })
+
+    map("n", "<leader>ggr", gitsigns.reset_hunk, { desc = "[Git] Reset hunk" })
+    -- stylua: ignore
+    map("v", "<leader>ggr", function() gitsigns.reset_hunk({ vim.fn.line("."), vim.fn.line("v") }) end, { desc = "[Git] Reset hunk (Visual)" })
+
+    map("n", "<leader>ggS", gitsigns.stage_buffer, { desc = "[Git] Stage buffer" })
+    map("n", "<leader>ggR", gitsigns.reset_buffer, { desc = "[Git] Reset buffer" })
+
+    map("n", "<leader>ggp", gitsigns.preview_hunk, { desc = "[Git] Preview hunk" })
+    map("n", "<leader>ggP", gitsigns.preview_hunk_inline, { desc = "[Git] Preview hunk inline" })
+
+    -- map("n", "<leader>ggb", function() gitsigns.blame_line({ full = true }) end, { desc = "[Git] Blame line" })
+
+    -- stylua: ignore
+    -- map("n", "<leader>ggd", gitsigns.diffthis, { desc = "[Git] diff" })
+    -- stylua: ignore
+    -- map("n", "<leader>ggD", function() gitsigns.diffthis("~") end, { desc = "[Git] diff (ALL)" })
+
+    -- stylua: ignore
+    map("n", "<leader>ggQ", function() gitsigns.setqflist("all") end, { desc = "[Git] Show diffs (ALL) in qflist" })
+    -- stylua: ignore
+    map("n", "<leader>ggq", gitsigns.setqflist, { desc = "[Git] Show diffs in qflist" })
+
+    -- Text object
+    map({ "o", "x" }, "ih", gitsigns.select_hunk, { desc = "[Git] Current hunk" })
+
+    -- Toggles
+    require("snacks")
+      .toggle({
+        name = "line blame",
+        get = function()
+          return require("gitsigns.config").config.current_line_blame
+        end,
+        set = function(enabled)
+          require("gitsigns").toggle_current_line_blame(enabled)
+        end
+      })
+      :map("<leader>tgb")
+    require("snacks")
+      .toggle({
+        name = "word diff",
+        get = function()
+          return require("gitsigns.config").config.word_diff
+        end,
+        set = function(enabled)
+          require("gitsigns").toggle_word_diff(enabled)
+        end
+      })
+      :map("<leader>tgw")
+  end
+})
+
+require('colorizer').setup()
+
+require('ufo').setup({
+  provider_selector = function(_, _, _)
+    return { "treesitter", "indent" }
+  end,
+
+  open_fold_hl_timeout = 0,
+  fold_virt_text_handler = function(virtText, lnum, endLnum, width, truncate)
+    local newVirtText = {}
+    local suffix = (" 󰁂 %d "):format(endLnum - lnum)
+    local sufWidth = vim.fn.strdisplaywidth(suffix)
+    local targetWidth = width - sufWidth
+    local curWidth = 0
+    for _, chunk in ipairs(virtText) do
+      local chunkText = chunk[1]
+      local chunkWidth = vim.fn.strdisplaywidth(chunkText)
+      if targetWidth > curWidth + chunkWidth then
+        table.insert(newVirtText, chunk)
+      else
+        chunkText = truncate(chunkText, targetWidth - curWidth)
+        local hlGroup = chunk[2]
+        table.insert(newVirtText, { chunkText, hlGroup })
+        chunkWidth = vim.fn.strdisplaywidth(chunkText)
+        -- str width returned from truncate() may less than 2nd argument, need padding
+        if curWidth + chunkWidth < targetWidth then
+          suffix = suffix .. (" "):rep(targetWidth - curWidth - chunkWidth)
+        end
+        break
+      end
+      curWidth = curWidth + chunkWidth
+    end
+    table.insert(newVirtText, { suffix, "MoreMsg" })
+    return newVirtText
+  end
+})
+vim.o.foldenable = true
+vim.o.foldcolumn = "0" -- '0' is not bad
+vim.o.foldlevel = 99 -- Using ufo provider need a large value, feel free to decrease the value
+vim.o.foldlevelstart = 99
+vim.opt.fillchars = {
+  fold = " ",
+  foldopen = "▾",
+  foldsep = "│",
+  foldclose = "▸",
+}
+(function()
+  -- Ensure our ufo foldlevel is set for the buffer
+  vim.api.nvim_create_autocmd("BufReadPre", {
+    callback = function()
+      vim.b.ufo_foldlevel = 0
+    end,
+  })
+
+  ---@param num integer Set the fold level to this number
+  local set_buf_foldlevel = function(num)
+    vim.b.ufo_foldlevel = num
+    require("ufo").closeFoldsWith(num)
+  end
+
+  ---@param num integer The amount to change the UFO fold level by
+  local change_buf_foldlevel_by = function(num)
+    local foldlevel = vim.b.ufo_foldlevel or 0
+    -- Ensure the foldlevel can't be set negatively
+    if foldlevel + num >= 0 then
+      foldlevel = foldlevel + num
+    else
+      foldlevel = 0
+    end
+    set_buf_foldlevel(foldlevel)
+  end
+
+  -- Keymaps
+  vim.keymap.set("n", "K", function()
+    local winid = require("ufo").peekFoldedLinesUnderCursor()
+    if not winid then
+      vim.lsp.buf.hover()
+    end
+  end)
+
+  -- stylua: ignore
+  vim.keymap.set("n", "zM", function() set_buf_foldlevel(0) end, { desc = "[UFO] Close all folds" })
+  vim.keymap.set("n", "zR", require("ufo").openAllFolds, { desc = "[UFO] Open all folds" })
+
+  vim.keymap.set("n", "zm", function()
+    local count = vim.v.count
+    if count == 0 then
+      count = 1
+    end
+    change_buf_foldlevel_by(-count)
+  end, { desc = "[UFO] Fold More" })
+  vim.keymap.set("n", "zr", function()
+    local count = vim.v.count
+    if count == 0 then
+      count = 1
+    end
+    change_buf_foldlevel_by(count)
+  end, { desc = "[UFO] Fold Less" })
+
+  -- 99% sure `zS` isn't mapped by default
+  vim.keymap.set("n", "zS", function()
+    if vim.v.count == 0 then
+      vim.notify("No foldlevel given to set!", vim.log.levels.WARN)
+    else
+      set_buf_foldlevel(vim.v.count)
+    end
+  end, { desc = "[UFO] Set foldlevel" })
+
+  -- Delete some predefined keymaps as they are not compatible with nvim-ufo
+  vim.keymap.set("n", "zE", "<NOP>", { desc = "Disabled" })
+  vim.keymap.set("n", "zx", "<NOP>", { desc = "Disabled" })
+  vim.keymap.set("n", "zX", "<NOP>", { desc = "Disabled" })
+end)()
 
 vim.opt.list = true
 vim.opt.listchars = { tab = ">-", trail = "-" }
@@ -558,4 +777,12 @@ vim.keymap.set("n", "<leader>gd", "<CMD>Trouble diagnostics toggle<CR>", { desc 
 vim.keymap.set("n", "<leader>gs", "<CMD>Trouble symbols toggle focus=false<CR>", { desc = "[Trouble] Toggle symbols" })
 vim.keymap.set("n", "<leader>gl", "<CMD>Trouble lsp toggle focus=false win.position=right<CR>", { desc = "[Trouble] Toggle LSP definitions/references/..." })
 vim.keymap.set("n", "<leader>gq", "<CMD>Trouble qflist toggle<CR>", { desc = "[Trouble] Quickfix List" })
+
+vim.keymap.set("n", "n", "nzz<Cmd>lua require('hlslens').start()<CR>", { desc = "Next match", noremap = true, silent = true })
+vim.keymap.set("n", "N", "Nzz<Cmd>lua require('hlslens').start()<CR>", { desc = "Previous match", noremap = true, silent = true })
+vim.keymap.set("n", "*", "*<Cmd>lua require('hlslens').start()<CR>", { desc = "Next match", noremap = true, silent = true })
+vim.keymap.set("n", "#", "#<Cmd>lua require('hlslens').start()<CR>", { desc = "Previous match", noremap = true, silent = true })
+vim.keymap.set("n", "g*", "g*<Cmd>lua require('hlslens').start()<CR>", { desc = "Next match", noremap = true, silent = true })
+vim.keymap.set("n", "g#", "g#<Cmd>lua require('hlslens').start()<CR>", { desc = "Previous match", noremap = true, silent = true })
+vim.keymap.set("n", "//", "<Cmd>noh<CR>", { desc = "Clear highlight", noremap = true, silent = true })
 

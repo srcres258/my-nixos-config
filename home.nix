@@ -305,6 +305,15 @@
 
       nvim-lint
       trouble-nvim
+
+      gitsigns-nvim
+      mini-diff
+      nvim-scrollbar
+      nvim-hlslens
+      nvim-colorizer-lua
+      # showkeys
+      nvim-lightbulb
+      nvim-ufo
     ]) ++ (with pkgs.vimUtils; [
       (buildVimPlugin {
         pname = "fittencode.nvim";
