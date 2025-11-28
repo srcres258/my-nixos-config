@@ -74,6 +74,16 @@
   # Enable touchpad support (enabled default in most desktopManager).
   # services.libinput.enable = true;
 
+  # Enable deepcool display
+  services.hardware.deepcool-digital-linux = {
+    enable = true;
+    extraArgs = [
+      "--mode" "cpu_temp"
+      "--update" "500"
+      "--alarm"
+    ];
+  };
+
   # Define a user account. Don't forget to set a password with ‘passwd’.
   users.users.srcres = {
     initialPassword = "hhw19731213";
