@@ -212,7 +212,7 @@
       font_family = "Cascadia Mono PL";
       font_size = 15;
 
-      background_opacity = 0.75;
+      background_opacity = 0.8;
       dynamic_background_opacity = "yes";
 
       allow_remote_control = "yes";
