@@ -1,3 +1,9 @@
+-- Make the background transparent.
+vim.api.nvim_set_hl(0, 'Normal', { bg = 'none' })
+vim.api.nvim_set_hl(0, 'NormalFloat', { bg = 'none' })
+vim.api.nvim_set_hl(0, 'FloatBorder', { bg = 'none' })
+vim.api.nvim_set_hl(0, 'Pmenu', { bg = 'none' })
+
 require('lsp-zero').extend_lspconfig({
   sign_text = true,
   lsp_skip_setup = { },
