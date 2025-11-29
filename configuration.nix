@@ -198,6 +198,8 @@
     javaPackages.compiler.temurin-bin.jdk-21
 
     libmtp
+
+    dig
   ];
   environment.variables.EDITOR = "vim";
 
