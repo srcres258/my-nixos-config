@@ -411,14 +411,16 @@
     };
   };
 
-  systemd.user.services."mpvpaper" = {
+  systemd.user.services."mpvpaper" = let
+    wallpaperSrc = ./wallpapers/bg.mp4;
+  in {
     Unit = {
       Description = "mpvpaper dynamic wallpaper";
     };
 
     Service = {
       Type = "simple";
-      ExecStart = "${pkgs.mpvpaper}/bin/mpvpaper -o 'loop=inf no-audio hwdec=auto' '*' /home/${config.home.username}/Videos/bg.mp4";
+      ExecStart = "${pkgs.mpvpaper}/bin/mpvpaper -o 'loop=inf no-audio hwdec=auto' '*' ${wallpaperSrc}";
       Restart = "on-failure";
       RestartSec = 5;
     };
