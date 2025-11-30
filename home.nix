@@ -51,6 +51,8 @@
     codespell
 
     mpv
+
+    write-good
   ];
   home.sessionVariables = {
     EDITOR = "nvim";
