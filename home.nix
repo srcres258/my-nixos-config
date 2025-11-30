@@ -54,6 +54,7 @@
 
     write-good
     ncdu
+    hyperfine
   ];
   home.sessionVariables = {
     EDITOR = "nvim";
