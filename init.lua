@@ -86,6 +86,7 @@ require('catppuccin').setup({
     rainbow_delimiters = true
   }
 })
+vim.cmd("colorscheme catppuccin")
 
 require('lualine').setup({
   options = {
