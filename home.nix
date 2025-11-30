@@ -380,6 +380,22 @@
     enable = true;
   };
 
+  programs.texlive = {
+    enable = true;
+    extraPackages = tpkgs: {
+      inherit (tpkgs)
+        collection-basic
+        collection-latex
+        collection-latexextra
+        collection-fontsrecommended
+        collection-langchinese
+        collection-bibtexextra
+        # collection-science
+        collection-pictures
+        collection-publishers;
+    };
+  };
+
   fonts.fontconfig = {
     defaultFonts = {
       emoji = [ "Noto Color Emoji" ];
