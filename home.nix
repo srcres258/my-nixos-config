@@ -270,7 +270,7 @@
       paths = with pkgs.vimPlugins.nvim-treesitter.builtGrammars; [
         bash c cpp css dockerfile go html java javascript json
         lua nix python regex rust toml typescript vim yaml markdown
-        latex
+        latex make
       ];
     };
   in {
