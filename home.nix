@@ -68,6 +68,8 @@
     eza
 
     kdePackages.okular
+
+    openssl
   ];
   home.sessionVariables = {
     EDITOR = "nvim";
