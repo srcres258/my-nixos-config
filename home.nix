@@ -64,6 +64,8 @@
       requests
       jupyter
     ]))
+
+    eza
   ];
   home.sessionVariables = {
     EDITOR = "nvim";
