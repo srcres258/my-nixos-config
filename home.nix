@@ -53,6 +53,7 @@
     mpv
 
     write-good
+    ncdu
   ];
   home.sessionVariables = {
     EDITOR = "nvim";
