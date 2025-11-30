@@ -56,6 +56,14 @@
     ncdu
     hyperfine
     fd
+
+    (python313.withPackages (ps: with ps; [
+      numpy
+      pandas
+      matplotlib
+      requests
+      jupyter
+    ]))
   ];
   home.sessionVariables = {
     EDITOR = "nvim";
