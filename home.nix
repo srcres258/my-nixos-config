@@ -66,6 +66,8 @@
     ]))
 
     eza
+
+    kdePackages.okular
   ];
   home.sessionVariables = {
     EDITOR = "nvim";
