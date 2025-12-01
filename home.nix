@@ -72,6 +72,13 @@
     openssl
 
     nodejs_24
+
+    ghc
+    cabal-install
+
+    pkgsCross.riscv64.stdenv.cc           # Linux GNU
+    pkgsCross.riscv64-embedded.stdenv.cc  # bare-metal ELF
+    pkgsCross.riscv32-embedded.stdenv.cc
   ];
   home.sessionVariables = {
     EDITOR = "nvim";
@@ -278,7 +285,7 @@
       paths = with pkgs.vimPlugins.nvim-treesitter.builtGrammars; [
         bash c cpp css dockerfile go html java javascript json
         lua nix python regex rust toml typescript vim yaml markdown
-        latex make
+        latex make haskell
       ];
     };
   in {
