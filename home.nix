@@ -70,6 +70,8 @@
     kdePackages.okular
 
     openssl
+
+    nodejs_24
   ];
   home.sessionVariables = {
     EDITOR = "nvim";
@@ -333,17 +335,11 @@
       nvim-ufo
 
       lazy-nvim
-    ]) ++ (with pkgs.vimUtils; [
-      (buildVimPlugin {
-        pname = "fittencode.nvim";
-        version = "master";
-        src = pkgs.fetchFromGitHub {
-          owner = "luozhiya";
-          repo = "fittencode.nvim";
-          rev = "be2e6e8345bb76922fae37012af10c3cc51585b5";
-          hash = "sha256-5uwphoIaDyf4R4ZjZz4IWnaG7E3iPHyztYDbD3twbFA=";
-        };
-      })
+
+      copilot-lua
+      blink-copilot
+      codecompanion-nvim
+      fidget-nvim
     ]);
     extraLuaConfig = (builtins.readFile ./init.lua) + ''
       require('nvim-treesitter.configs').setup {

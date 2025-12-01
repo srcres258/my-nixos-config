@@ -10,7 +10,7 @@ require('lsp-zero').extend_lspconfig({
 })
 
 ---@diagnostic disable-next-line: missing-parameter
-require('lspconfig').lua_ls.setup({
+vim.lsp.config('lua_ls', {
   settings = {
     Lua = {
       runtime = { version = 'LuaJIT' },
@@ -20,11 +20,16 @@ require('lspconfig').lua_ls.setup({
     },
   },
 })
+vim.lsp.config('rust_analyzer', {})
+vim.lsp.config('pyright', {})
+vim.lsp.config('ts_ls', {})
+vim.lsp.config('nil_ls', {})
 
-require('lspconfig').rust_analyzer.setup{}
-require('lspconfig').pyright.setup{}
-require('lspconfig').ts_ls.setup{}
-require('lspconfig').nil_ls.setup{}
+vim.lsp.enable('lua_ls')
+vim.lsp.enable('rust_analyzer')
+vim.lsp.enable('pyright')
+vim.lsp.enable('ts_ls')
+vim.lsp.enable('nil_ls')
 
 local blink = require('blink.cmp')
 
@@ -41,18 +46,70 @@ blink.setup({
   },
 
   sources = {
-    default = {
-      'lsp',
-      'path',
-      'snippets',
-      'buffer',
-      'fittencode'
-    },
+    default = function()
+      local success, node = pcall(vim.treesitter.get_node)
+      if success and node and vim.tbl_contains({ "comment", "line_comment", "block_comment" },
+          node:type()) then
+        return { "buffer" }
+      else
+        return { "lazydev", "copilot", "lsp", "path", "snippets", "buffer" }
+      end
+    end,
 
     providers = {
-      fittencode = {
-        name = "fittencode",
-        module = "fittencode.sources.blink"
+      lazydev = {
+        name = "LazyDev",
+        module = "lazydev.integrations.blink",
+        -- make lazydev completions top priority (see `:h blink.cmp`)
+        score_offset = 95
+      },
+      copilot = {
+        name = "copilot",
+        module = "blink-copilot",
+        score_offset = 100,
+        async = true,
+        opts = {
+          kind_icon = "",
+          kind_hl = "DevIconCopilot",
+        }
+      },
+      path = {
+        score_offset = 95,
+        opts = {
+          get_cwd = function(_)
+            return vim.fn.getcwd()
+          end,
+        }
+      },
+      buffer = {
+        score_offset = 20,
+      },
+      lsp = {
+        -- Default
+        -- Filter text items from the LSP provider, since we have the buffer provider for that
+        transform_items = function(_, items)
+          return vim.tbl_filter(function(item)
+            return item.kind ~= require("blink.cmp.types").CompletionItemKind.Text
+          end, items)
+        end,
+        score_offset = 60,
+        fallbacks = { "buffer" }
+      },
+      -- Hide snippets after trigger character
+      -- Trigger characters are defined by the sources. For example, for Lua, the trigger characters are ., ", '.
+      snippets = {
+        score_offset = 70,
+        should_show_items = function(ctx)
+          return ctx.trigger.initial_kind ~= "trigger_character"
+        end,
+        fallbacks = { "buffer" }
+      },
+      cmdline = {
+        min_keyword_length = 2,
+        -- Ignores cmdline completions when executing shell commands
+        enabled = function()
+          return vim.fn.getcmdtype() ~= ":" or not vim.fn.getcmdline():match("^[%%0-9,'<>%-]*!")
+        end
       }
     }
   },
@@ -61,7 +118,7 @@ blink.setup({
     expand = function(snippet)
       vim.snippet.expand(snippet)
     end
-  },
+  }
 })
 
 require('catppuccin').setup({
@@ -180,12 +237,94 @@ require('noice').setup({
 })
 
 require('codecompanion').setup({
-  log_level = "DEBUG"
-})
+  log_level = "DEBUG",
+  display = {
+    diff = {
+      enabled = true,
+      provider = "mini_diff"
+    }
+  },
+  strategies = {
+    chat = { adapter = "copilot" },
+    inline = { adapter = "copilot" }
+  },
+  opts = {
+    language = "English"
+  }
+});
+(function()
+  local progress = require("fidget.progress")
 
-require('fittencode').setup({
-  completion_mode = 'source'
-})
+  local M = {}
+
+  function M:init()
+    local group = vim.api.nvim_create_augroup("CodeCompanionFidgetHooks", {})
+
+    vim.api.nvim_create_autocmd({ "User" }, {
+      pattern = "CodeCompanionRequestStarted",
+      group = group,
+      callback = function(request)
+      local handle = M:create_progress_handle(request)
+      M:store_progress_handle(request.data.id, handle)
+    end,
+  })
+
+  vim.api.nvim_create_autocmd({ "User" }, {
+    pattern = "CodeCompanionRequestFinished",
+    group = group,
+    callback = function(request)
+      local handle = M:pop_progress_handle(request.data.id)
+      if handle then
+        M:report_exit_status(handle, request)
+        handle:finish()
+      end
+    end,
+  })
+  end
+
+  M.handles = {}
+
+  function M:store_progress_handle(id, handle)
+    M.handles[id] = handle
+  end
+
+  function M:pop_progress_handle(id)
+    local handle = M.handles[id]
+    M.handles[id] = nil
+    return handle
+  end
+
+  function M:create_progress_handle(request)
+    return progress.handle.create({
+      title = " Requesting assistance (" .. request.data.strategy .. ")",
+      message = "In progress...",
+      lsp_client = {
+        name = M:llm_role_title(request.data.adapter),
+      },
+    })
+  end
+
+  function M:llm_role_title(adapter)
+    local parts = {}
+    table.insert(parts, adapter.formatted_name)
+    if adapter.model and adapter.model ~= "" then
+      table.insert(parts, "(" .. adapter.model .. ")")
+    end
+    return table.concat(parts, " ")
+  end
+
+  function M:report_exit_status(handle, request)
+    if request.data.status == "success" then
+      handle.message = "Completed"
+    elseif request.data.status == "error" then
+      handle.message = " Error"
+    else
+      handle.message = "󰜺 Cancelled"
+    end
+  end
+
+  return M
+end)():init()
 
 require('lazydev').setup({
   library = {
@@ -646,6 +785,17 @@ vim.opt.fillchars = {
   vim.keymap.set("n", "zx", "<NOP>", { desc = "Disabled" })
   vim.keymap.set("n", "zX", "<NOP>", { desc = "Disabled" })
 end)()
+
+require('copilot').setup({
+  suggestion = { enabled = false },
+  panel = { enabled = false },
+  filetypes = {
+    markdown = true,
+    help = true
+  }
+})
+
+require('mini.diff').setup({})
 
 vim.opt.list = true
 vim.opt.listchars = { tab = ">-", trail = "-" }
