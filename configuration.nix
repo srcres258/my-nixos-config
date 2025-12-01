@@ -21,6 +21,7 @@
       efiSupport = true;
       useOSProber = true;
       gfxmodeEfi = "1024x768";
+      configurationLimit = 10;
     };
     efi = {
       canTouchEfiVariables = true;
@@ -31,6 +32,12 @@
   boot.initrd.kernelModules = [ "amdgpu" ];
   # Enable cross-compile toolchains by emulation.
   boot.binfmt.emulatedSystems = [ "riscv64-linux" ];
+
+  nix.gc = {
+    automatic = true;
+    dates = "weekly";
+    options = "--delete-older-than 7d";
+  };
 
   networking = {
     hostName = "srcres-computer";
