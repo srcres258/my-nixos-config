@@ -9,6 +9,8 @@
       url = "github:nix-community/home-manager/release-25.11";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+
+    minegrub-theme.url = "github:Lxtharia/minegrub-theme";
   };
 
   outputs = {
@@ -16,6 +18,7 @@
     nixpkgs,
     nixpkgs-unstable,
     home-manager,
+    minegrub-theme,
     ...
   }@inputs: {
     nixosConfigurations = {
@@ -24,6 +27,7 @@
         specialArgs = { inherit inputs; };
         modules = [
           ./configuration.nix
+          inputs.minegrub-theme.nixosModules.default
         ];
       };
     };
