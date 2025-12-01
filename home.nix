@@ -4,7 +4,10 @@
   lib,
   inputs,
   ...
-}: {
+}: let
+  javaPkg = pkgs.javaPackages.compiler.temurin-bin.jdk-21;
+  scalaPkg = pkgs.scala_3;
+in{
   home = rec {
     username = "srcres";
     homeDirectory = "/home/${username}";
@@ -79,10 +82,24 @@
     pkgsCross.riscv64.stdenv.cc           # Linux GNU
     pkgsCross.riscv64-embedded.stdenv.cc  # bare-metal ELF
     pkgsCross.riscv32-embedded.stdenv.cc
-  ];
+
+    # Scala
+    scala-cli
+    sbt
+    mill
+    metals
+    bloop
+    ammonite
+    scalafmt
+    scalafix
+  ] ++ [ javaPkg scalaPkg ];
   home.sessionVariables = {
     EDITOR = "nvim";
     VISUAL = "nvim";
+
+    JAVA_HOME = "${javaPkg}";
+    COURSIER_CACHE = "${config.xdg.cacheHome}/coursier";
+    SBT_OPTS = "-Dsbt.ivy.home=${config.xdg.cacheHome}/ivy2 -Dsbt.global.base=${config.xdg.configHome}/sbt -Dsbt.coursier.home=${config.xdg.cacheHome}/coursier";
   };
 
   xdg.configFile."niri/config.kdl".source = ./config.kdl;
@@ -285,7 +302,7 @@
       paths = with pkgs.vimPlugins.nvim-treesitter.builtGrammars; [
         bash c cpp css dockerfile go html java javascript json
         lua nix python regex rust toml typescript vim yaml markdown
-        latex make haskell
+        latex make haskell scala
       ];
     };
   in {
