@@ -92,6 +92,8 @@ in{
     ammonite
     scalafmt
     scalafix
+
+    verilator
   ] ++ [ javaPkg scalaPkg ];
   home.sessionVariables = {
     EDITOR = "nvim";
@@ -302,7 +304,7 @@ in{
       paths = with pkgs.vimPlugins.nvim-treesitter.builtGrammars; [
         bash c cpp css dockerfile go html java javascript json
         lua nix python regex rust toml typescript vim yaml markdown
-        latex make haskell scala
+        latex make haskell scala systemverilog
       ];
     };
   in {
