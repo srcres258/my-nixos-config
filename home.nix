@@ -402,6 +402,10 @@ in{
 
       vim.opt.rtp:prepend("${treesitter-parsers}")
     '';
+    extraConfig = ''
+      " Disable mappings for left and right arrow keys from plugins.
+      let g:abolish_disable_maps = ['<Left>', '<Right>']
+    '';
   };
 
   programs.lazygit.enable = true;
