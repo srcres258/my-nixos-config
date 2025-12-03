@@ -407,6 +407,9 @@ in{
       let g:dbext_default_CALCULATOR_enable = 0
       let g:loaded_dbext = 1
     '';
+    extraPackages = with pkgs; [
+      sqls # The SQL language server.
+    ];
   };
 
   programs.lazygit.enable = true;

@@ -30,6 +30,7 @@ vim.lsp.enable('rust_analyzer')
 vim.lsp.enable('pyright')
 vim.lsp.enable('ts_ls')
 vim.lsp.enable('nil_ls')
+vim.lsp.enable('sqls')
 
 local blink = require('blink.cmp')
 
