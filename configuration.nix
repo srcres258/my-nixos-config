@@ -106,6 +106,18 @@
     shell = pkgs.fish;
   };
 
+  # These users are added for testing purposes only.
+  # users.users = {
+  #   wangming = {
+  #     isNormalUser = true;
+  #     initialPassword = "123456";
+  #   };
+  #   ligang = {
+  #     isNormalUser = true;
+  #     initialPassword = "123456";
+  #   };
+  # };
+
   # programs.firefox.enable = true;
 
   nix.settings.experimental-features = [ "nix-command" "flakes" ];
