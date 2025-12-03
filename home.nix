@@ -403,8 +403,9 @@ in{
       vim.opt.rtp:prepend("${treesitter-parsers}")
     '';
     extraConfig = ''
-      " Disable mappings for left and right arrow keys from plugins.
-      let g:abolish_disable_maps = ['<Left>', '<Right>']
+      " Disable mappings for left and right arrow keys from plugins for SQL files.
+      let g:dbext_default_CALCULATOR_enable = 0
+      let g:loaded_dbext = 1
     '';
   };
 
