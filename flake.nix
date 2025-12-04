@@ -24,7 +24,10 @@
     nixosConfigurations = {
       srcres-computer = nixpkgs.lib.nixosSystem {
         system = "x86_64-linux";
-        specialArgs = { inherit inputs; };
+        specialArgs = {
+          inherit inputs;
+          srcres-password = builtins.getEnv "SRCRES_PASSWORD";
+        };
         modules = [
           ./configuration.nix
           inputs.minegrub-theme.nixosModules.default

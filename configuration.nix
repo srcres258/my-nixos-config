@@ -7,6 +7,7 @@
   config,
   lib,
   pkgs,
+  srcres-password,
   ...
 }: {
   imports =
@@ -99,7 +100,7 @@
 
   # Define a user account. Don't forget to set a password with ‘passwd’.
   users.users.srcres = {
-    initialPassword = "hhw19731213";
+    initialPassword = srcres-password;
     isNormalUser = true;
     description = "src_resources";
     extraGroups = [ "wheel" "networkmanager" "audio" ]; # Enable ‘sudo’ for the user.
