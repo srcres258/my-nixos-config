@@ -52,7 +52,7 @@
     };
 
     packages.${system} = {
-      ${username} = self.homeCOnfigurations."${username}@${hostname}".activationPackage;
+      ${username} = self.homeConfigurations."${username}@${hostname}".activationPackage;
     };
 
     devShells.${system}."${username}-full" = pkgs.mkShell {
