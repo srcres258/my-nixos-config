@@ -274,6 +274,7 @@ in{
       cursor_trail_start_threshold = 5;
       cursor_trail_color = "none";
     };
+    environment = config.home.sessionVariables;
   };
 
   programs.firefox = {
