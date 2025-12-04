@@ -26,11 +26,6 @@
     hostname = "srcres-computer";
 
     pkgs = nixpkgs.legacyPackages.${system};
-
-    baseDevShell = pkgs.mkShell {
-      buildInputs = [ self.packages.${system}.${username} ];
-      shellHook = ''echo "Home Manager shell for ${username}"'';
-    };
   in {
     nixosConfigurations = {
       srcres-computer = nixpkgs.lib.nixosSystem {
@@ -51,16 +46,27 @@
         inherit pkgs;
         extraSpecialArgs = { inherit inputs; };
         modules = [
-          ./home.nix
+          ./home
         ];
       };
     };
 
     packages.${system} = {
-      ${username} = self.homeConfigurations."${username}@${hostname}".activationPackage;
+      ${username} = (home-manager.lib.homeManagerConfiguration {
+        inherit pkgs;
+        extraSpecialArgs = { inherit inputs; };
+        modules = [
+          ./home/pure.nix
+        ];
+      });
     };
 
-    devShells.${system} = {
+    devShells.${system} = let
+      baseDevShell = pkgs.mkShell {
+        buildInputs = [ self.packages.${system}.${username} ];
+        shellHook = ''echo "Home Manager shell for ${username}"'';
+      };
+    in {
       "${username}-full" = baseDevShell;
       default = baseDevShell;
     };
