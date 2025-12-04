@@ -58,7 +58,7 @@
         modules = [
           ./home/pure.nix
         ];
-      });
+      }).activationPackage;
     };
 
     devShells.${system} = let
