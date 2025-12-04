@@ -20,10 +20,16 @@
     home-manager,
     minegrub-theme,
     ...
-  }@inputs: {
+  }@inputs: let
+    system = "x86_64-linux";
+    username = "srcres";
+    hostname = "srcres-computer";
+
+    pkgs = nixpkgs.legacyPackages.${system};
+  in {
     nixosConfigurations = {
       srcres-computer = nixpkgs.lib.nixosSystem {
-        system = "x86_64-linux";
+        inherit system;
         specialArgs = {
           inherit inputs;
           srcres-password = builtins.getEnv "SRCRES_PASSWORD";
@@ -36,13 +42,22 @@
     };
 
     homeConfigurations = {
-      "srcres@srcres-computer" = home-manager.lib.homeManagerConfiguration {
-        pkgs = nixpkgs.legacyPackages.x86_64-linux;
+      "${username}@${hostname}" = home-manager.lib.homeManagerConfiguration {
+        inherit pkgs;
         extraSpecialArgs = { inherit inputs; };
         modules = [
           ./home.nix
         ];
       };
+    };
+
+    packages.${system} = {
+      ${username} = self.homeCOnfigurations."${username}@${hostname}".activationPackage;
+    };
+
+    devShells.${system}."${username}-full" = pkgs.mkShell {
+      buildInputs = [ self.packages.${system}.${username} ];
+      shellHook = ''echo "Home Manager shell for ${username}"'';
     };
   };
 }
