@@ -60,8 +60,10 @@
       ${username} = self.homeConfigurations."${username}@${hostname}".activationPackage;
     };
 
-    devShells.${system}."${username}-full" = baseDevShell;
-    devShells.${system}.default = baseDevShell;
+    devShells.${system} = {
+      "${username}-full" = baseDevShell;
+      default = baseDevShell;
+    };
   };
 }
 
