@@ -26,6 +26,8 @@ in {
     # Minecraft launchers
     hmcl
     prismlauncher
+
+    gimp
   ];
 
   xdg.configFile."niri/config.kdl".source = ./config.kdl;
