@@ -64,7 +64,14 @@
     devShells.${system} = let
       baseDevShell = pkgs.mkShell {
         buildInputs = [ self.packages.${system}.${username} ];
-        shellHook = ''echo "Home Manager shell for ${username}"'';
+        shellhook = ''
+          if command -v fish >/dev/null 2>&1; then
+            echo "Found fish, switching to fish shell..."
+            exec fish
+          else
+            echo "Fish shell not found, staying in current shell."
+          fi
+        '';
       };
     in {
       "${username}-full" = baseDevShell;

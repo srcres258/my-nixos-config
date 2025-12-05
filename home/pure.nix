@@ -75,8 +75,6 @@ in {
     ammonite
     scalafmt
     scalafix
-
-    verilator
   ] ++ [ javaPkg scalaPkg ];
   home.sessionVariables = {
     EDITOR = "nvim";
