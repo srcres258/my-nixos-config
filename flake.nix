@@ -64,7 +64,7 @@
     devShells.${system} = let
       baseDevShell = pkgs.mkShell {
         buildInputs = [ self.packages.${system}.${username} ];
-        shellhook = ''
+        shellHook = ''
           if command -v fish >/dev/null 2>&1; then
             echo "Found fish, switching to fish shell..."
             exec fish
