@@ -52,13 +52,18 @@
     };
 
     packages.${system} = {
-      ${username} = (home-manager.lib.homeManagerConfiguration {
-        inherit pkgs;
-        extraSpecialArgs = { inherit inputs; };
-        modules = [
-          ./home/pure.nix
+      ${username} = pkgs.buildEnv {
+        name = "${username}-env";
+        paths = [
+          (home-manager.lib.homeManagerConfiguration {
+            inherit pkgs;
+            extraSpecialArgs = { inherit inputs; };
+            modules = [
+              ./home/pure.nix
+            ];
+          }).activationPackage
         ];
-      }).activationPackage;
+      };
     };
 
     devShells.${system} = let
