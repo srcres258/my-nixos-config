@@ -75,6 +75,23 @@ in {
     ammonite
     scalafmt
     scalafix
+
+    (let
+      base = pkgs.appimageTools.defaultFhsEnvArgs;
+    in pkgs.buildFHSEnv (base // {
+      name = "fhs";
+      targetPkgs = pkgs:
+        (base.targetPkgs pkgs) ++ (with pkgs; [
+          pkg-config
+          ncurses
+          SDL2
+
+          # ... add more dependencies here ...
+        ]);
+      profile = "export FHS=1";
+      runScript = "bash";
+      extraOutputsToInstall = ["dev"];
+    }))
   ] ++ [ javaPkg scalaPkg ];
   home.sessionVariables = {
     EDITOR = "nvim";
