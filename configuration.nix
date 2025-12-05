@@ -201,6 +201,7 @@
     gcc
     clang
     gnumake
+    ccache
 
     # Java
     jetbrains.jdk
