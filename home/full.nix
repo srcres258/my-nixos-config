@@ -26,6 +26,7 @@ in {
     # Minecraft launchers
     hmcl
     prismlauncher
+    portablemc
 
     gimp
   ];
