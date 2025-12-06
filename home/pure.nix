@@ -92,6 +92,8 @@ in {
       runScript = "bash";
       extraOutputsToInstall = ["dev"];
     }))
+
+    gdb
   ] ++ [ javaPkg scalaPkg ];
   home.sessionVariables = {
     EDITOR = "nvim";
