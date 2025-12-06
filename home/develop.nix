@@ -10,7 +10,7 @@
   programs.fish = {
     enable = true;
 
-    interactiveShellInit = ''
+    shellInitLast = ''
       function fish_prompt
         # 示例：带 git 分支的提示符
         set -l cwd (prompt_pwd)
