@@ -11,7 +11,6 @@
     enable = true;
 
     interactiveShellInit = ''
-      echo "11111111111111111111111"
       function fish_prompt
         # 示例：带 git 分支的提示符
         set -l cwd (prompt_pwd)
