@@ -66,7 +66,7 @@ in {
     pkgsCross.riscv64-embedded.stdenv.cc  # bare-metal ELF
     pkgsCross.riscv32-embedded.stdenv.cc
 
-    # Scala
+    # Scala language
     scala-cli
     sbt
     mill
@@ -94,6 +94,9 @@ in {
     }))
 
     gdb
+
+    # Go language
+    gopls
   ] ++ [ javaPkg scalaPkg ];
   home.sessionVariables = {
     EDITOR = "nvim";
@@ -285,6 +288,8 @@ in {
     enable = true;
     nix-direnv.enable = true;
   };
+
+  programs.go.enable = true;
 
   fonts.fontconfig = {
     defaultFonts = {
