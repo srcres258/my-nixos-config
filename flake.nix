@@ -59,7 +59,7 @@
             inherit pkgs;
             extraSpecialArgs = { inherit inputs; };
             modules = [
-              ./home/pure.nix
+              ./home/develop.nix
             ];
           }).activationPackage
         ];
