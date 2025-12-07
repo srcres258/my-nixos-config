@@ -53,6 +53,7 @@ in {
           "memory"
           "disk"
           "temperature"
+          "keyboard-state"
         ];
         modules-center = [
           "hyprland/workspaces"
@@ -103,6 +104,19 @@ in {
           format-icons = [
             "Temp"
           ];
+        };
+        keyboard-state = {
+          interval = 10;
+          capslock = true;
+          numlock = false;
+          scrolllock = false;
+
+          format-capslock-on = "CapsLock ON";
+          format-capslock-off = "CapsLock OFF";
+
+          tooltip = true;
+          tooltip-format-capslock-on = "CapsLock is ON";
+          tooltip-format-capslock-off = "CapsLock is OFF";
         };
 
         # === Modules Center ===
