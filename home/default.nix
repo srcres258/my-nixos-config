@@ -1,10 +1,10 @@
 {
-  config,
-  pkgs,
-  lib,
-  inputs,
-  ...
+    config,
+        pkgs,
+        lib,
+        inputs,
+        ...
 }: {
-  imports = [ ./pure.nix ./system.nix ];
+    imports = [ ./pure.nix ./system.nix ];
 }
 
