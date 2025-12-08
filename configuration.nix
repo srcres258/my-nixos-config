@@ -4,15 +4,16 @@
 
 {
     inputs,
-        config,
-        lib,
-        pkgs,
-        srcres-password,
-        ...
+    config,
+    lib,
+    pkgs,
+    pkgs-xddxdd,
+    srcres-password,
+    ...
 }: {
     imports =
         [ # Include the results of the hardware scan.
-        ./hardware-configuration.nix
+            ./hardware-configuration.nix
         ];
 
     boot.loader = {
@@ -156,67 +157,71 @@
         home-manager
 
 # Use Niri as the desktop environment.
-            niri
-            xwayland-satellite
+        niri
+        xwayland-satellite
 
-            vim # Do not forget to add an editor to edit configuration.nix! The Nano editor is also installed by default.
-            wget
-            git
-            fish
+        vim # Do not forget to add an editor to edit configuration.nix! The Nano editor is also installed by default.
+        wget
+        git
+        fish
 
-            tree
-            pstree
+        tree
+        pstree
 
-            zip
-            xz
-            unzip
-            p7zip
+        zip
+        xz
+        unzip
+        p7zip
 
-            cowsay
-            file
-            which
-            tree
-            gnused
-            gnutar
-            gawk
-            zstd
-            gnupg
+        cowsay
+        file
+        which
+        tree
+        gnused
+        gnutar
+        gawk
+        zstd
+        gnupg
 
-            btop
+        btop
 
-            strace
-            ltrace
-            lsof
+        strace
+        ltrace
+        lsof
 
-            sysstat
-            lm_sensors
-            ethtool
-            pciutils
-            usbutils
+        sysstat
+        lm_sensors
+        ethtool
+        pciutils
+        usbutils
 
-            wireplumber
-            brightnessctl
+        wireplumber
+        brightnessctl
 
-            amdgpu_top
-            mesa
+        amdgpu_top
+        mesa
 
-            python312
+        python312
 
-            bluez-experimental
+        bluez-experimental
 
-            gcc
-            clang
-            gnumake
-            ccache
+        gcc
+        clang
+        gnumake
+        ccache
 
 # Java
-            jetbrains.jdk
-            javaPackages.compiler.temurin-bin.jdk-21
+        jetbrains.jdk
+        javaPackages.compiler.temurin-bin.jdk-21
 
-            libmtp
+        libmtp
 
-            dig
-            ];
+        dig
+
+# qBittorrent
+        qbittorrent-enhanced
+        pkgs-xddxdd.peerbanhelper
+    ];
     environment.variables.EDITOR = "vim";
 
     programs.fish.enable = true;

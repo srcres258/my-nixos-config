@@ -29,8 +29,6 @@ in {
         portablemc
 
         gimp
-
-        qbittorrent
     ];
 
     xdg.configFile."niri/config.kdl".source = ./config.kdl;

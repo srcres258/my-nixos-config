@@ -4,6 +4,10 @@
     inputs = {
         nixpkgs.url = "github:NixOS/nixpkgs/nixos-25.11";
         nixpkgs-unstable.url = "github:NixOS/nixpkgs/nixos-unstable";
+        nur = {
+            url = "github:nix-community/NUR";
+            inputs.nixpkgs.follows = "nixpkgs";
+        };
 
         home-manager = {
             url = "github:nix-community/home-manager/release-25.11";
@@ -11,32 +15,45 @@
         };
 
         minegrub-theme.url = "github:Lxtharia/minegrub-theme";
+
+        nur-xddxdd = {
+            url = "github:xddxdd/nur-packages";
+            inputs.nixpkgs.follows = "nixpkgs";
+        };
     };
 
     outputs = {
         self,
         nixpkgs,
         nixpkgs-unstable,
+        nur,
         home-manager,
         minegrub-theme,
+        nur-xddxdd,
         ...
     }@inputs: let
-    system = "x86_64-linux";
-    username = "srcres";
-    hostname = "srcres-computer";
+        system = "x86_64-linux";
+        username = "srcres";
+        hostname = "srcres-computer";
 
-    pkgs = nixpkgs.legacyPackages.${system};
+        pkgs = nixpkgs.legacyPackages.${system};
+        pkgs-xddxdd = nur-xddxdd.legacyPackages.${system};
     in {
         nixosConfigurations = {
             srcres-computer = nixpkgs.lib.nixosSystem {
                 inherit system;
                 specialArgs = {
-                    inherit inputs;
+                    inherit inputs pkgs-xddxdd;
                     srcres-password = builtins.getEnv "SRCRES_PASSWORD";
                 };
                 modules = [
+                    inputs.nur-xddxdd.nixosModules.setupOverlay
+                    inputs.nur-xddxdd.nixosModules.qemu-user-static-binfmt
+                    inputs.nur-xddxdd.nixosModules.nix-cache-attic
+
                     ./configuration.nix
-                        inputs.minegrub-theme.nixosModules.default
+
+                    inputs.minegrub-theme.nixosModules.default
                 ];
             };
         };
@@ -56,12 +73,12 @@
                 name = "${username}-env";
                 paths = [
                     (home-manager.lib.homeManagerConfiguration {
-                     inherit pkgs;
-                     extraSpecialArgs = { inherit inputs; };
-                     modules = [
-                     ./home/develop.nix
-                     ];
-                     }).activationPackage
+                        inherit pkgs;
+                        extraSpecialArgs = { inherit inputs; };
+                        modules = [
+                            ./home/develop.nix
+                        ];
+                    }).activationPackage
                 ];
             };
         };
@@ -74,6 +91,20 @@
             "${username}-full" = baseDevShell;
             default = baseDevShell;
         };
+    };
+
+    nixConfig = {
+        extra-substituters = [
+            "https://nix-community.cachix.org"
+            "https://cache.nixos.org/"
+            "https://attic.xuyh0120.win/lantian"
+        ];
+        extra-trusted-public-keys = [
+            "nix-community.cachix.org-1:mB9FSh9qf2dCimDSUo8Zy7bkq5CX+/rkCWyvRCYg3Fs="
+            "nur-pkgs.cachix.org-1:0R3PmV8TEQ7nA8wxo4LLs5rY5fI1vB4Y02i9YB8g8eA="
+            "cache.garnix.io:CTFPyKSLcx5RMJKfLo5EEPUObbA78b0YQ2DTCJXqr9g="
+            "lantian:EeAUQ+W+6r7EtwnmYjeVwx5kOGEBpjlBfPlzGlTNvHc="
+        ];
     };
 }
 
