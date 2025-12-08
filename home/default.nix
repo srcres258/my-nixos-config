@@ -1,9 +1,9 @@
 {
     config,
-        pkgs,
-        lib,
-        inputs,
-        ...
+    pkgs,
+    lib,
+    inputs,
+    ...
 }: {
     imports = [ ./pure.nix ./system.nix ];
 }
