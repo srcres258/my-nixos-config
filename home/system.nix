@@ -1,35 +1,37 @@
 {
     config,
-        pkgs,
-        lib,
-        inputs,
-        ...
+    pkgs,
+    lib,
+    inputs,
+    ...
 }: let
-javaPkg = pkgs.javaPackages.compiler.temurin-bin.jdk-21;
-scalaPkg = pkgs.scala_3;
+    javaPkg = pkgs.javaPackages.compiler.temurin-bin.jdk-21;
+    scalaPkg = pkgs.scala_3;
 in {
     home.packages = with pkgs; [
         pavucontrol
-            kdePackages.dolphin
-            kdePackages.kate
+        kdePackages.dolphin
+        kdePackages.kate
 
-            bilibili
-            mission-center
-            wpsoffice-cn
+        bilibili
+        mission-center
+        wpsoffice-cn
 
-            vlc
+        vlc
 
-            telegram-desktop
-            discord
-            wechat
+        telegram-desktop
+        discord
+        wechat
 
 # Minecraft launchers
-            hmcl
-            prismlauncher
-            portablemc
+        hmcl
+        prismlauncher
+        portablemc
 
-            gimp
-            ];
+        gimp
+
+        qbittorrent
+    ];
 
     xdg.configFile."niri/config.kdl".source = ./config.kdl;
 
@@ -186,7 +188,7 @@ in {
                 "hyprland/language" = {
                     format = "{} Lang";
                     on-click = ""; # TODO
-                        format-es = "ESP";
+                    format-es = "ESP";
                     format-en = "ENG";
                     format-zh = "CHI";
                 };
@@ -209,20 +211,20 @@ in {
         fcitx5 = {
             addons = with pkgs; [
                 qt6Packages.fcitx5-chinese-addons
-                    fcitx5-mozc
-                    fcitx5-gtk
-                    fcitx5-material-color
-                    fcitx5-pinyin-moegirl
-                    fcitx5-pinyin-zhwiki
+                fcitx5-mozc
+                fcitx5-gtk
+                fcitx5-material-color
+                fcitx5-pinyin-moegirl
+                fcitx5-pinyin-zhwiki
             ];
         };
     };
 
     systemd.user.services."mpvpaper" = let
         wallpaperSrc = ./wallpapers/bg.mp4;
-    mpvOptions = [
-        "loop=inf no-audio hwdec=vaapi vaapi-device=/dev/dri/renderD128"
-    ];
+        mpvOptions = [
+            "loop=inf no-audio hwdec=vaapi vaapi-device=/dev/dri/renderD128"
+        ];
     in {
         Unit = {
             Description = "mpvpaper dynamic wallpaper";
