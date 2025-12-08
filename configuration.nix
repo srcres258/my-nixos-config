@@ -39,6 +39,12 @@
     boot.initrd.kernelModules = [ "amdgpu" ];
 # Enable cross-compile toolchains by emulation.
     boot.binfmt.emulatedSystems = [ "riscv64-linux" ];
+# Enable NTFS filesystem support.
+    boot.supportedFilesystems = [ "ntfs" ];
+
+# Allow normal users to mount NTFS filesystems.
+    security.polkit.enable = true;
+    services.udisks2.enable = true;
 
     nix.gc = {
         automatic = true;
