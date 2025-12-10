@@ -7,7 +7,6 @@
     config,
     lib,
     pkgs,
-    pkgs-xddxdd,
     srcres-password,
     ...
 }: {
@@ -220,7 +219,6 @@
 
 # qBittorrent
         qbittorrent-enhanced
-        pkgs-xddxdd.peerbanhelper
 
         jq
     ];
