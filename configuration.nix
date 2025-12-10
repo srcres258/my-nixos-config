@@ -221,6 +221,8 @@
 # qBittorrent
         qbittorrent-enhanced
         pkgs-xddxdd.peerbanhelper
+
+        jq
     ];
     environment.variables.EDITOR = "vim";
 
