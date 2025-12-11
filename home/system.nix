@@ -30,6 +30,9 @@ in {
         portablemc
 
         gimp
+
+# JetBrains IDEs
+        jetbrains.idea-ultimate
     ];
 
     xdg.configFile."niri/config.kdl".source = ./config.kdl;
