@@ -159,17 +159,6 @@ in {
                 latex make haskell scala systemverilog sql fish
             ];
         };
-
-        nvim-metals = pkgs.vimUtils.buildVimPlugin {
-            pname = "nvim-metals";
-            version = "2025-12";
-            src = pkgs.fetchFromGitHub {
-                owner = "scalameta";
-                repo = "nvim-metals";
-                rev = "40f7b9ea6ded898319136f4d6a94da9487584309";
-                sha256 = "sha256-PcKQMNtPDaza3CDBhdz93pQ9nYSPm8tc8vVWiE0z3Zo=";
-            };
-        };
     in {
         enable = true;
         plugins = (with pkgs.vimPlugins; [
@@ -231,13 +220,7 @@ in {
             fidget-nvim
 
             haskell-tools-nvim
-
-            cmp-nvim-lsp
-            cmp-buffer
-            cmp-path
-            luasnip
-            cmp_luasnip
-        ]) ++ [ nvim-metals ];
+        ]);
         extraLuaConfig = (builtins.readFile ./init.lua) + ''
             require('nvim-treesitter.configs').setup {
                 ensure_installed = {},
