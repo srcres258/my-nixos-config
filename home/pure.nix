@@ -76,6 +76,7 @@ in {
         ammonite
         scalafmt
         scalafix
+        metals
 
         (let
              base = pkgs.appimageTools.defaultFhsEnvArgs;
@@ -219,6 +220,8 @@ in {
             fidget-nvim
 
             haskell-tools-nvim
+
+            nvim-metals
         ]);
         extraLuaConfig = (builtins.readFile ./init.lua) + ''
             require('nvim-treesitter.configs').setup {
