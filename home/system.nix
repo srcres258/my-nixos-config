@@ -12,6 +12,7 @@ in {
         pavucontrol
         kdePackages.dolphin
         kdePackages.kate
+        kdePackages.okular
 
         bilibili
         mission-center
