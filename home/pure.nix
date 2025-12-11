@@ -61,6 +61,7 @@ in {
 
         ghc
         cabal-install
+        # haskellPackages.hls # TODO: Uncomment this when the package is not broken in nixpkgs.
 
         pkgsCross.riscv64.stdenv.cc           # Linux GNU
         pkgsCross.riscv64-embedded.stdenv.cc  # bare-metal ELF
@@ -216,6 +217,8 @@ in {
             blink-copilot
             codecompanion-nvim
             fidget-nvim
+
+            haskell-tools-nvim
         ]);
         extraLuaConfig = (builtins.readFile ./init.lua) + ''
             require('nvim-treesitter.configs').setup {

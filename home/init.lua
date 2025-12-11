@@ -32,6 +32,7 @@ vim.lsp.enable('ts_ls')
 vim.lsp.enable('nil_ls')
 vim.lsp.enable('sqls')
 vim.lsp.enable('gopls')
+vim.lsp.enable('hls')
 
 local blink = require('blink.cmp')
 
