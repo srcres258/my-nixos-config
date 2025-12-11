@@ -800,29 +800,6 @@ require('copilot').setup({
 
 require('mini.diff').setup({})
 
-local metals_config = require("metals").bare_config()
-
-metals_config.settings = {
-    showImplicitArguments = true,
-    showImplicitConversions = true,
-    showInferredType = true,
-    excludedPackages = {
-        "akka.actor.typed.javadsl",
-        "com.github.swagger.akka.javadsl"
-    }
-}
-
-metals_config.init_options.statusBarProvider = "off"
-metals_config.init_options.isHttpEnabled = true
-
-vim.api.nvim_create_autocmd("FileType", {
-    pattern = { "scala", "sbt", "java" },
-    callback = function()
-        require("metals").initialize_or_attach(metals_config)
-    end,
-    group = vim.api.nvim_create_augroup("nvim-metals", { clear = true })
-})
-
 vim.opt.list = true
 vim.opt.listchars = { tab = ">-", trail = "-" }
 

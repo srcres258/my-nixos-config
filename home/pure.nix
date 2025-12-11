@@ -71,12 +71,10 @@ in {
         scala-cli
         sbt
         mill
-        metals
         bloop
         ammonite
         scalafmt
         scalafix
-        metals
 
         (let
              base = pkgs.appimageTools.defaultFhsEnvArgs;
@@ -108,6 +106,8 @@ in {
         COURSIER_CACHE = "${config.xdg.cacheHome}/coursier";
         SBT_OPTS = "-Dsbt.ivy.home=${config.xdg.cacheHome}/ivy2 -Dsbt.global.base=${config.xdg.configHome}/sbt -Dsbt.coursier.home=${config.xdg.cacheHome}/coursier";
     };
+    xdg.enable = true;
+    xdg.cacheHome = builtins.toPath "/home/${config.home.username}/.cache";
 
     programs.kitty = {
         enable = true;
@@ -158,6 +158,17 @@ in {
                 lua nix python regex rust toml typescript vim yaml markdown
                 latex make haskell scala systemverilog sql fish
             ];
+        };
+
+        nvim-metals = pkgs.vimUtils.buildVimPlugin {
+            pname = "nvim-metals";
+            version = "2025-12";
+            src = pkgs.fetchFromGitHub {
+                owner = "scalameta";
+                repo = "nvim-metals";
+                rev = "40f7b9ea6ded898319136f4d6a94da9487584309";
+                sha256 = "sha256-PcKQMNtPDaza3CDBhdz93pQ9nYSPm8tc8vVWiE0z3Zo=";
+            };
         };
     in {
         enable = true;
@@ -221,8 +232,12 @@ in {
 
             haskell-tools-nvim
 
-            nvim-metals
-        ]);
+            cmp-nvim-lsp
+            cmp-buffer
+            cmp-path
+            luasnip
+            cmp_luasnip
+        ]) ++ [ nvim-metals ];
         extraLuaConfig = (builtins.readFile ./init.lua) + ''
             require('nvim-treesitter.configs').setup {
                 ensure_installed = {},
@@ -265,6 +280,9 @@ in {
         '';
         extraPackages = with pkgs; [
             sqls # The SQL language server.
+            metals
+            coursier
+            jdk17
         ];
     };
 
