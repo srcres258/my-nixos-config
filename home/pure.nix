@@ -140,11 +140,6 @@ in {
         };
     };
 
-    programs.vscode = {
-        enable = true;
-# TODO
-    };
-
     programs.yazi = {
         enable = true;
 # TODO

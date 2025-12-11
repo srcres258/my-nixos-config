@@ -135,7 +135,28 @@
         "minegrub-theme": "minegrub-theme",
         "nixpkgs": "nixpkgs_2",
         "nixpkgs-unstable": "nixpkgs-unstable",
-        "nur": "nur"
+        "nur": "nur",
+        "vscode-extensions": "vscode-extensions"
+      }
+    },
+    "vscode-extensions": {
+      "inputs": {
+        "nixpkgs": [
+          "nixpkgs"
+        ]
+      },
+      "locked": {
+        "lastModified": 1765418662,
+        "narHash": "sha256-8SSYagIUn+m9CKUYddq3DN1xkh04KCO0itB/LMgEgpc=",
+        "owner": "nix-community",
+        "repo": "nix-vscode-extensions",
+        "rev": "0f6679daa3f5bc2b09827b67f49caf0ac8e3a4c8",
+        "type": "github"
+      },
+      "original": {
+        "owner": "nix-community",
+        "repo": "nix-vscode-extensions",
+        "type": "github"
       }
     }
   },

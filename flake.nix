@@ -15,6 +15,11 @@
         };
 
         minegrub-theme.url = "github:Lxtharia/minegrub-theme";
+
+        vscode-extensions = {
+            url = "github:nix-community/nix-vscode-extensions";
+            inputs.nixpkgs.follows = "nixpkgs";
+        };
     };
 
     outputs = {
@@ -24,6 +29,7 @@
         nur,
         home-manager,
         minegrub-theme,
+        vscode-extensions,
         ...
     }@inputs: let
         system = "x86_64-linux";

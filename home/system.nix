@@ -7,7 +7,11 @@
 }: let
     javaPkg = pkgs.javaPackages.compiler.temurin-bin.jdk-21;
     scalaPkg = pkgs.scala_3;
+
+    vscode-ext = pkgs.nix-vscode-extensions;
 in {
+    nixpkgs.overlays = [ inputs.vscode-extensions.overlays.default ];
+
     home.packages = with pkgs; [
         pavucontrol
         kdePackages.dolphin
@@ -205,6 +209,62 @@ in {
 
     programs.mpvpaper = {
         enable = true;
+    };
+
+    programs.vscode = {
+        enable = true;
+        package = pkgs.vscode;
+
+        mutableExtensionsDir = true;
+
+        profiles = {
+            default = {
+                extensions = with vscode-ext.vscode-marketplace; [
+                    ms-ceintl.vscode-language-pack-zh-hans
+
+                    katsute.code-background
+
+                    # Copilot
+                    github.copilot
+                    github.copilot-chat
+
+                    # C / C++
+                    ms-vscode.cpptools
+                    ms-vscode.cmake-tools
+
+                    # Scala
+                    scala-lang.scala
+                    scala-lang.scala-snippets
+                    scalameta.metals
+
+                    # SystemVerilog / Verilog / VHDL
+                    mshr-h.veriloghdl
+
+                    # Nix
+                    jnoortheen.nix-ide
+
+                    # Haskell
+                    haskell.haskell
+                ];
+
+                userSettings = {
+                    "editor.fontSize" = 15;
+                    "nix.enableLanguageServer" = true;
+
+                    "files.autoGuessEncoding" = true;
+                    "editor.cursorSmoothCaretAnimation" = true;
+                    "editor.smoothScrolling" = true;
+                    "editor.cursorBlinking" = "smooth";
+                    "editor.mouseWheelZoom" = false;
+                    "editor.wordWrap" = "on";
+                    "editor.suggest.snippetsPreventQuickSuggestions" = false;
+                    "editor.acceptSuggestionOnEnter" = "smart";
+                    "editor.suggestSelection" = "recentlyUsed";
+                    "window.dialogStyle" = "custom";
+                    "debug.showBreakpointsInOverviewRuler" = true;
+                };
+            };
+        };
     };
 
     i18n.inputMethod = {
