@@ -213,7 +213,7 @@ in {
 
     programs.vscode = {
         enable = true;
-        package = pkgs.vscode;
+        package = pkgs.vscode.fhs;
 
         mutableExtensionsDir = true;
 
@@ -222,7 +222,7 @@ in {
                 extensions = with vscode-ext.vscode-marketplace; [
                     ms-ceintl.vscode-language-pack-zh-hans
 
-                    katsute.code-background
+                    shalldie.background
 
                     # Copilot
                     github.copilot
@@ -247,7 +247,9 @@ in {
                     haskell.haskell
                 ];
 
-                userSettings = {
+                userSettings = let
+                    backgroundPicSrc = ./vscode-background.jpg;
+                in {
                     "editor.fontSize" = 15;
                     "nix.enableLanguageServer" = true;
 
@@ -262,6 +264,25 @@ in {
                     "editor.suggestSelection" = "recentlyUsed";
                     "window.dialogStyle" = "custom";
                     "debug.showBreakpointsInOverviewRuler" = true;
+
+                    "background.enabled" = true;
+                    "background.useDefault" = false;
+                    "background.images" = [
+                        "${backgroundPicSrc}"
+                    ];
+                    "background.style" = {
+                        content = "''";
+                        pointer-events = "none";
+                        position = "absolute";
+                        z-index = "-1";
+                        top = "0";
+                        left = "0";
+                        height = "100%";
+                        width = "100%";
+                        background-repeat = "no-repeat";
+                        background-size = "cover";
+                        opacity = 0.15;
+                    };
                 };
             };
         };
