@@ -222,7 +222,7 @@ in {
                 extensions = with vscode-ext.vscode-marketplace; [
                     ms-ceintl.vscode-language-pack-zh-hans
 
-                    shalldie.background
+                    be5invis.vscode-custom-css
 
                     # Copilot
                     github.copilot
@@ -265,25 +265,16 @@ in {
                     "window.dialogStyle" = "custom";
                     "debug.showBreakpointsInOverviewRuler" = true;
 
-                    "background.enabled" = true;
-                    "background.editor" = {
-                        style = {
-                            content = "''";
-                            pointer-events = "none";
-                            position = "absolute";
-                            z-index = "-1";
-                            top = "0";
-                            left = "0";
-                            height = "100%";
-                            width = "100%";
-                            background-repeat = "no-repeat";
-                            background-size = "cover";
-                            opacity = 0.15;
-                        };
-                        images = [
-                            "${backgroundPicSrc}"
-                        ];
-                    };
+                    "vscode_custom_css.imports" = let
+                        bgImagePath = "${backgroundPicSrc}";
+                        originalCss = builtins.readFile ./custom-vscode.css;
+                        processedCss = builtins.replaceStrings [ "{{BACKGROUND_IMAGE}}" ] [ bgImagePath ] originalCss;
+                        customCssFile = pkgs.writeText "custom-vscode.css" processedCss;
+                    in [
+                        "${customCssFile}"
+                    ];
+                    "vscode_custom_css.policy" = true;
+                    "vscode_custom_css.verbose" = true;
                 };
             };
         };

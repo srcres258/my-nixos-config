@@ -1,0 +1,7 @@
+body, .monaco-workbench {
+  background-image: url('{{BACKGROUND_IMAGE}}');
+  background-size: cover;
+  background-repeat: no-repeat;
+  opacity: 0.5;
+}
+
