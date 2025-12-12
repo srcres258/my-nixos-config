@@ -247,6 +247,12 @@
 #   enableSSHSupport = true;
 # };
 
+    programs.gnupg.agent = {
+        enable = true;
+        enableSSHSupport = true;
+        pinentryPackage = pkgs.pinentry-qt;
+    };
+
 # List services that you want to enable:
 
 # Enable the OpenSSH daemon.
