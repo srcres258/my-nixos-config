@@ -266,22 +266,23 @@ in {
                     "debug.showBreakpointsInOverviewRuler" = true;
 
                     "background.enabled" = true;
-                    "background.useDefault" = false;
-                    "background.images" = [
-                        "${backgroundPicSrc}"
-                    ];
-                    "background.style" = {
-                        content = "''";
-                        pointer-events = "none";
-                        position = "absolute";
-                        z-index = "-1";
-                        top = "0";
-                        left = "0";
-                        height = "100%";
-                        width = "100%";
-                        background-repeat = "no-repeat";
-                        background-size = "cover";
-                        opacity = 0.15;
+                    "background.editor" = {
+                        style = {
+                            content = "''";
+                            pointer-events = "none";
+                            position = "absolute";
+                            z-index = "-1";
+                            top = "0";
+                            left = "0";
+                            height = "100%";
+                            width = "100%";
+                            background-repeat = "no-repeat";
+                            background-size = "cover";
+                            opacity = 0.15;
+                        };
+                        images = [
+                            "${backgroundPicSrc}"
+                        ];
                     };
                 };
             };
