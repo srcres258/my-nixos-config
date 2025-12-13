@@ -10,7 +10,20 @@
 
     vscode-ext = pkgs.nix-vscode-extensions;
 in {
-    nixpkgs.overlays = [ inputs.vscode-extensions.overlays.default ];
+    nixpkgs.config.allowUnfree = true;
+    nixpkgs.overlays = [
+        inputs.vscode-extensions.overlays.default
+
+        (final: prev: {
+            nur = {
+                repos = {
+                    srcres258 = import inputs.my-nur {
+                        pkgs = final;
+                    };
+                };
+            };
+         })
+    ];
 
     home.packages = with pkgs; [
         pavucontrol
@@ -37,6 +50,8 @@ in {
 
 # JetBrains IDEs
         jetbrains.idea-ultimate
+
+        pkgs.nur.repos.srcres258.lceda-pro
     ];
 
     xdg.configFile."niri/config.kdl".source = ./config.kdl;

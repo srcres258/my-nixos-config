@@ -20,6 +20,11 @@
             url = "github:nix-community/nix-vscode-extensions";
             inputs.nixpkgs.follows = "nixpkgs";
         };
+
+        my-nur = {
+            url = "github:srcres258/nur-packages";
+            inputs.nixpkgs.follows = "nixpkgs";
+        };
     };
 
     outputs = {
@@ -30,6 +35,7 @@
         home-manager,
         minegrub-theme,
         vscode-extensions,
+        my-nur,
         ...
     }@inputs: let
         system = "x86_64-linux";

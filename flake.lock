@@ -60,6 +60,26 @@
         "type": "github"
       }
     },
+    "my-nur": {
+      "inputs": {
+        "nixpkgs": [
+          "nixpkgs"
+        ]
+      },
+      "locked": {
+        "lastModified": 1765637273,
+        "narHash": "sha256-/l5N6QZ94O0Hd+OewqaGEZPqiXLDKJyTax8fRdQg5G4=",
+        "owner": "srcres258",
+        "repo": "nur-packages",
+        "rev": "7af41f620c8759d97b111c8ca99dd850f9d09f49",
+        "type": "github"
+      },
+      "original": {
+        "owner": "srcres258",
+        "repo": "nur-packages",
+        "type": "github"
+      }
+    },
     "nixpkgs": {
       "locked": {
         "lastModified": 1689850295,
@@ -133,6 +153,7 @@
       "inputs": {
         "home-manager": "home-manager",
         "minegrub-theme": "minegrub-theme",
+        "my-nur": "my-nur",
         "nixpkgs": "nixpkgs_2",
         "nixpkgs-unstable": "nixpkgs-unstable",
         "nur": "nur",
