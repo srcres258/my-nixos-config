@@ -93,17 +93,5 @@
             default = baseDevShell;
         };
     };
-
-    # nixConfig = {
-    #     extra-substituters = [
-    #         "https://nix-community.cachix.org/"
-    #         "https://cache.nixos.org/"
-    #     ];
-    #     extra-trusted-public-keys = [
-    #         "nix-community.cachix.org-1:mB9FSh9qf2dCimDSUo8Zy7bkq5CX+/rkCWyvRCYg3Fs="
-    #         "nur-pkgs.cachix.org-1:0R3PmV8TEQ7nA8wxo4LLs5rY5fI1vB4Y02i9YB8g8eA="
-    #         "cache.garnix.io:CTFPyKSLcx5RMJKfLo5EEPUObbA78b0YQ2DTCJXqr9g="
-    #     ];
-    # };
 }
 

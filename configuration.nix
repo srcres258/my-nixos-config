@@ -125,30 +125,7 @@
 #   };
 # };
 
-# programs.firefox.enable = true;
-
     nix.settings.experimental-features = [ "nix-command" "flakes" ];
-
-    /*nixpkgs = {
-      overlays = [
-      (final: _prev: {
-      unstable = import inputs.nixpkgs-unstable {
-      system = final.system;
-      services.hardware.deepcool-digital-linux = {
-      enable = true;
-      extraArgs = [
-      "--pid 4"
-      "--update 500"
-      "--alarm"
-      ];
-      };
-      };
-      })
-      ];
-      config = {
-      allowUnfree = true;
-      };
-      };*/
 
 # List packages installed in system profile.
 # You can use https://search.nixos.org/ to find more packages (and options).
