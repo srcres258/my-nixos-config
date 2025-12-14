@@ -40,12 +40,11 @@
     }@inputs: let
         system = "x86_64-linux";
         username = "srcres";
-        hostname = "srcres-computer";
 
         pkgs = nixpkgs.legacyPackages.${system};
     in {
         nixosConfigurations = {
-            srcres-computer = nixpkgs.lib.nixosSystem {
+            srcres-desktop = nixpkgs.lib.nixosSystem {
                 inherit system;
                 specialArgs = {
                     inherit inputs;
@@ -60,7 +59,7 @@
         };
 
         homeConfigurations = {
-            "${username}@${hostname}" = home-manager.lib.homeManagerConfiguration {
+            "${username}@srcres-desktop" = home-manager.lib.homeManagerConfiguration {
                 inherit pkgs;
                 extraSpecialArgs = { inherit inputs; };
                 modules = [
