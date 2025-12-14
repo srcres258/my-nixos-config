@@ -43,8 +43,8 @@
 
         pkgs = nixpkgs.legacyPackages.${system};
     in {
-        nixosConfigurations = {
-            srcres-desktop = nixpkgs.lib.nixosSystem {
+        nixosConfigurations = let
+            mkNixOSConfig = extraModules: nixpkgs.lib.nixosSystem {
                 inherit system;
                 specialArgs = {
                     inherit inputs;
@@ -52,19 +52,26 @@
                 };
                 modules = [
                     ./configuration.nix
-                    ./devices/srcres-desktop/configuration.nix
-                ];
+                ] ++ extraModules;
             };
+        in {
+            srcres-desktop = mkNixOSConfig [
+                ./devices/srcres-desktop/configuration.nix
+            ];
         };
 
-        homeConfigurations = {
-            "${username}@srcres-desktop" = home-manager.lib.homeManagerConfiguration {
+        homeConfigurations = let
+            mkHomeConfig = extraModules: home-manager.lib.homeManagerConfiguration {
                 inherit pkgs;
                 extraSpecialArgs = { inherit inputs; };
                 modules = [
                     ./home
-                ];
+                ] ++ extraModules;
             };
+            defaultHomeConfig = mkHomeConfig [];
+        in {
+            "${username}@srcres-desktop" = defaultHomeConfig;
+            "${username}@srcres-laptop" = defaultHomeConfig;
         };
 
         packages.${system} = {
