@@ -46,11 +46,7 @@
     security.polkit.enable = true;
     services.udisks2.enable = true;
 
-    nix.gc = {
-        automatic = true;
-        dates = "weekly";
-        options = "--delete-older-than 7d";
-    };
+    nix.gc.automatic = false;
 
     networking = {
         hostName = "srcres-computer";
