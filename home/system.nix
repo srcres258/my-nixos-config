@@ -54,6 +54,8 @@ in {
         pkgs.nur.repos.srcres258.lceda-pro
 
         flatpak
+
+        feishu
     ];
 
     xdg.configFile."niri/config.kdl".source = ./config.kdl;
