@@ -309,6 +309,8 @@
 
     services.postgresql.enable = true;
 
+    services.flatpak.enable = true;
+
 # Remove nix-channel related tools & configs, we use flakes instead.
     nix.channel.enable = false;
 

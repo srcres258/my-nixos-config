@@ -52,6 +52,8 @@ in {
         jetbrains.idea-ultimate
 
         pkgs.nur.repos.srcres258.lceda-pro
+
+        flatpak
     ];
 
     xdg.configFile."niri/config.kdl".source = ./config.kdl;
