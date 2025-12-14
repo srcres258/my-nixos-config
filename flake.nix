@@ -52,8 +52,7 @@
                 };
                 modules = [
                     ./configuration.nix
-
-                    inputs.minegrub-theme.nixosModules.default
+                    ./devices/srcres-desktop/configuration.nix
                 ];
             };
         };

@@ -1,7 +1,3 @@
-# Edit this configuration file to define what should be installed on
-# your system. Help is available in the configuration.nix(5) man page, on
-# https://search.nixos.org/options and in the NixOS manual (`nixos-help`).
-
 {
     inputs,
     config,
@@ -10,10 +6,9 @@
     srcres-password,
     ...
 }: {
-    imports =
-        [ # Include the results of the hardware scan.
-            ./hardware-configuration.nix
-        ];
+    imports = [
+        inputs.minegrub-theme.nixosModules.default
+    ];
 
     boot.loader = {
         grub = {
@@ -36,7 +31,6 @@
         };
     };
     boot.kernelPackages = pkgs.linuxKernel.packages.linux_zen;
-    boot.initrd.kernelModules = [ "amdgpu" ];
 # Enable cross-compile toolchains by emulation.
     boot.binfmt.emulatedSystems = [ "riscv64-linux" ];
 # Enable NTFS filesystem support.
@@ -48,11 +42,7 @@
 
     nix.gc.automatic = false;
 
-    networking = {
-        hostName = "srcres-computer";
-        networkmanager.enable = true;
-        defaultGateway = "172.16.0.1";
-    };
+    networking.networkmanager.enable = true;
 
 # Set your time zone.
     time.timeZone = "Asia/Shanghai";
@@ -90,16 +80,6 @@
 # Enable touchpad support (enabled default in most desktopManager).
 # services.libinput.enable = true;
 
-# Enable deepcool display
-    services.hardware.deepcool-digital-linux = {
-        enable = true;
-        extraArgs = [
-            "--mode" "cpu_temp"
-                "--update" "500"
-                "--alarm"
-        ];
-    };
-
 # Define a user account. Don't forget to set a password with ‘passwd’.
     users.users.srcres = {
         initialPassword = srcres-password;
@@ -108,18 +88,6 @@
         extraGroups = [ "wheel" "networkmanager" "audio" ]; # Enable ‘sudo’ for the user.
             shell = pkgs.fish;
     };
-
-# These users are added for testing purposes only.
-# users.users = {
-#   wangming = {
-#     isNormalUser = true;
-#     initialPassword = "123456";
-#   };
-#   ligang = {
-#     isNormalUser = true;
-#     initialPassword = "123456";
-#   };
-# };
 
     nix.settings.experimental-features = [ "nix-command" "flakes" ];
 
@@ -309,24 +277,5 @@
 
 # Remove nix-channel related tools & configs, we use flakes instead.
     nix.channel.enable = false;
-
-# This option defines the first version of NixOS you have installed on this particular machine,
-# and is used to maintain compatibility with application data (e.g. databases) created on older NixOS versions.
-#
-# Most users should NEVER change this value after the initial install, for any reason,
-# even if you've upgraded your system to a new NixOS release.
-#
-# This value does NOT affect the Nixpkgs version your packages and OS are pulled from,
-# so changing it will NOT upgrade your system - see https://nixos.org/manual/nixos/stable/#sec-upgrading for how
-# to actually do that.
-#
-# This value being lower than the current NixOS release does NOT mean your system is
-# out of date, out of support, or vulnerable.
-#
-# Do NOT change this value unless you have manually inspected all the changes it would make to your configuration,
-# and migrated your data accordingly.
-#
-# For more information, see `man configuration.nix` or https://nixos.org/manual/nixos/stable/options#opt-system.stateVersion .
-    system.stateVersion = "25.05"; # Did you read the comment?
 }
 
