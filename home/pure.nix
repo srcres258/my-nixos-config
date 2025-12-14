@@ -75,6 +75,7 @@ in {
         ammonite
         scalafmt
         scalafix
+        metals
 
         (let
              base = pkgs.appimageTools.defaultFhsEnvArgs;
@@ -215,8 +216,11 @@ in {
             fidget-nvim
 
             haskell-tools-nvim
+
+            nvim-metals
+            cmp-nvim-lsp
         ]);
-        extraLuaConfig = (builtins.readFile ./init.lua) + ''
+        extraLuaConfig = ''
             require('nvim-treesitter.configs').setup {
                 ensure_installed = {},
                 parser_install_dir = "${treesitter-parsers}",
@@ -250,7 +254,11 @@ in {
             }
 
             vim.opt.rtp:prepend("${treesitter-parsers}")
-        '';
+        '' + (let
+            metalsBinaryPath = "${pkgs.metals}";
+
+            customReplace = builtins.replaceStrings ["{{METALS_BINARY_PATH}}"] [metalsBinaryPath];
+        in customReplace (builtins.readFile ./init.lua));
         extraConfig = ''
             " Disable mappings for left and right arrow keys from plugins for SQL files.
             let g:dbext_default_CALCULATOR_enable = 0

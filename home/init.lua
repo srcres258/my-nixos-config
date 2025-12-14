@@ -800,6 +800,42 @@ require('copilot').setup({
 
 require('mini.diff').setup({})
 
+-- 基本 LSP 设置（如果你没有，可添加）
+local capabilities = require('cmp_nvim_lsp').default_capabilities(vim.lsp.protocol.make_client_capabilities())
+local function default_on_attach(client, bufnr)
+    -- 你的 on_attach 函数，如映射等
+end
+
+-- Metals 配置
+local metals_config = require('metals').bare_config()
+metals_config.capabilities = capabilities
+metals_config.on_attach = default_on_attach
+
+-- 关键：设置 metalsBinaryPath 到 Nix 路径，避免安装
+metals_config.settings = {
+    metalsBinaryPath = "{{METALS_BINARY_PATH}}/bin/metals",  -- Nix 插值，确保绝对路径
+    useGlobalExecutable = true,  -- 可选：如果想依赖 PATH 而非具体路径
+    -- 其他设置，如 serverProperties
+    serverProperties = { "-Xmx2G", "-XX:+UseZGC" },  -- 示例 JVM opts，像 flake 中
+    showImplicitArguments = true,
+    -- ... 根据需要添加
+}
+
+-- 诊断处理（可选，但推荐）
+metals_config.handlers["textDocument/publishDiagnostics"] = vim.lsp.with(
+    vim.lsp.diagnostic.on_publish_diagnostics, { virtual_text = { prefix = '' } }
+)
+vim.opt_global.shortmess:remove("F")
+
+-- Autocmd 来附加 Metals
+vim.api.nvim_create_autocmd("FileType", {
+  pattern = { "scala", "sbt", "java" },
+  callback = function()
+    require('metals').initialize_or_attach(metals_config)
+  end,
+  group = vim.api.nvim_create_augroup("nvim-metals", { clear = true }),
+})
+
 vim.opt.list = true
 vim.opt.listchars = { tab = ">-", trail = "-" }
 
