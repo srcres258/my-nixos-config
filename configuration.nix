@@ -277,5 +277,10 @@
 
 # Remove nix-channel related tools & configs, we use flakes instead.
     nix.channel.enable = false;
+
+    nix.settings.substituters = [
+        "https://mirror.sjtu.edu.cn/nix-channels/store"
+        "https://mirrors.ustc.edu.cn/nix-channels/store"
+    ];
 }
 
