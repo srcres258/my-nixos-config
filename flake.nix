@@ -58,6 +58,9 @@
             srcres-desktop = mkNixOSConfig [
                 ./devices/srcres-desktop/configuration.nix
             ];
+            srcres-laptop = mkNixOSConfig [
+                ./devices/srcres-laptop/configuration.nix
+            ];
         };
 
         homeConfigurations = let
