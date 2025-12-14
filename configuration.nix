@@ -198,6 +198,8 @@
         qbittorrent-enhanced
 
         jq
+
+        nix-output-monitor
     ];
     environment.variables.EDITOR = "vim";
 
@@ -229,6 +231,8 @@
         enableSSHSupport = true;
         pinentryPackage = pkgs.pinentry-qt;
     };
+
+    programs.nh.enable = true;
 
 # List services that you want to enable:
 
