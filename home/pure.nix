@@ -99,6 +99,9 @@ in {
 
 # Go language
         gopls
+
+# Verilog / SystemVerilog language
+        verible
     ] ++ [ javaPkg scalaPkg ];
     home.sessionVariables = {
         EDITOR = "nvim";
