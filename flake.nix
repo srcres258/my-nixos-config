@@ -73,7 +73,9 @@
             };
             defaultHomeConfig = mkHomeConfig [];
         in {
-            "${username}@srcres-desktop" = defaultHomeConfig;
+            "${username}@srcres-desktop" = mkHomeConfig [
+                ./devices/srcres-desktop/home
+            ];
             "${username}@srcres-laptop" = defaultHomeConfig;
         };
 
