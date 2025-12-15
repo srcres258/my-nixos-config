@@ -1,4 +1,5 @@
 {
+    system,
     config,
     pkgs,
     lib,
@@ -70,7 +71,7 @@ in {
 # Scala language
         scala-cli
         sbt
-        mill
+        inputs.mill-legacy-nixpkgs.legacyPackages.${system}.mill
         bloop
         ammonite
         scalafmt

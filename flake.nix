@@ -4,6 +4,9 @@
     inputs = {
         nixpkgs.url = "github:NixOS/nixpkgs/nixos-25.11";
         nixpkgs-unstable.url = "github:NixOS/nixpkgs/nixos-unstable";
+
+        mill-legacy-nixpkgs.url = "github:NixOS/nixpkgs/de1864217bfa9b5845f465e771e0ecb48b30e02d";
+
         nur = {
             url = "github:nix-community/NUR";
             inputs.nixpkgs.follows = "nixpkgs";
@@ -31,6 +34,7 @@
         self,
         nixpkgs,
         nixpkgs-unstable,
+        mill-legacy-nixpkgs,
         nur,
         home-manager,
         minegrub-theme,
@@ -47,7 +51,7 @@
             mkNixOSConfig = extraModules: nixpkgs.lib.nixosSystem {
                 inherit system;
                 specialArgs = {
-                    inherit inputs;
+                    inherit inputs system;
                     srcres-password = builtins.getEnv "SRCRES_PASSWORD";
                 };
                 modules = [
@@ -66,7 +70,7 @@
         homeConfigurations = let
             mkHomeConfig = extraModules: home-manager.lib.homeManagerConfiguration {
                 inherit pkgs;
-                extraSpecialArgs = { inherit inputs; };
+                extraSpecialArgs = { inherit inputs system; };
                 modules = [
                     ./home
                 ] ++ extraModules;
