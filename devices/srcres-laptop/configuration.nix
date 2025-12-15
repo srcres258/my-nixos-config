@@ -54,7 +54,13 @@
         package = config.boot.kernelPackages.nvidiaPackages.stable;
     };
 
-    console.font = "ter-128b";
+    console = {
+        earlySetup = true;
+        packages = with pkgs; [
+            terminus_font
+        ];
+        font = "ter-128b";
+    };
 
     # This option defines the first version of NixOS you have installed on this particular machine,
     # and is used to maintain compatibility with application data (e.g. databases) created on older NixOS versions.
