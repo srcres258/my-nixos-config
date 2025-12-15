@@ -219,17 +219,20 @@
         packages = with pkgs; [
             adwaita-fonts
 
-                noto-fonts-color-emoji
-                nerd-fonts.symbols-only
+            noto-fonts-color-emoji
+            nerd-fonts.symbols-only
 
-                noto-fonts-cjk-sans
-                noto-fonts-cjk-serif
+            noto-fonts-cjk-sans
+            noto-fonts-cjk-serif
 
-                source-code-pro
-                hack-font
-                jetbrains-mono
-                maple-mono.variable
+            source-code-pro
+            hack-font
+            jetbrains-mono
+            maple-mono.variable
+
+            terminus_font
         ];
+        fontDir.enable = true;
     };
 
 # Open ports in the firewall.
