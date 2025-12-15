@@ -235,6 +235,10 @@
         fontDir.enable = true;
     };
 
+    console.packages = with pkgs; [
+        terminus_font
+    ];
+
 # Open ports in the firewall.
 # networking.firewall.allowedTCPPorts = [ ... ];
 # networking.firewall.allowedUDPPorts = [ ... ];
