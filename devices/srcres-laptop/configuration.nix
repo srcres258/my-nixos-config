@@ -59,8 +59,7 @@
         font = "ter-128b";
     };
 
-    networking.wireless.enable = true;
-
+    networking.networkmanager.wifi.backend = "iwd";
     networking.networkmanager.wifi.powersave = false;
 
     # This option defines the first version of NixOS you have installed on this particular machine,
