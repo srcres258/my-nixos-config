@@ -78,7 +78,7 @@
         initialPassword = srcres-password;
         isNormalUser = true;
         description = "src_resources";
-        extraGroups = [ "wheel" "networkmanager" "audio" ]; # Enable ‘sudo’ for the user.
+        extraGroups = [ "wheel" "networkmanager" "audio" "docker" ]; # Enable ‘sudo’ for the user.
             shell = pkgs.fish;
     };
 
