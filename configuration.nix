@@ -277,6 +277,16 @@
 
     services.flatpak.enable = true;
 
+# Docker
+    virtualisation.docker = {
+        enable = true;
+        storageDriver = "btrfs";
+        rootless = {
+            enable = true;
+            setSocketVariable = true;
+        };
+    };
+
 # Remove nix-channel related tools & configs, we use flakes instead.
     nix.channel.enable = false;
 
