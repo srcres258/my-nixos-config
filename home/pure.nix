@@ -50,6 +50,7 @@ in {
             matplotlib
             requests
             jupyter
+            torch
         ]))
 
         eza
