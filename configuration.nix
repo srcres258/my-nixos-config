@@ -36,6 +36,8 @@
     nix.gc.automatic = false;
 
     networking.networkmanager.enable = true;
+# Open some ports for testing purposes.
+    networking.firewall.allowedTCPPorts = [ 11451 ];
 
 # Set your time zone.
     time.timeZone = "Asia/Shanghai";
