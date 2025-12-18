@@ -223,7 +223,6 @@ in {
             haskell-tools-nvim
 
             nvim-metals
-            cmp-nvim-lsp
         ]);
         extraLuaConfig = ''
             require('nvim-treesitter.configs').setup {

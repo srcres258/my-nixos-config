@@ -801,12 +801,6 @@ require('copilot').setup({
 
 require('mini.diff').setup({})
 
--- 基本 LSP 设置（如果你没有，可添加）
-local capabilities = require('cmp_nvim_lsp').default_capabilities(vim.lsp.protocol.make_client_capabilities())
-local function default_on_attach(client, bufnr)
-    -- 你的 on_attach 函数，如映射等
-end
-
 -- Metals 配置
 local metals_config = require('metals').bare_config()
 metals_config.capabilities = capabilities
