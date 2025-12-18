@@ -60,6 +60,8 @@ in {
         gtkwave
 
         networkmanagerapplet
+
+        nomacs
     ];
 
     xdg.configFile."niri/config.kdl".source = ./config.kdl;
