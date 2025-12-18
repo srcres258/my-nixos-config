@@ -161,6 +161,8 @@
         nix-output-monitor
 
         killall
+
+        pv
     ];
     environment.variables.EDITOR = "vim";
 
