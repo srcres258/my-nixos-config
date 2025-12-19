@@ -13,16 +13,6 @@ in {
     nixpkgs.config.allowUnfree = true;
     nixpkgs.overlays = [
         inputs.vscode-extensions.overlays.default
-
-        (final: prev: {
-            nur = {
-                repos = {
-                    srcres258 = import inputs.my-nur {
-                        pkgs = final;
-                    };
-                };
-            };
-         })
     ];
 
     home.packages = with pkgs; [
@@ -62,6 +52,9 @@ in {
         networkmanagerapplet
 
         nomacs
+
+        qbittorrent-enhanced
+        pkgs.nur.repos.srcres258.peerbanhelper
     ];
 
     xdg.configFile."niri/config.kdl".source = ./config.kdl;

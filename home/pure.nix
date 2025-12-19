@@ -15,6 +15,17 @@ in {
     };
 
     nixpkgs.config.allowUnfree = true;
+    nixpkgs.overlays = [
+        (final: prev: {
+            nur = {
+                repos = {
+                    srcres258 = import inputs.my-nur {
+                        pkgs = final;
+                    };
+                };
+            };
+         })
+    ];
 
     home.packages = with pkgs; [
         cascadia-code

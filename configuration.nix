@@ -37,7 +37,10 @@
 
     networking.networkmanager.enable = true;
 # Open some ports for testing purposes.
-    networking.firewall.allowedTCPPorts = [ 11451 ];
+    networking.firewall = {
+        allowedTCPPorts = [ 11451 51413 ];
+        allowedUDPPorts = [ 51413 ];
+    };
 
 # Set your time zone.
     time.timeZone = "Asia/Shanghai";
