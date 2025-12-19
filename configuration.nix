@@ -38,7 +38,7 @@
     networking.networkmanager.enable = true;
 # Open some ports for testing purposes.
     networking.firewall = {
-        allowedTCPPorts = [ 11451 51413 ];
+        allowedTCPPorts = [ 8080 11451 51413 ];
         allowedUDPPorts = [ 51413 ];
     };
 
