@@ -26,6 +26,8 @@
     networking = {
         hostName = "srcres-desktop";
         defaultGateway = "172.16.0.1";
+
+        firewall.enable = false;
     };
 
 # Enable deepcool display
