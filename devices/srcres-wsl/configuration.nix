@@ -3,7 +3,6 @@
 {
     wsl.enable = true;
     wsl.defaultUser = "srcres";
-    wsl.nativeSystemd = true;
 
     wsl.wslConf = {
         automount.root = "/mnt";
