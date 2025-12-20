@@ -62,6 +62,7 @@ in {
             requests
             jupyter
             torch
+            torchvision
         ]))
 
         eza
