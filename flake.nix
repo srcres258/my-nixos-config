@@ -17,6 +17,11 @@
             inputs.nixpkgs.follows = "nixpkgs";
         };
 
+        nixos-wsl = {
+            url = "github:nix-community/NixOS-WSL";
+            inputs.nixpkgs.follows = "nixpkgs";
+        };
+
         minegrub-theme.url = "github:Lxtharia/minegrub-theme";
 
         vscode-extensions = {
@@ -37,6 +42,7 @@
         mill-legacy-nixpkgs,
         nur,
         home-manager,
+        nixos-wsl,
         minegrub-theme,
         vscode-extensions,
         my-nur,
@@ -60,10 +66,18 @@
             };
         in {
             srcres-desktop = mkNixOSConfig [
+                ./platforms/native/configuration.nix
                 ./devices/srcres-desktop/configuration.nix
             ];
             srcres-laptop = mkNixOSConfig [
+                ./platforms/native/configuration.nix
                 ./devices/srcres-laptop/configuration.nix
+            ];
+            srcres-wsl = mkNixOSConfig [
+                nixos-wsl.nixosModules.default
+
+                ./platforms/native/configuration.nix
+                ./devices/srcres-wsl/configuration.nix
             ];
         };
 
@@ -81,6 +95,9 @@
                 ./devices/srcres-desktop/home
             ];
             "${username}@srcres-laptop" = defaultHomeConfig;
+            "${username}@srcres-wsl" = mkHomeConfig [
+                ./home/pure.nix
+            ];
         };
 
         packages.${system} = {

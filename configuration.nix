@@ -6,33 +6,6 @@
     srcres-password,
     ...
 }: {
-    imports = [
-        inputs.minegrub-theme.nixosModules.default
-    ];
-
-    boot.loader = {
-        grub = {
-            enable = true;
-            device = "nodev";
-            efiSupport = true;
-            useOSProber = true;
-            configurationLimit = 10;
-        };
-        efi = {
-            canTouchEfiVariables = true;
-            efiSysMountPoint = "/boot";
-        };
-    };
-    boot.kernelPackages = pkgs.linuxKernel.packages.linux_zen;
-# Enable cross-compile toolchains by emulation.
-    boot.binfmt.emulatedSystems = [ "riscv64-linux" ];
-# Enable NTFS filesystem support.
-    boot.supportedFilesystems = [ "ntfs" ];
-
-# Allow normal users to mount NTFS filesystems.
-    security.polkit.enable = true;
-    services.udisks2.enable = true;
-
     nix.gc.automatic = false;
 
     networking.networkmanager.enable = true;
@@ -67,15 +40,6 @@
 
 # Enable CUPS to print documents.
 # services.printing.enable = true;
-
-# Enable sound.
-    services.pipewire = {
-        enable = true;
-        pulse.enable = true;
-    };
-
-# Enable touchpad support (enabled default in most desktopManager).
-# services.libinput.enable = true;
 
 # Define a user account. Don't forget to set a password with ‘passwd’.
     users.users.srcres = {
@@ -212,17 +176,6 @@
         openFirewall = true;
     };
 
-    services.greetd = {
-        enable = true;
-        settings = {
-            default_session = {
-                command = "${pkgs.tuigreet}/bin/tuigreet " +
-                    "--time --asterisks --remember --remember-session " +
-                    "--sessions ${config.services.displayManager.sessionData.desktops}/share/wayland-sessions";
-            };
-        };
-    };
-
     fonts = {
         packages = with pkgs; [
             adwaita-fonts
@@ -243,10 +196,6 @@
         fontDir.enable = true;
     };
 
-    console.packages = with pkgs; [
-        terminus_font
-    ];
-
 # Open ports in the firewall.
 # networking.firewall.allowedTCPPorts = [ ... ];
 # networking.firewall.allowedUDPPorts = [ ... ];
@@ -258,40 +207,7 @@
 # accidentally delete configuration.nix.
 # system.copySystemConfiguration = true;
 
-# This enables microcode updates for CPUs, which may improve performance.
-    hardware.enableRedistributableFirmware = true;
-
-# Set up Bluetooth.
-    hardware.bluetooth = {
-        enable = true;
-        powerOnBoot = true;
-        settings = {
-            General = {
-                Experimental = true;
-                FastConnectable = true;
-            };
-            Policy = {
-                AutoEnable = true;
-            };
-        };
-    };
-    services.blueman.enable = true;
-
-    services.gvfs.enable = true;
-
-    services.postgresql.enable = true;
-
     services.flatpak.enable = true;
-
-# Docker
-    virtualisation.docker = {
-        enable = true;
-        storageDriver = "btrfs";
-        rootless = {
-            enable = true;
-            setSocketVariable = true;
-        };
-    };
 
 # Remove nix-channel related tools & configs, we use flakes instead.
     nix.channel.enable = false;
