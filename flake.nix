@@ -76,7 +76,6 @@
             srcres-wsl = mkNixOSConfig [
                 nixos-wsl.nixosModules.default
 
-                ./platforms/native/configuration.nix
                 ./devices/srcres-wsl/configuration.nix
             ];
         };
