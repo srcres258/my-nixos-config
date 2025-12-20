@@ -89,12 +89,18 @@
                 ] ++ extraModules;
             };
             defaultHomeConfig = mkHomeConfig [];
+
+            mkPureHomeConfig = extraModules: home-manager.lib.homeManagerConfiguration {
+                inherit pkgs;
+                extraSpecialArgs = { inherit inputs system; };
+                modules = extraModules;
+            };
         in {
             "${username}@srcres-desktop" = mkHomeConfig [
                 ./devices/srcres-desktop/home
             ];
             "${username}@srcres-laptop" = defaultHomeConfig;
-            "${username}@srcres-wsl" = mkHomeConfig [
+            "${username}@srcres-wsl" = mkPureHomeConfig [
                 ./home/pure.nix
             ];
         };
