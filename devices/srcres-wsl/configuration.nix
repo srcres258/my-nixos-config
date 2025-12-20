@@ -5,8 +5,13 @@
     wsl.defaultUser = "srcres";
     wsl.nativeSystemd = true;
 
-    wsl.wslConf.automount.root = "/mnt";
-    wsl.interop.enabled = true;
+    wsl.wslConf = {
+        automount.root = "/mnt";
+        interop = {
+            enabled = true;
+            appendWindowsPath = true;
+        };
+    };
 
     networking.hostName = "srcres-wsl";
     time.timeZone = "Asia/Shanghai";
