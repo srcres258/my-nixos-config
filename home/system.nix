@@ -55,6 +55,8 @@ in {
 
         qbittorrent-enhanced
         pkgs.nur.repos.srcres258.peerbanhelper
+
+        cqrlog
     ];
 
     xdg.configFile."niri/config.kdl".source = ./config.kdl;
