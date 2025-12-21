@@ -22,6 +22,7 @@
             canTouchEfiVariables = true;
             efiSysMountPoint = "/boot";
         };
+        timeout = 10;
     };
     boot.kernelPackages = pkgs.linuxKernel.packages.linux_zen;
 # Enable cross-compile toolchains by emulation.
