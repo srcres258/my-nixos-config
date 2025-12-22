@@ -40,6 +40,7 @@ in {
 
 # JetBrains IDEs
         jetbrains.idea-ultimate
+        jetbrains.pycharm-professional
 
         pkgs.nur.repos.srcres258.lceda-pro
 
