@@ -7,13 +7,8 @@
 }: let
     javaPkg = pkgs.javaPackages.compiler.temurin-bin.jdk-21;
     scalaPkg = pkgs.scala_3;
-
-    vscode-ext = pkgs.nix-vscode-extensions;
 in {
     nixpkgs.config.allowUnfree = true;
-    nixpkgs.overlays = [
-        inputs.vscode-extensions.overlays.default
-    ];
 
     home.packages = with pkgs; [
         pavucontrol
@@ -230,75 +225,6 @@ in {
 
     programs.mpvpaper = {
         enable = true;
-    };
-
-    programs.vscode = {
-        enable = true;
-        package = pkgs.vscode.fhs;
-
-        mutableExtensionsDir = true;
-
-        profiles = {
-            default = {
-                extensions = with vscode-ext.vscode-marketplace; [
-                    ms-ceintl.vscode-language-pack-zh-hans
-
-                    be5invis.vscode-custom-css
-
-                    # Copilot
-                    github.copilot
-                    github.copilot-chat
-
-                    # C / C++
-                    ms-vscode.cpptools
-                    ms-vscode.cmake-tools
-
-                    # Scala
-                    scala-lang.scala
-                    scala-lang.scala-snippets
-                    scalameta.metals
-
-                    # SystemVerilog / Verilog / VHDL
-                    mshr-h.veriloghdl
-
-                    # Nix
-                    jnoortheen.nix-ide
-
-                    # Haskell
-                    haskell.haskell
-                ];
-
-                userSettings = let
-                    backgroundPicSrc = ./vscode-background.jpg;
-                in {
-                    "editor.fontSize" = 15;
-                    "nix.enableLanguageServer" = true;
-
-                    "files.autoGuessEncoding" = true;
-                    "editor.cursorSmoothCaretAnimation" = true;
-                    "editor.smoothScrolling" = true;
-                    "editor.cursorBlinking" = "smooth";
-                    "editor.mouseWheelZoom" = false;
-                    "editor.wordWrap" = "on";
-                    "editor.suggest.snippetsPreventQuickSuggestions" = false;
-                    "editor.acceptSuggestionOnEnter" = "smart";
-                    "editor.suggestSelection" = "recentlyUsed";
-                    "window.dialogStyle" = "custom";
-                    "debug.showBreakpointsInOverviewRuler" = true;
-
-                    "vscode_custom_css.imports" = let
-                        bgImagePath = "${backgroundPicSrc}";
-                        originalCss = builtins.readFile ./custom-vscode.css;
-                        processedCss = builtins.replaceStrings [ "{{BACKGROUND_IMAGE}}" ] [ bgImagePath ] originalCss;
-                        customCssFile = pkgs.writeText "custom-vscode.css" processedCss;
-                    in [
-                        "${customCssFile}"
-                    ];
-                    "vscode_custom_css.policy" = true;
-                    "vscode_custom_css.verbose" = true;
-                };
-            };
-        };
     };
 
     i18n.inputMethod = {

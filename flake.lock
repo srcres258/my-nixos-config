@@ -211,28 +211,7 @@
         "nixos-wsl": "nixos-wsl",
         "nixpkgs": "nixpkgs_2",
         "nixpkgs-unstable": "nixpkgs-unstable",
-        "nur": "nur",
-        "vscode-extensions": "vscode-extensions"
-      }
-    },
-    "vscode-extensions": {
-      "inputs": {
-        "nixpkgs": [
-          "nixpkgs"
-        ]
-      },
-      "locked": {
-        "lastModified": 1766195825,
-        "narHash": "sha256-+wUHO8A1H5wBpqCDp15ibaaQMu9R3er5H6et9tzCAtA=",
-        "owner": "nix-community",
-        "repo": "nix-vscode-extensions",
-        "rev": "10718ccdcc1d9197d93e5b50985c70fc44c59d26",
-        "type": "github"
-      },
-      "original": {
-        "owner": "nix-community",
-        "repo": "nix-vscode-extensions",
-        "type": "github"
+        "nur": "nur"
       }
     }
   },

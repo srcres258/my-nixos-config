@@ -24,11 +24,6 @@
 
         minegrub-theme.url = "github:Lxtharia/minegrub-theme";
 
-        vscode-extensions = {
-            url = "github:nix-community/nix-vscode-extensions";
-            inputs.nixpkgs.follows = "nixpkgs";
-        };
-
         my-nur = {
             url = "github:srcres258/nur-packages";
             inputs.nixpkgs.follows = "nixpkgs";
@@ -44,7 +39,6 @@
         home-manager,
         nixos-wsl,
         minegrub-theme,
-        vscode-extensions,
         my-nur,
         ...
     }@inputs: let
