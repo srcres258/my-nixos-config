@@ -93,7 +93,9 @@
             "${username}@srcres-desktop" = mkHomeConfig [
                 ./devices/srcres-desktop/home
             ];
-            "${username}@srcres-laptop" = defaultHomeConfig;
+            "${username}@srcres-laptop" = mkHomeConfig [
+                ./devices/srcres-laptop/home
+            ];
             "${username}@srcres-wsl" = mkPureHomeConfig [
                 ./home/pure.nix
             ];
