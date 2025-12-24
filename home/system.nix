@@ -7,8 +7,13 @@
 }: let
     javaPkg = pkgs.javaPackages.compiler.temurin-bin.jdk-21;
     scalaPkg = pkgs.scala_3;
+
+    vscode-ext = pkgs.nix-vscode-extensions;
 in {
     nixpkgs.config.allowUnfree = true;
+    nixpkgs.overlays = [
+        inputs.vscode-extensions.overlays.default
+    ];
 
     home.packages = with pkgs; [
         pavucontrol
@@ -255,6 +260,68 @@ in {
     programs.firefox = {
         enable = true;
         languagePacks = [ "zh-CN" ];
+    };
+
+    programs.vscode = {
+        enable = true;
+        package = pkgs.vscode.fhs;
+
+        mutableExtensionsDir = true;
+
+        profiles = {
+            default = {
+                extensions = with vscode-ext.vscode-marketplace; [
+                    ms-ceintl.vscode-language-pack-zh-hans
+
+                    be5invis.vscode-custom-css
+
+                    # Copilot
+                    github.copilot
+                    github.copilot-chat
+
+                    # C / C++
+                    ms-vscode.cpptools
+                    ms-vscode.cmake-tools
+
+                    # Scala
+                    scala-lang.scala
+                    scala-lang.scala-snippets
+                    scalameta.metals
+
+                    # SystemVerilog / Verilog / VHDL
+                    mshr-h.veriloghdl
+
+                    # Nix
+                    jnoortheen.nix-ide
+
+                    # Haskell
+                    haskell.haskell
+
+                    # Python
+                    ms-python.python
+                    ms-python.debugpy
+                    ms-python.vscode-python-envs
+                ];
+
+                userSettings = {
+                    "editor.fontFamily" = "'Cascadia Code', 'monospace', monospace, 'Droid Sans Fallback'";
+                    "editor.fontSize" = 18;
+                    "nix.enableLanguageServer" = true;
+
+                    "files.autoGuessEncoding" = true;
+                    "editor.cursorSmoothCaretAnimation" = true;
+                    "editor.smoothScrolling" = true;
+                    "editor.cursorBlinking" = "smooth";
+                    "editor.mouseWheelZoom" = false;
+                    "editor.wordWrap" = "on";
+                    "editor.suggest.snippetsPreventQuickSuggestions" = false;
+                    "editor.acceptSuggestionOnEnter" = "smart";
+                    "editor.suggestSelection" = "recentlyUsed";
+                    "window.dialogStyle" = "custom";
+                    "debug.showBreakpointsInOverviewRuler" = true;
+                };
+            };
+        };
     };
 
     programs.mpvpaper = {
