@@ -301,6 +301,12 @@ in {
                     ms-python.python
                     ms-python.debugpy
                     ms-python.vscode-python-envs
+
+                    # Jupyter Notebook
+                    ms-toolsai.jupyter
+                    ms-toolsai.jupyter-keymap
+                    ms-toolsai.vscode-jupyter-slideshow
+                    ms-toolsai.vscode-jupyter-cell-tags
                 ];
 
                 userSettings = {
