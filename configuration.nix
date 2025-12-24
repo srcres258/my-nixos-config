@@ -73,6 +73,8 @@
         xz
         unzip
         p7zip
+        rar
+        unrar
 
         cowsay
         file
@@ -130,6 +132,7 @@
 
         pv
     ];
+    nixpkgs.config.allowUnfree = true;
     environment.variables.EDITOR = "vim";
 
     programs.fish.enable = true;
