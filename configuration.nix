@@ -192,6 +192,8 @@
             maple-mono.variable
 
             terminus_font
+
+            cascadia-code
         ];
         fontDir.enable = true;
     };

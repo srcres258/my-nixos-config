@@ -127,37 +127,6 @@ in {
     xdg.enable = true;
     xdg.cacheHome = builtins.toPath "/home/${config.home.username}/.cache";
 
-    programs.kitty = {
-        enable = true;
-        settings = {
-            font_family = "Cascadia Mono PL";
-            font_size = 15;
-
-            background_opacity = 0.8;
-            dynamic_background_opacity = "yes";
-
-            allow_remote_control = "yes";
-
-            strip_trailing_spaces = "smart";
-
-# Cursor animations
-            cursor_blink_interval = "-1 ease-in-out";
-            cursor_stop_blinking_after = 0;
-            cursor_trail = 1;
-            cursor_trail_decay = "0.1 0.4";
-            cursor_trail_start_threshold = 5;
-            cursor_trail_color = "none";
-        };
-        environment = config.home.sessionVariables;
-    };
-
-    programs.wofi = {
-        enable = true;
-        settings = {
-            term = "kitty";
-        };
-    };
-
     programs.yazi = {
         enable = true;
 # TODO
