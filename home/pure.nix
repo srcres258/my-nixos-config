@@ -81,6 +81,8 @@ in {
         pkgsCross.riscv64-embedded.stdenv.cc  # bare-metal ELF
         pkgsCross.riscv32-embedded.stdenv.cc
 
+        scons
+
 # Scala language
         scala-cli
         sbt
