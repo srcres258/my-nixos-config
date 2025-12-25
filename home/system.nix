@@ -58,6 +58,7 @@ in {
         pkgs.nur.repos.srcres258.peerbanhelper
 
         cqrlog
+        tqsl
     ];
 
     xdg.configFile."niri/config.kdl".source = ./config.kdl;
