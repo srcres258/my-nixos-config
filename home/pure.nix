@@ -9,6 +9,8 @@
     javaPkg = pkgs.javaPackages.compiler.temurin-bin.jdk-21;
     scalaPkg = pkgs.scala_3;
 in {
+    imports = [ ./options.nix ];
+
     home = rec {
         username = "srcres";
         homeDirectory = "/home/${username}";
@@ -55,15 +57,13 @@ in {
         hyperfine
         fd
 
-        (python313.withPackages (ps: with ps; [
+        (python313.withPackages (ps: ((with ps; [
             numpy
             pandas
             matplotlib
             requests
             jupyter
-            torch
-            torchvision
-        ]))
+        ]) ++ (config.my.python.packageGenerator ps))))
 
         eza
 

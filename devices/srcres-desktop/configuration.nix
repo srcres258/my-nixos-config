@@ -22,6 +22,14 @@
         boot-options-count = 4;
     };
     boot.initrd.kernelModules = [ "amdgpu" ];
+    services.xserver.videoDrivers = [ "amdgpu" ];
+    hardware.graphics = {
+        enable = true;
+        extraPackages = with pkgs; [
+            # Provides OpenCL ICD loader.
+            rocmPackages.clr.icd
+        ];
+    };
 
     networking = {
         hostName = "srcres-desktop";
@@ -29,6 +37,12 @@
 
         firewall.enable = false;
     };
+
+    environment.systemPackages = with pkgs; [
+        # Add other system-wide ROCm tools.
+        rocmPackages.rocminfo
+        ocl-icd
+    ];
 
 # Enable deepcool display
     services.hardware.deepcool-digital-linux = {

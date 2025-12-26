@@ -5,6 +5,11 @@
     inputs,
     ...
 }: {
+    my.python.packageGenerator = (ps: with ps; [
+        torchWithRocm
+        (torchvision.override { torch = ps.torchWithRocm; })
+    ]);
+
     systemd.user.services."mpvpaper" = let
         wallpaperSrc = ./wallpapers/bg.mp4;
         mpvOptions = [
