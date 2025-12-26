@@ -21,6 +21,9 @@
       enable = true;
     };
 
+    # v2raya for VPN
+    services.v2raya.enable = true;
+
     # Load nvidia driver for Xorg and Wayland
     services.xserver.videoDrivers = ["nvidia"];
 
