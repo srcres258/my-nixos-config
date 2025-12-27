@@ -6,8 +6,11 @@
     ...
 }: {
     my.python.packageGenerator = (ps: with ps; [
-        torchWithRocm
-        (torchvision.override { torch = ps.torchWithRocm; })
+        # torchWithRocm
+        # (torchvision.override { torch = ps.torchWithRocm; })
+
+        torch
+        torchvision
     ]);
 
     systemd.user.services."mpvpaper" = let
