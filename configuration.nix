@@ -131,9 +131,6 @@
         killall
 
         pv
-
-# Ethereum
-        geth
     ]);
     environment.variables.EDITOR = "vim";
 

@@ -83,6 +83,9 @@ in {
 
         scons
 
+# Ethereum
+        inputs.go-ethereum-legacy-nixpkgs.legacyPackages.${system}.go-ethereum
+
 # Scala language
         scala-cli
         sbt

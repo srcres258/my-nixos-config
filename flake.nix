@@ -6,6 +6,7 @@
         nixpkgs-unstable.url = "github:NixOS/nixpkgs/nixos-unstable";
 
         mill-legacy-nixpkgs.url = "github:NixOS/nixpkgs/de1864217bfa9b5845f465e771e0ecb48b30e02d";
+        go-ethereum-legacy-nixpkgs.url = "github:NixOS/nixpkgs/0ffaecb6f04404db2c739beb167a5942993cfd87";
 
         nur = {
             url = "github:nix-community/NUR";
@@ -29,11 +30,6 @@
             inputs.nixpkgs.follows = "nixpkgs";
         };
 
-        ethereum = {
-            url = "github:nix-community/ethereum.nix";
-            inputs.nixpkgs.follows = "nixpkgs";
-        };
-
         my-nur = {
             url = "github:srcres258/nur-packages";
             inputs.nixpkgs.follows = "nixpkgs";
@@ -45,12 +41,12 @@
         nixpkgs,
         nixpkgs-unstable,
         mill-legacy-nixpkgs,
+        go-ethereum-legacy-nixpkgs,
         nur,
         home-manager,
         nixos-wsl,
         minegrub-theme,
         vscode-extensions,
-        ethereum,
         my-nur,
         ...
     }@inputs: let
@@ -62,11 +58,7 @@
             config = {
                 allowUnfree = true;
             };
-            overlays = [
-                ethereum.overlays.default
-            ];
         };
-        # eth-pkgs = ethereum.packages.${system};
     in {
         nixosConfigurations = let
             mkNixOSConfig = extraModules: nixpkgs.lib.nixosSystem {
@@ -77,8 +69,6 @@
                 };
                 modules = [
                     ./configuration.nix
-
-                    ethereum.nixosModules.default
                 ] ++ extraModules;
             };
         in {
