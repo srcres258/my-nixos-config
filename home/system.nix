@@ -5,9 +5,6 @@
     inputs,
     ...
 }: let
-    javaPkg = pkgs.javaPackages.compiler.temurin-bin.jdk-21;
-    scalaPkg = pkgs.scala_3;
-
     vscode-ext = pkgs.nix-vscode-extensions;
 in {
     nixpkgs.config.allowUnfree = true;
@@ -39,8 +36,8 @@ in {
         gimp
 
 # JetBrains IDEs
-        jetbrains.idea-ultimate
-        jetbrains.pycharm-professional
+        jetbrains.idea
+        jetbrains.pycharm
 
         pkgs.nur.repos.srcres258.lceda-pro
 
