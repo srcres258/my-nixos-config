@@ -54,7 +54,7 @@
 
 # List packages installed in system profile.
 # You can use https://search.nixos.org/ to find more packages (and options).
-    environment.systemPackages = with pkgs; [
+    environment.systemPackages = with pkgs; ([
         home-manager
 
 # Use Niri as the desktop environment.
@@ -131,8 +131,10 @@
         killall
 
         pv
-    ];
-    nixpkgs.config.allowUnfree = true;
+
+# Ethereum
+        geth
+    ]);
     environment.variables.EDITOR = "vim";
 
     programs.fish.enable = true;
@@ -213,6 +215,34 @@
 # system.copySystemConfiguration = true;
 
     services.flatpak.enable = true;
+
+# Ethereum private blockchain config.
+    # services.ethereum.geth.myprivate = {
+    #     enable = true;
+    #     openFirewall = true;
+    #     args = {
+    #         networkid = 114514;
+    #         nodiscover = true;
+    #         mine = true;
+    #         miner = {
+    #             threads = 1;
+    #             etherbase = "0xYourAccountAddress";
+    #         };
+    #         http = {
+    #             enable = true;
+    #             addr = "0.0.0.0";
+    #             port = 8545;
+    #             api = [ "eth" "net" "web3" "personal" "miner" ];
+    #         };
+    #         syncmode = "full";
+    #     };
+    #     extraArgs = [
+    #         "--datadir" "/var/lib/geth-myprivate"
+    #         "--unlock" "0xYourAccountAddress"
+    #         "--password" "/path/to/password.txt"
+    #         "--allow-insecure-unlock"
+    #     ];
+    # };
 
 # Remove nix-channel related tools & configs, we use flakes instead.
     nix.channel.enable = false;

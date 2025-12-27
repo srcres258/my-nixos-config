@@ -29,6 +29,11 @@
             inputs.nixpkgs.follows = "nixpkgs";
         };
 
+        ethereum = {
+            url = "github:nix-community/ethereum.nix";
+            inputs.nixpkgs.follows = "nixpkgs";
+        };
+
         my-nur = {
             url = "github:srcres258/nur-packages";
             inputs.nixpkgs.follows = "nixpkgs";
@@ -45,23 +50,35 @@
         nixos-wsl,
         minegrub-theme,
         vscode-extensions,
+        ethereum,
         my-nur,
         ...
     }@inputs: let
         system = "x86_64-linux";
         username = "srcres";
 
-        pkgs = nixpkgs.legacyPackages.${system};
+        pkgs = import nixpkgs {
+            inherit system;
+            config = {
+                allowUnfree = true;
+            };
+            overlays = [
+                ethereum.overlays.default
+            ];
+        };
+        # eth-pkgs = ethereum.packages.${system};
     in {
         nixosConfigurations = let
             mkNixOSConfig = extraModules: nixpkgs.lib.nixosSystem {
-                inherit system;
+                inherit system pkgs;
                 specialArgs = {
                     inherit inputs system;
                     srcres-password = builtins.getEnv "SRCRES_PASSWORD";
                 };
                 modules = [
                     ./configuration.nix
+
+                    ethereum.nixosModules.default
                 ] ++ extraModules;
             };
         in {
