@@ -83,7 +83,7 @@
 
 # Docker
     virtualisation.docker = {
-        enable = true;
+        enable = false;
         storageDriver = "btrfs";
         rootless = {
             enable = true;
