@@ -99,21 +99,21 @@ in {
         metals
 
         (let
-             base = pkgs.appimageTools.defaultFhsEnvArgs;
-         in pkgs.buildFHSEnv (base // {
-             name = "fhs";
-             targetPkgs = pkgs:
-             (base.targetPkgs pkgs) ++ (with pkgs; [
-                 pkg-config
-                 ncurses
-                 SDL2
+            base = pkgs.appimageTools.defaultFhsEnvArgs;
+        in pkgs.buildFHSEnv (base // {
+            name = "fhs";
+            targetPkgs = pkgs:
+            (base.targetPkgs pkgs) ++ (with pkgs; [
+                pkg-config
+                ncurses
+                SDL2
 
 # ... add more dependencies here ...
-             ]);
-             profile = "export FHS=1";
-             runScript = "bash";
-             extraOutputsToInstall = ["dev"];
-         }))
+            ]);
+            profile = "export FHS=1";
+            runScript = "bash";
+            extraOutputsToInstall = ["dev"];
+        }))
 
         gdb
 
@@ -145,7 +145,7 @@ in {
             paths = with pkgs.vimPlugins.nvim-treesitter.builtGrammars; [
                 bash c cpp css dockerfile go html java javascript json
                 lua nix python regex rust toml typescript vim yaml markdown
-                latex make haskell scala systemverilog sql fish
+                latex make haskell scala systemverilog sql fish solidity
             ];
         };
     in {
