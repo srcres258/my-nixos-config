@@ -46,8 +46,14 @@
         initialPassword = srcres-password;
         isNormalUser = true;
         description = "src_resources";
-        extraGroups = [ "wheel" "networkmanager" "audio" "docker" ]; # Enable ‘sudo’ for the user.
-            shell = pkgs.fish;
+        extraGroups = [
+            "wheel" # Enable ‘sudo’ for the user.
+            "networkmanager"
+            "audio"
+            "docker"
+            "wireshark"
+        ];
+        shell = pkgs.fish;
     };
 
     nix.settings.experimental-features = [ "nix-command" "flakes" ];
@@ -164,6 +170,8 @@
     };
 
     programs.nh.enable = true;
+
+    programs.wireshark.enable = true;
 
 # List services that you want to enable:
 

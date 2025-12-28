@@ -23,6 +23,9 @@
     services.v2raya.enable = true;
     networking.nftables.enable = true;
 
+    # Disable firewall
+    networking.firewall.enable = false;
+
     # Load nvidia driver for Xorg and Wayland
     services.xserver.videoDrivers = ["nvidia"];
 
