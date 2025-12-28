@@ -831,6 +831,13 @@ vim.api.nvim_create_autocmd("FileType", {
   group = vim.api.nvim_create_augroup("nvim-metals", { clear = true }),
 })
 
+require("typescript-tools").setup({
+    settings = {
+        tsserver_plugins = {},
+        jsx_close_tag = { enable = true }
+    }
+})
+
 vim.opt.list = true
 vim.opt.listchars = { tab = ">-", trail = "-" }
 

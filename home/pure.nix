@@ -211,6 +211,8 @@ in {
             haskell-tools-nvim
 
             nvim-metals
+
+            typescript-tools-nvim
         ]);
         extraLuaConfig = ''
             require('nvim-treesitter.configs').setup {
@@ -261,6 +263,9 @@ in {
             metals
             coursier
             jdk17
+
+            nodePackages.typescript
+            nodePackages.typescript-language-server
         ];
     };
 
