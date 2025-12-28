@@ -30,6 +30,8 @@
             inputs.nixpkgs.follows = "nixpkgs";
         };
 
+        foundry.url = "github:shazow/foundry.nix/stable";
+
         my-nur = {
             url = "github:srcres258/nur-packages";
             inputs.nixpkgs.follows = "nixpkgs";
@@ -47,6 +49,7 @@
         nixos-wsl,
         minegrub-theme,
         vscode-extensions,
+        foundry,
         my-nur,
         ...
     }@inputs: let
@@ -58,6 +61,7 @@
             config = {
                 allowUnfree = true;
             };
+            overlays = [ foundry.overlay ];
         };
     in {
         nixosConfigurations = let

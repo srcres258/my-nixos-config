@@ -85,6 +85,8 @@ in {
 
 # Ethereum
         inputs.go-ethereum-legacy-nixpkgs.legacyPackages.${system}.go-ethereum
+        foundry-bin
+        solc
 
 # Scala language
         scala-cli
