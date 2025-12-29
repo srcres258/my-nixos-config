@@ -79,7 +79,16 @@
 
     services.gvfs.enable = true;
 
-    services.postgresql.enable = true;
+    services.postgresql = {
+        enable = true;
+        package = pkgs.postgresql_14;
+
+        settings = {
+            ssl = true;
+        };
+
+        dataDir = "/var/lib/postgresql/14";
+    };
 
 # Docker
     virtualisation.docker = {
