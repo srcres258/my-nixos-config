@@ -29,6 +29,13 @@
     boot.binfmt.emulatedSystems = [ "riscv64-linux" ];
 # Enable NTFS filesystem support.
     boot.supportedFilesystems = [ "ntfs" ];
+    boot.kernel.sysctl = {
+        "net.ipv4.ip_unprivileged_port_start" = 80;
+    };
+
+    environment.systemPackages = with pkgs; [
+        docker-compose
+    ];
 
 # Allow normal users to mount NTFS filesystems.
     security.polkit.enable = true;
@@ -92,12 +99,18 @@
 
 # Docker
     virtualisation.docker = {
-        enable = false;
+        enable = true;
         storageDriver = "btrfs";
         rootless = {
             enable = true;
             setSocketVariable = true;
         };
+    };
+
+    networking.hosts = {
+        "127.0.0.1" = [ "localhost" "blockscout" "blockscout.local" ];
+        "255.255.255.255" = [ "broadcasthost" ];
+        "::1" = [ "localhost" "blockscout" "blockscout.local" ];
     };
 }
 
