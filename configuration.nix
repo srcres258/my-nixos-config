@@ -137,6 +137,8 @@
         killall
 
         pv
+
+        net-tools
     ]);
     environment.variables.EDITOR = "vim";
 
