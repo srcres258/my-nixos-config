@@ -224,8 +224,7 @@ in {
     programs.kitty = {
         enable = true;
         settings = {
-            font_family = "Cascadia Mono PL";
-            font_features = "-calt -liga -ss01 -ss02 -ss03 -ss04 -ss05 -ss06 -ss07 -ss08 -ss09 -ss10 -ss11 -ss12 -ss13 -ss14 -ss15 -ss16 -ss17 -ss18 -ss19 -ss20 -ss21 -ss22 -ss23 -ss24 -ss25 -ss26 -ss27 -ss28 -ss29 -ss30 -ss31";
+            font_family = "Cascadia Code";
             bold_font = "auto";
             italic_font = "auto";
             bold_italic_font = "auto";

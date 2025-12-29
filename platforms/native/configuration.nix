@@ -30,14 +30,6 @@
 # Enable NTFS filesystem support.
     boot.supportedFilesystems = [ "ntfs" ];
 
-    boot.kernel.sysctl = {
-        "net.ipv4.ip_unprivileged_port_start" = 80;
-    };
-
-    environment.systemPackages = with pkgs; [
-        docker-compose
-    ];
-
 # Allow normal users to mount NTFS filesystems.
     security.polkit.enable = true;
     services.udisks2.enable = true;
@@ -91,7 +83,7 @@
 
 # Docker
     virtualisation.docker = {
-        enable = true;
+        enable = false;
         storageDriver = "btrfs";
         rootless = {
             enable = true;
