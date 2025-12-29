@@ -141,6 +141,8 @@
         net-tools
 
         openssl
+
+        inetutils
     ]);
     environment.variables.EDITOR = "vim";
 
