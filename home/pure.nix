@@ -69,8 +69,6 @@ in {
 
         kdePackages.okular
 
-        openssl
-
         nodejs_24
 
         ghc
