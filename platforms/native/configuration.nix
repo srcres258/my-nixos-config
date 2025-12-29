@@ -30,6 +30,10 @@
 # Enable NTFS filesystem support.
     boot.supportedFilesystems = [ "ntfs" ];
 
+    environment.systemPackages = with pkgs; [
+        docker-compose
+    ];
+
 # Allow normal users to mount NTFS filesystems.
     security.polkit.enable = true;
     services.udisks2.enable = true;
