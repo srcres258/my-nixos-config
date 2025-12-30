@@ -29,9 +29,6 @@
     boot.binfmt.emulatedSystems = [ "riscv64-linux" ];
 # Enable NTFS filesystem support.
     boot.supportedFilesystems = [ "ntfs" ];
-    boot.kernel.sysctl = {
-        "net.ipv4.ip_unprivileged_port_start" = 80;
-    };
 
     environment.systemPackages = with pkgs; [
         docker-compose
@@ -99,7 +96,7 @@
 
 # Docker
     virtualisation.docker = {
-        enable = true;
+        enable = false;
         storageDriver = "btrfs";
         rootless = {
             enable = true;

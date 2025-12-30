@@ -12,7 +12,6 @@
 # Open some ports for testing purposes.
     networking.firewall = {
         allowedTCPPorts = [ 11451 ];
-        trustedInterfaces = [ "docker0" ];
     };
 
 # Set your time zone.
