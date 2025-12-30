@@ -306,6 +306,9 @@ in {
                     ms-toolsai.jupyter-keymap
                     ms-toolsai.vscode-jupyter-slideshow
                     ms-toolsai.vscode-jupyter-cell-tags
+
+                    # Solidity
+                    juanblanco.solidity
                 ];
 
                 userSettings = {
