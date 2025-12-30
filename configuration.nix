@@ -134,6 +134,9 @@
         jq
 
         nix-output-monitor
+        nix-prefetch-git
+
+        prefetch-npm-deps
 
         killall
 
