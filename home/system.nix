@@ -276,6 +276,9 @@ in {
 
                     be5invis.vscode-custom-css
 
+                    # VSCode Vim
+                    vscodevim.vim
+
                     # Copilot
                     github.copilot
                     github.copilot-chat
