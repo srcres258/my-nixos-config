@@ -332,6 +332,11 @@ in {
                     "editor.suggestSelection" = "recentlyUsed";
                     "window.dialogStyle" = "custom";
                     "debug.showBreakpointsInOverviewRuler" = true;
+
+                    "solidity.linter" = "solhint";
+                    "solidity.solhintRules" = {
+                        avoid-sha3 = "warn";
+                    };
                 };
             };
         };
