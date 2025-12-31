@@ -278,6 +278,9 @@ in {
 
                     be5invis.vscode-custom-css
 
+                    # Theme
+                    sdras.night-owl
+
                     # VSCode Vim
                     vscodevim.vim
 
