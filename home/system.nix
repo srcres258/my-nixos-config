@@ -283,7 +283,6 @@ in {
 
                     # Copilot
                     github.copilot
-                    github.copilot-chat
 
                     # C / C++
                     ms-vscode.cpptools
