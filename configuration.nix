@@ -133,6 +133,9 @@
         jq
 
         nix-output-monitor
+        nix-prefetch-git
+
+        prefetch-npm-deps
 
         killall
 
@@ -147,7 +150,17 @@
         iptables
         tcpdump
     ]);
+
     environment.variables.EDITOR = "vim";
+
+    environment.extraSetup = ''
+        find "$out/share/man" \
+            -mindepth 1 -maxdepth 1 \
+            -not -name "man[1-8]" \
+            -exec rm -r "{}" ";"
+
+        rm -r "$out/share/man/man3"
+    '';
 
     programs.fish.enable = true;
 
