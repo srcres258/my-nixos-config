@@ -323,7 +323,7 @@ in {
                     "editor.smoothScrolling" = true;
                     "editor.cursorBlinking" = "smooth";
                     "editor.mouseWheelZoom" = false;
-                    "editor.wordWrap" = "on";
+                    "editor.wordWrap" = "off";
                     "editor.suggest.snippetsPreventQuickSuggestions" = false;
                     "editor.acceptSuggestionOnEnter" = "smart";
                     "editor.suggestSelection" = "recentlyUsed";
