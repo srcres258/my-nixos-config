@@ -314,6 +314,14 @@ in {
 
                     # Solidity
                     juanblanco.solidity
+
+                    # HTML
+                    sidthesloth.html5-boilerplate
+                    ecmel.vscode-html-css
+                    zignd.html-css-class-completion
+
+                    # JS and TS
+                    ms-vscode.vscode-typescript-next
                 ];
 
                 userSettings = {
