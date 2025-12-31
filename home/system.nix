@@ -17,6 +17,8 @@ in {
         kdePackages.dolphin
         kdePackages.kate
         kdePackages.okular
+        kdePackages.kwallet
+        kwalletcli
 
         bilibili
         mission-center

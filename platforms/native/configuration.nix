@@ -94,6 +94,8 @@
         dataDir = "/var/lib/postgresql/14";
     };
 
+    security.pam.services.greetd.kwallet.enable = true;
+
 # Docker
     virtualisation.docker = {
         enable = false;
