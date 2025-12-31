@@ -56,6 +56,8 @@ in {
 
         cqrlog
         tqsl
+
+        tor-browser
     ];
 
     xdg.configFile."niri/config.kdl".source = ./config.kdl;
