@@ -279,6 +279,7 @@ in {
                     ms-ceintl.vscode-language-pack-zh-hans
 
                     wayou.vscode-todo-highlight
+                    wakatime.vscode-wakatime
 
                     # Theme
                     sdras.night-owl
