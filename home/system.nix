@@ -278,6 +278,8 @@ in {
                 extensions = with vscode-ext.vscode-marketplace; [
                     ms-ceintl.vscode-language-pack-zh-hans
 
+                    wayou.vscode-todo-highlight
+
                     # Theme
                     sdras.night-owl
 
