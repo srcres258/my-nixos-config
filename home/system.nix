@@ -60,6 +60,8 @@ in {
         tqsl
 
         tor-browser
+
+        freecad
     ];
 
     xdg.configFile."niri/config.kdl".source = ./config.kdl;
