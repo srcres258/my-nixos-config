@@ -278,8 +278,6 @@ in {
                 extensions = with vscode-ext.vscode-marketplace; [
                     ms-ceintl.vscode-language-pack-zh-hans
 
-                    be5invis.vscode-custom-css
-
                     # Theme
                     sdras.night-owl
 
