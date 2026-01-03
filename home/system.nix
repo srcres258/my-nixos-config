@@ -335,6 +335,7 @@ in {
                     "editor.fontFamily" = "'Cascadia Code', 'monospace', monospace, 'Droid Sans Fallback'";
                     "editor.fontSize" = 18;
                     "nix.enableLanguageServer" = true;
+                    "vim.useSystemClipboard" = true;
 
                     "files.autoGuessEncoding" = true;
                     "editor.cursorSmoothCaretAnimation" = true;
