@@ -280,6 +280,7 @@ in {
 
                     wayou.vscode-todo-highlight
                     wakatime.vscode-wakatime
+                    yzane.markdown-pdf
 
                     # Theme
                     sdras.night-owl
