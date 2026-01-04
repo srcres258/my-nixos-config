@@ -63,6 +63,7 @@ in {
             matplotlib
             requests
             jupyter
+            openai
         ]) ++ (config.my.python.packageGenerator ps))))
 
         eza
