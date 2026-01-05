@@ -125,6 +125,7 @@ in {
             jupyter
             openai
             termcolor
+            prompt-toolkit
         ]) ++ (config.my.python.packageGenerator ps))))
         yapf
     ] ++ [ javaPkg scalaPkg ];
