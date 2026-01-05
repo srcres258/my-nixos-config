@@ -57,15 +57,6 @@ in {
         hyperfine
         fd
 
-        (python313.withPackages (ps: ((with ps; [
-            numpy
-            pandas
-            matplotlib
-            requests
-            jupyter
-            openai
-        ]) ++ (config.my.python.packageGenerator ps))))
-
         eza
 
         kdePackages.okular
@@ -124,6 +115,17 @@ in {
 
 # Verilog / SystemVerilog language
         verible
+
+# Python language
+        (python313.withPackages (ps: ((with ps; [
+            numpy
+            pandas
+            matplotlib
+            requests
+            jupyter
+            openai
+        ]) ++ (config.my.python.packageGenerator ps))))
+        yapf
     ] ++ [ javaPkg scalaPkg ];
     home.sessionVariables = {
         EDITOR = "nvim";
