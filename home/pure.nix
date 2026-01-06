@@ -82,6 +82,7 @@ in {
         python312Packages.pyevmasm
 
 # Nix language
+        nixd
         nixpkgs-fmt
 
 # Scala language
