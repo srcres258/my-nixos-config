@@ -54,7 +54,6 @@ in {
         nomacs
 
         qbittorrent-enhanced
-        pkgs.nur.repos.srcres258.peerbanhelper
 
         cqrlog
         tqsl
