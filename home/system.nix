@@ -313,6 +313,7 @@ in {
                     ms-python.python
                     ms-python.debugpy
                     ms-python.vscode-python-envs
+                    kamilturek.vscode-pyproject-toml-snippets
 
                     # Jupyter Notebook
                     ms-toolsai.jupyter
