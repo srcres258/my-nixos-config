@@ -132,6 +132,7 @@ in {
             prompt-toolkit
         ]) ++ (config.my.python.packageGenerator ps))))
         yapf
+        hatch
     ] ++ [ javaPkg scalaPkg ];
     home.sessionVariables = {
         EDITOR = "nvim";
