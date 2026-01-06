@@ -81,6 +81,9 @@ in {
         solc
         python312Packages.pyevmasm
 
+# Nix language
+        nixpkgs-fmt
+
 # Scala language
         scala-cli
         sbt
