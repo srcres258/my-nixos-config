@@ -291,6 +291,9 @@ in {
                     # Copilot
                     github.copilot
 
+                    # TOML
+                    tamasfe.even-better-toml
+
                     # C / C++
                     ms-vscode.cpptools
                     ms-vscode.cmake-tools
