@@ -75,6 +75,8 @@ in {
 
         wireshark
 
+        pkgs.nur.repos.srcres258.ag
+
 # Ethereum
         inputs.go-ethereum-legacy-nixpkgs.legacyPackages.${system}.go-ethereum
         foundry-bin
