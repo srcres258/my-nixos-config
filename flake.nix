@@ -32,10 +32,10 @@
 
         foundry.url = "github:shazow/foundry.nix/stable";
 
-        my-nur = {
-            url = "github:srcres258/nur-packages";
-            inputs.nixpkgs.follows = "nixpkgs";
-        };
+        # my-nur = {
+        #     url = "github:srcres258/nur-packages";
+        #     inputs.nixpkgs.follows = "nixpkgs";
+        # };
     };
 
     outputs = {
@@ -50,7 +50,7 @@
         minegrub-theme,
         vscode-extensions,
         foundry,
-        my-nur,
+        # my-nur,
         ...
     }@inputs: let
         system = "x86_64-linux";
@@ -61,7 +61,10 @@
             config = {
                 allowUnfree = true;
             };
-            overlays = [ foundry.overlay ];
+            overlays = [
+                nur.overlays.default
+                foundry.overlay
+            ];
         };
     in {
         nixosConfigurations = let

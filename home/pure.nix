@@ -17,17 +17,17 @@ in {
     };
 
     nixpkgs.config.allowUnfree = true;
-    nixpkgs.overlays = [
-        (final: prev: {
-            nur = {
-                repos = {
-                    srcres258 = import inputs.my-nur {
-                        pkgs = final;
-                    };
-                };
-            };
-         })
-    ];
+    # nixpkgs.overlays = [
+    #     (final: prev: {
+    #         nur = {
+    #             repos = {
+    #                 srcres258 = import inputs.my-nur {
+    #                     pkgs = final;
+    #                 };
+    #             };
+    #         };
+    #      })
+    # ];
 
     home.packages = with pkgs; [
         cascadia-code
@@ -75,7 +75,7 @@ in {
 
         wireshark
 
-        pkgs.nur.repos.srcres258.ag
+        nur.repos.srcres258.ag
 
 # Ethereum
         inputs.go-ethereum-legacy-nixpkgs.legacyPackages.${system}.go-ethereum

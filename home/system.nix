@@ -41,7 +41,7 @@ in {
         jetbrains.idea
         jetbrains.pycharm
 
-        pkgs.nur.repos.srcres258.lceda-pro
+        nur.repos.srcres258.lceda-pro
 
         flatpak
 
