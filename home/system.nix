@@ -243,6 +243,8 @@ in {
 
             strip_trailing_spaces = "smart";
 
+            mouse_map = "ctrl+shift+left release grabbed,ungrabbed mouse_click_url";
+
 # Cursor animations
             cursor_blink_interval = "-1 ease-in-out";
             cursor_stop_blinking_after = 0;
