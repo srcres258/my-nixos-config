@@ -77,6 +77,8 @@ in {
 
         nur.repos.srcres258.ag
 
+        hexo-cli
+
 # Ethereum
         inputs.go-ethereum-legacy-nixpkgs.legacyPackages.${system}.go-ethereum
         foundry-bin
