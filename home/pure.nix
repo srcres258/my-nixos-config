@@ -79,6 +79,9 @@ in {
 
         hexo-cli
 
+        coqPackages.coq
+        coqPackages.vscoq-language-server
+
 # Ethereum
         inputs.go-ethereum-legacy-nixpkgs.legacyPackages.${system}.go-ethereum
         foundry-bin

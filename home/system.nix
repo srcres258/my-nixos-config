@@ -335,6 +335,9 @@ in {
 
                     # JS and TS
                     ms-vscode.vscode-typescript-next
+
+                    # Coq
+                    maximedenes.vscoq
                 ];
 
                 userSettings = {
