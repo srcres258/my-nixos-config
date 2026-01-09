@@ -311,6 +311,8 @@ in {
 
     programs.go.enable = true;
 
+    programs.pandoc.enable = true;
+
     fonts.fontconfig = {
         defaultFonts = {
             emoji = [ "Noto Color Emoji" ];
