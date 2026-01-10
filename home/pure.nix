@@ -140,6 +140,7 @@ in {
             openai
             termcolor
             prompt-toolkit
+            aprslib
         ]) ++ (config.my.python.packageGenerator ps))))
         yapf
         hatch
