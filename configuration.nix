@@ -188,7 +188,7 @@
     programs.gnupg.agent = {
         enable = true;
         enableSSHSupport = true;
-        pinentryPackage = pkgs.pinentry-qt;
+        pinentryPackage = pkgs.pinentry-tty;
     };
 
     programs.nh.enable = true;
