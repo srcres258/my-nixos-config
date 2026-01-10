@@ -82,6 +82,8 @@ in {
         coqPackages.coq
         coqPackages.vscoq-language-server
 
+        optnix
+
 # Ethereum
         inputs.go-ethereum-legacy-nixpkgs.legacyPackages.${system}.go-ethereum
         foundry-bin
