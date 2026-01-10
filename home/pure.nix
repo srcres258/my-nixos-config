@@ -62,6 +62,7 @@ in {
         kdePackages.okular
 
         nodejs_24
+        electron
 
         ghc
         cabal-install
