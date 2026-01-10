@@ -18,6 +18,7 @@ in {
         kdePackages.kate
         kdePackages.okular
         kdePackages.kwallet
+        kdePackages.gwenview
         kwalletcli
 
         bilibili
@@ -30,12 +31,12 @@ in {
         discord
         wechat
 
+        gimp
+
 # Minecraft launchers
         hmcl
         prismlauncher
         portablemc
-
-        gimp
 
 # JetBrains IDEs
         jetbrains.idea
