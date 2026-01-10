@@ -173,6 +173,16 @@ in {
                 ];
             };
         };
+
+        settings = {
+            preview = {
+                max_width = 2400;
+                max_height = 3600;
+                image_filter = "lanczos3";
+                image_quality = 90;
+                tab_size = 2;
+            };
+        };
     };
 
     programs.neovim = let
