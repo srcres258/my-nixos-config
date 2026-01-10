@@ -157,7 +157,22 @@ in {
 
     programs.yazi = {
         enable = true;
-# TODO
+
+        plugins = with pkgs.yaziPlugins; {
+            inherit toggle-pane;
+        };
+
+        keymap = {
+            manager = {
+                prepend_keymap = [
+                    {
+                        on = [ "<C-right>" ];
+                        run = "plugin toggle-pane max-preview";
+                        desc = "Roggle maxinize preview pane";
+                    }
+                ];
+            };
+        };
     };
 
     programs.neovim = let
