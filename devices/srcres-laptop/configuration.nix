@@ -10,6 +10,11 @@
           ./hardware-configuration.nix
         ];
 
+    boot.kernel.sysctl = {
+        "vm.laptop_mode" = 5; # Enable laptop mode for better power saving
+        "vm.swappiness" = 10; # Reduce swap usage
+    };
+
     networking = {
         hostName = "srcres-laptop";
     };
@@ -28,6 +33,10 @@
 
     # Load nvidia driver for Xorg and Wayland
     services.xserver.videoDrivers = ["nvidia"];
+
+    # Power management
+    services.tlp.enable = true;
+    services.power-profiles-daemon.enable = true;
 
     hardware.nvidia = {
         # Modesetting is required.
