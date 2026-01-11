@@ -229,6 +229,8 @@ in {
 
     programs.kitty = {
         enable = true;
+        environment = config.home.sessionVariables;
+
         settings = {
             font_family = "Cascadia Mono PL";
             font_features = "-calt -liga -ss01 -ss02 -ss03 -ss04 -ss05 -ss06 -ss07 -ss08 -ss09 -ss10 -ss11 -ss12 -ss13 -ss14 -ss15 -ss16 -ss17 -ss18 -ss19 -ss20 -ss21 -ss22 -ss23 -ss24 -ss25 -ss26 -ss27 -ss28 -ss29 -ss30 -ss31";
@@ -244,8 +246,6 @@ in {
 
             strip_trailing_spaces = "smart";
 
-            mouse_map = "ctrl+shift+left release grabbed,ungrabbed mouse_click_url";
-
 # Cursor animations
             cursor_blink_interval = "-1 ease-in-out";
             cursor_stop_blinking_after = 0;
@@ -254,7 +254,11 @@ in {
             cursor_trail_start_threshold = 5;
             cursor_trail_color = "none";
         };
-        environment = config.home.sessionVariables;
+
+        mouseBindings = {
+            "left click ungrabbed" = "no-op";
+            "ctrl+shift+left release grabbed,ungrabbed" = "mouse_click_url";
+        };
     };
 
     programs.wofi = {
