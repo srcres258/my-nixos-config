@@ -5,26 +5,21 @@
     inputs,
     ...
 }: {
-    # systemd.user.services."mpvpaper" = let
-    #     wallpaperSrc = ./wallpapers/bg.mp4;
-    #     mpvOptions = [
-    #         "loop=inf no-audio hwdec=vaapi"
-    #     ];
-    # in {
-    #     Unit = {
-    #         Description = "mpvpaper dynamic wallpaper";
-    #     };
-    #
-    #     Service = {
-    #         Type = "simple";
-    #         ExecStart = "${pkgs.mpvpaper}/bin/mpvpaper -o '${builtins.concatStringsSep " " mpvOptions}' '*' ${wallpaperSrc}";
-    #         Restart = "on-failure";
-    #         RestartSec = 2;
-    #     };
-    #
-    #     Install = {
-    #         WantedBy = [ "graphical-session.target" ];
-    #     };
-    # };
+    home.packages = with pkgs; [
+        swaybg
+    ];
+
+    systemd.user.services.swaybg = let
+        backgroundImg = ./wallpapers/bg.png;
+    in {
+        description = "Sway static wallpaper background service";
+        wantedBy = [ "graphical-session.target" ];
+        partOf = [ "graphical-session.target" ];
+        serviceConfig = {
+            Type = "simple";
+            Restart = "on-failure";
+            ExecStart = "${pkgs.swaybg}/bin/swaybg --mode full --image ${backgroundImg}";
+        };
+    };
 }
 
