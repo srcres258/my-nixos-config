@@ -9,16 +9,23 @@
         swaybg
     ];
 
-    systemd.user.services.swaybg = let
+    systemd.user.services."swaybg" = let
         backgroundImg = ./wallpapers/bg.png;
     in {
-        description = "Sway static wallpaper background service";
-        wantedBy = [ "graphical-session.target" ];
-        partOf = [ "graphical-session.target" ];
-        serviceConfig = {
+        Unit = {
+            Description = "Sway static wallpaper background service";
+        };
+
+        Service = {
             Type = "simple";
-            Restart = "on-failure";
             ExecStart = "${pkgs.swaybg}/bin/swaybg --mode full --image ${backgroundImg}";
+            Restart = "on-failure";
+            RestartSec = 2;
+        };
+
+        Instapp = {
+            wantedBy = [ "graphical-session.target" ];
+            partOf = [ "graphical-session.target" ];
         };
     };
 }
