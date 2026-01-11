@@ -23,9 +23,9 @@
             RestartSec = 2;
         };
 
-        Instapp = {
-            wantedBy = [ "graphical-session.target" ];
-            partOf = [ "graphical-session.target" ];
+        Install = {
+            WantedBy = [ "graphical-session.target" ];
+            PartOf = [ "graphical-session.target" ];
         };
     };
 }
