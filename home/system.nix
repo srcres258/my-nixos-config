@@ -332,6 +332,7 @@ in {
 
                     # Solidity
                     juanblanco.solidity
+                    nomicfoundation.hardhat-solidity
 
                     # HTML
                     sidthesloth.html5-boilerplate
@@ -371,6 +372,8 @@ in {
                     "solidity.solhintRules" = {
                         avoid-sha3 = "warn";
                     };
+                    "solidity.packageDefaultDependenciesDirectory" = "lib";
+                    "solidity.packageDefaultDependenciesContractsDirectory" = "src";
                 };
             };
         };
