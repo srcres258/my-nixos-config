@@ -145,6 +145,7 @@ in {
             termcolor
             prompt-toolkit
             aprslib
+            web3
         ]) ++ (config.my.python.packageGenerator ps))))
         yapf
         hatch
