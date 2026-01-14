@@ -331,7 +331,6 @@ in {
                     ms-toolsai.vscode-jupyter-cell-tags
 
                     # Solidity
-                    juanblanco.solidity
                     nomicfoundation.hardhat-solidity
 
                     # HTML
