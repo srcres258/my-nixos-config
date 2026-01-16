@@ -287,6 +287,7 @@ in {
                     wayou.vscode-todo-highlight
                     wakatime.vscode-wakatime
                     yzane.markdown-pdf
+                    gruntfuggly.todo-tree
 
                     # Theme
                     sdras.night-owl
