@@ -34,8 +34,6 @@ in {
 
         qemu
 
-        fastfetch
-
         nil
         lua-language-server
         rust-analyzer
@@ -351,6 +349,60 @@ in {
     programs.go.enable = true;
 
     programs.pandoc.enable = true;
+
+    programs.fastfetch = {
+        enable = true;
+        settings = let
+            logoFile = ./furry.lgo;
+        in {
+            modules = [
+                "title"
+                "separator"
+                "os"
+                "host"
+                "kernel"
+                "uptime"
+                "packages"
+                "shell"
+                "display"
+                "de"
+                "wm"
+                "wmtheme"
+                "theme"
+                "icons"
+                "font"
+                "cursor"
+                "terminal"
+                "terminalfont"
+                "cpu"
+                "gpu"
+                "memory"
+                "swap"
+                "disk"
+                "localip"
+                "battery"
+                "poweradapter"
+                "locale"
+                "break"
+                "colors"
+            ];
+            logo = {
+                type = "auto"; # Logo type: auto, builtin, small, file, etc.
+                source = "${logoFile}"; # Built-in logo name or file path
+                width = 35; # Width in characters (for image logos)
+                height = 35; # Height in characters (for image logos)
+                padding = {
+                    top = 0; # Top padding
+                    left = 0; # Left padding
+                    right = 2; # Right padding
+                };
+                color = { # Override logo colors
+                    "1" = "blue";
+                    "2" = "green";
+                };
+            };
+        };
+    };
 
     fonts.fontconfig = {
         defaultFonts = {
