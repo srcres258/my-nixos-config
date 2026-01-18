@@ -346,6 +346,8 @@ in {
                     waderyan.nodejs-extension-pack
                     rvest.vs-code-prettier-eslint
                     ms-vscode.js-debug
+                    dsznajder.es7-react-js-snippets
+                    msjsdiag.vscode-react-native
 
                     # Coq
                     maximedenes.vscoq
