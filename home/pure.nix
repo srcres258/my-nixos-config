@@ -61,6 +61,7 @@ in {
 
         nodejs_24
         electron
+        pnpm
 
         ghc
         cabal-install
