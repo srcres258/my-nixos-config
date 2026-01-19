@@ -359,6 +359,7 @@ in {
                     "nix.enableLanguageServer" = true;
                     "vim.useSystemClipboard" = true;
                     "editor.rulers" = [80 100 120];
+                    "editor.tabSize" = 2;
 
                     "files.autoGuessEncoding" = true;
                     "editor.cursorSmoothCaretAnimation" = true;
