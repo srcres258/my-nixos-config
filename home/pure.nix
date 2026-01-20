@@ -88,6 +88,8 @@ in {
 
         yt-dlp
 
+        kubo
+
 # Ethereum
         inputs.go-ethereum-legacy-nixpkgs.legacyPackages.${system}.go-ethereum
         foundry-bin
