@@ -381,6 +381,13 @@ in {
                     };
                     "solidity.packageDefaultDependenciesDirectory" = "lib";
                     "solidity.packageDefaultDependenciesContractsDirectory" = "src";
+
+                    # Type annotations for TypeScript
+                    "typescript.inlayHints.parameterNames.enabled" = "all";
+                    "typescript.inlayHints.parameterTypes.enabled" = true;
+                    "typescript.inlayHints.variableTypes.enabled" = true;
+                    "typescript.inlayHints.propertyDeclarationTypes.enabled" = true;
+                    "typescript.inlayHints.functionLikeReturnTypes.enabled" = true;
                 };
             };
         };
