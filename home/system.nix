@@ -348,6 +348,8 @@ in {
                     ms-vscode.js-debug
                     dsznajder.es7-react-js-snippets
                     msjsdiag.vscode-react-native
+                    ecmel.vscode-html-css
+                    bradlc.vscode-tailwindcss
 
                     # Coq
                     maximedenes.vscoq
