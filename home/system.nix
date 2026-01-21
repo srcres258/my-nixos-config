@@ -19,6 +19,7 @@ in {
         kdePackages.okular
         kdePackages.kwallet
         kdePackages.gwenview
+        kdePackages.spectacle
         kwalletcli
 
         bilibili
