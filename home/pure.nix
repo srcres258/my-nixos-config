@@ -407,6 +407,8 @@ in {
         };
     };
 
+    programs.poetry.enable = true;
+
     fonts.fontconfig = {
         defaultFonts = {
             emoji = [ "Noto Color Emoji" ];
