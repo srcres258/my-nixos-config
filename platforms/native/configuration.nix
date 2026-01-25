@@ -105,11 +105,5 @@
             setSocketVariable = true;
         };
     };
-
-    networking.hosts = {
-        "127.0.0.1" = [ "localhost" "blockscout" "blockscout.local" ];
-        "255.255.255.255" = [ "broadcasthost" ];
-        "::1" = [ "localhost" "blockscout" "blockscout.local" ];
-    };
 }
 
