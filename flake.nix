@@ -92,6 +92,10 @@
 
                 ./devices/srcres-wsl/configuration.nix
             ];
+            srcres-desktop-x99 = mkNixOSConfig [
+                ./platforms/native/configuration.nix
+                ./devices/srcres-desktop-x99/configuration.nix
+            ];
         };
 
         homeConfigurations = let
@@ -118,6 +122,9 @@
             ];
             "${username}@srcres-wsl" = mkPureHomeConfig [
                 ./home/pure.nix
+            ];
+            "${username}@srcres-desktop-x99" = mkHomeConfig [
+                ./devices/srcres-desktop-x99/home
             ];
         };
 
