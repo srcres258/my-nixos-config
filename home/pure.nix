@@ -147,6 +147,8 @@ in {
             prompt-toolkit
             aprslib
             web3
+            jinja2
+            pyquery
         ]) ++ (config.my.python.packageGenerator ps))))
         yapf
         hatch
