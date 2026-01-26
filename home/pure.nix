@@ -149,6 +149,7 @@ in {
             web3
             jinja2
             pyquery
+            pyyaml
         ]) ++ (config.my.python.packageGenerator ps))))
         yapf
         hatch
