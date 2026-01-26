@@ -83,24 +83,24 @@ in {
 # === Modules Order ===
                 modules-left = [
                     "custom/archicon"
-                        "clock"
-                        "cpu"
-                        "memory"
-                        "disk"
-                        "temperature"
-                        "keyboard-state"
+                    "clock"
+                    "cpu"
+                    "memory"
+                    "disk"
+                    "temperature"
+                    "keyboard-state"
                 ];
                 modules-center = [
                     "hyprland/workspaces"
                 ];
                 modules-right = [
                     "wlr/taskbar"
-                        "tray"
-                        "idle_inhibitor"
-                        "pulseaudio/slider"
-                        "pulseaudio"
-                        "network"
-                        "hyprland/language"
+                    "tray"
+                    "idle_inhibitor"
+                    "pulseaudio/slider"
+                    "pulseaudio"
+                    "network"
+                    "hyprland/language"
                 ];
 
 # === Modules Left ===
@@ -205,7 +205,6 @@ in {
                     format-icons = {
                         default = [
                             "Unmuted"
-                                "Muted"
                         ];
                     };
                 };
