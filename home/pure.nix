@@ -150,6 +150,7 @@ in {
             jinja2
             pyquery
             pyyaml
+            markdown
         ]) ++ (config.my.python.packageGenerator ps))))
         yapf
         hatch
