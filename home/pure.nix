@@ -151,6 +151,8 @@ in {
             pyquery
             pyyaml
             markdown
+        ]) ++ ([
+            nur.repos.srcres258.simple-toml-configurator
         ]) ++ (config.my.python.packageGenerator ps))))
         yapf
         hatch
