@@ -84,7 +84,7 @@
     services.gvfs.enable = true;
 
     services.postgresql = {
-        enable = true;
+        enable = lib.mkDefault false;
         package = pkgs.postgresql_14;
 
         settings = {
