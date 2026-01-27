@@ -147,10 +147,6 @@ in {
             prompt-toolkit
             aprslib
             web3
-            jinja2
-            pyquery
-            pyyaml
-            markdown
         ]) ++ ([
             nur.repos.srcres258.simple-toml-configurator
         ]) ++ (config.my.python.packageGenerator ps))))
