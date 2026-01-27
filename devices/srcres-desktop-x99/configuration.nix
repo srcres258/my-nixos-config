@@ -28,6 +28,10 @@
         firewall.enable = false;
     };
 
+    # v2raya for VPN
+    services.v2raya.enable = true;
+    networking.nftables.enable = true;
+
     environment.systemPackages = with pkgs; [
         # Add other system-wide ROCm tools.
         rocmPackages.rocminfo
