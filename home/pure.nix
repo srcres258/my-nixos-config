@@ -157,7 +157,9 @@ in {
         hatch
 
 # Haskell language
-        ghc
+        (haskellPackages.ghcWithPackages (ps: with ps; [
+            data-memocombinators
+        ]))
         cabal-install
         haskell-language-server
     ] ++ [ javaPkg scalaPkg ];
