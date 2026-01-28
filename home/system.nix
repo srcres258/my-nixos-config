@@ -313,6 +313,7 @@ in {
 
                     # SystemVerilog / Verilog / VHDL
                     mshr-h.veriloghdl
+                    puorc.awesome-vhdl
 
                     # Nix
                     jnoortheen.nix-ide
