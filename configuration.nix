@@ -13,6 +13,11 @@
     networking.firewall = {
         allowedTCPPorts = [ 11451 ];
     };
+# Add extra hosts.
+    networking.extraHosts = ''
+        185.199.108.133 raw.githubusercontent.com
+        2606:50c0:8000::154 raw.githubusercontent.com
+    '';
 
 # Set your time zone.
     time.timeZone = "Asia/Shanghai";
