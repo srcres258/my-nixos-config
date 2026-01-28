@@ -6,15 +6,20 @@
     inputs,
     ...
 }: let
+    username = "srcres";
+
     javaPkg = pkgs.javaPackages.compiler.temurin-bin.jdk-21;
     scalaPkg = pkgs.scala_3;
 in {
     imports = [ ./options.nix ];
 
-    home = rec {
-        username = "srcres";
+    home = {
+        inherit username;
         homeDirectory = "/home/${username}";
     };
+    home.sessionPath = [
+        "~/.ghcup/bin"
+    ];
 
     nixpkgs.config.allowUnfree = true;
     # nixpkgs.overlays = [
@@ -62,10 +67,6 @@ in {
         nodejs_24
         electron
         pnpm
-
-        ghc
-        cabal-install
-        # haskellPackages.hls # TODO: Uncomment this when the package is not broken in nixpkgs.
 
         pkgsCross.riscv64.stdenv.cc           # Linux GNU
         pkgsCross.riscv64-embedded.stdenv.cc  # bare-metal ELF
