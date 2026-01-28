@@ -153,6 +153,11 @@ in {
         ]) ++ (config.my.python.packageGenerator ps))))
         yapf
         hatch
+
+# Haskell language
+        ghc
+        cabal-install
+        haskell-language-server
     ] ++ [ javaPkg scalaPkg ];
     home.sessionVariables = {
         EDITOR = "nvim";
