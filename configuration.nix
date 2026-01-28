@@ -154,6 +154,8 @@
         nftables
         iptables
         tcpdump
+
+        cachix
     ]);
 
     environment.variables.EDITOR = "vim";
