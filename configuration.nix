@@ -289,6 +289,16 @@
     #     ];
     # };
 
+# Define the responses to system key events.
+    services.logind.settings.Login = {
+        HandlePowerKey = "ignore";
+        HandleRebootKey = "ignore";
+        HandleSuspendKey = "ignore";
+        HandleHibernateKey = "ignore";
+        HandleLidSwitch = "ignore";
+        HandleLidSwitchDocked = "ignore";
+    };
+
 # Remove nix-channel related tools & configs, we use flakes instead.
     nix.channel.enable = false;
 
