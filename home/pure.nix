@@ -162,6 +162,7 @@ in {
         ]))
         cabal-install
         haskell-language-server
+        stack
     ] ++ [ javaPkg scalaPkg ];
     home.sessionVariables = {
         EDITOR = "nvim";
