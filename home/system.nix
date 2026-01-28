@@ -319,6 +319,8 @@ in {
 
                     # Haskell
                     haskell.haskell
+                    justusadam.language-haskell
+                    hoovercj.haskell-linter
 
                     # Python
                     ms-python.python
