@@ -353,9 +353,6 @@ in {
                     msjsdiag.vscode-react-native
                     ecmel.vscode-html-css
                     bradlc.vscode-tailwindcss
-
-                    # Coq
-                    maximedenes.vscoq
                 ];
 
                 userSettings = {
