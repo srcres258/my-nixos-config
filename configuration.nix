@@ -107,6 +107,7 @@
         lm_sensors
         ethtool
         pciutils
+        usb-modeswitch
         usbutils
 
         wireplumber
@@ -301,7 +302,7 @@
 
 # Enable support for devices based on MediaTek chips.
     services.udev.extraRules = ''
-        ACTION=="add", SUBSYSTEM=="usb", ATTRS{idVendor}=="3574", ATTRS{idProduct}=="6211", RUN+="/bin/sh -c 'echo 3574 6211 > /sys/bus/usb/drivers/mt7921u/new_id'"
+        SUBSYSTEM=="usb", ATTRS{idVendor}=="0e8d", ATTRS{idProduct}=="2870", RUN+="${pkgs.usb-modeswitch}/bin/usb_modeswitch '/%k'"
     '';
 
 # Remove nix-channel related tools & configs, we use flakes instead.
