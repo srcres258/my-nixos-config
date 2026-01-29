@@ -299,6 +299,11 @@
         HandleLidSwitchDocked = "ignore";
     };
 
+# Enable support for devices based on MediaTek chips.
+    services.udev.extraRules = ''
+        ACTION=="add", SUBSYSTEM=="usb", ATTRS{idVendor}=="3574", ATTRS{idProduct}=="6211", RUN+="/bin/sh -c 'echo 3574 6211 > /sys/bus/usb/drivers/mt7921u/new_id'"
+    '';
+
 # Remove nix-channel related tools & configs, we use flakes instead.
     nix.channel.enable = false;
 
