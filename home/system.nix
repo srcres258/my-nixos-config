@@ -1,6 +1,7 @@
 {
     config,
     pkgs,
+    pkgs-unstable,
     lib,
     inputs,
     ...
@@ -276,7 +277,7 @@ in {
 
     programs.vscode = {
         enable = true;
-        package = pkgs.vscode.fhs;
+        package = pkgs-unstable.vscode;
 
         mutableExtensionsDir = true;
 

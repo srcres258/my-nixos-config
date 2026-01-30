@@ -66,12 +66,19 @@
                 foundry.overlay
             ];
         };
+        pkgs-unstable = import nixpkgs-unstable {
+            inherit system;
+            config = {
+                allowUnfree = true;
+            };
+        };
     in {
         nixosConfigurations = let
             mkNixOSConfig = extraModules: nixpkgs.lib.nixosSystem {
                 inherit system pkgs;
                 specialArgs = {
                     inherit inputs system;
+                    inherit pkgs-unstable;
                     srcres-password = builtins.getEnv "SRCRES_PASSWORD";
                 };
                 modules = [
@@ -101,7 +108,10 @@
         homeConfigurations = let
             mkHomeConfig = extraModules: home-manager.lib.homeManagerConfiguration {
                 inherit pkgs;
-                extraSpecialArgs = { inherit inputs system; };
+                extraSpecialArgs = {
+                    inherit inputs system;
+                    inherit pkgs-unstable;
+                };
                 modules = [
                     ./home
                 ] ++ extraModules;
@@ -110,7 +120,10 @@
 
             mkPureHomeConfig = extraModules: home-manager.lib.homeManagerConfiguration {
                 inherit pkgs;
-                extraSpecialArgs = { inherit inputs system; };
+                extraSpecialArgs = {
+                    inherit inputs system;
+                    inherit pkgs-unstable;
+                };
                 modules = extraModules;
             };
         in {
