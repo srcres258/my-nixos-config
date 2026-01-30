@@ -160,6 +160,7 @@ in {
 # Haskell language
         (haskellPackages.ghcWithPackages (ps: with ps; [
             data-memocombinators
+            mtl
         ]))
         cabal-install
         haskell-language-server
