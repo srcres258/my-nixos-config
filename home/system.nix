@@ -346,7 +346,6 @@ in {
                     # JS and TS
                     ms-vscode.vscode-typescript-next
                     leizongmin.node-module-intellisense
-                    waderyan.nodejs-extension-pack
                     rvest.vs-code-prettier-eslint
                     ms-vscode.js-debug
                     dsznajder.es7-react-js-snippets
