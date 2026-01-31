@@ -57,6 +57,7 @@
             "audio"
             "docker"
             "wireshark"
+            "i2c"
         ];
         shell = pkgs.fish;
     };
@@ -124,6 +125,7 @@
         clang
         gnumake
         ccache
+        ddcutil
 
 # Java
         jetbrains.jdk
@@ -301,9 +303,15 @@
     };
 
 # Enable support for devices based on MediaTek chips.
-    services.udev.extraRules = ''
-        SUBSYSTEM=="usb", ATTRS{idVendor}=="0e8d", ATTRS{idProduct}=="2870", RUN+="${pkgs.usb-modeswitch}/bin/usb_modeswitch '/%k'"
-    '';
+    services.udev = {
+        packages = [ pkgs.ddcutil ];
+        extraRules = ''
+            SUBSYSTEM=="usb", ATTRS{idVendor}=="0e8d", ATTRS{idProduct}=="2870", RUN+="${pkgs.usb-modeswitch}/bin/usb_modeswitch '/%k'"
+        '';
+    };
+
+# Enable i2c hardware.
+    hardware.i2c.enable = true;
 
 # Remove nix-channel related tools & configs, we use flakes instead.
     nix.channel.enable = false;
