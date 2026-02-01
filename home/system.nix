@@ -35,6 +35,8 @@ in {
 
         gimp
 
+        drawio
+
 # Minecraft launchers
         hmcl
         prismlauncher
