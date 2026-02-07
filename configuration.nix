@@ -122,7 +122,8 @@
         bluez-experimental
 
         gcc
-        clang
+        llvmPackages.llvm.dev
+        llvmPackages.clang
         gnumake
         ccache
         ddcutil
