@@ -83,6 +83,7 @@ in {
         coqPackages.vscoq-language-server
 
         optnix
+        nix-tree
 
         ffmpeg
 
