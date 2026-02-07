@@ -311,6 +311,8 @@ in {
                     # C / C++
                     ms-vscode.cpptools
                     ms-vscode.cmake-tools
+                    ms-vscode.cpptools-extension-pack
+                    hars.cppsnippets
 
                     # Scala
                     scala-lang.scala
