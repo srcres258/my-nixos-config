@@ -29,9 +29,23 @@
     boot.binfmt.emulatedSystems = [ "riscv64-linux" ];
 # Enable NTFS filesystem support.
     boot.supportedFilesystems = [ "ntfs" ];
+# Enable extra kernel modules.
+    boot.extraModulePackages = with config.boot.kernelPackages; [
+        v4l2loopback
+    ];
+    boot.kernelModules = [ "v4l2loopback" ];
+    boot.extraModprobeConfig = ''
+        options v4l2loopback devices=1
+        options v4l2loopback video_nr=10
+        options v4l2loopback card_label="Virtual Cam"
+        options v4l2loopback exclusive_caps=1
+        options v4l2loopback max_width=4096
+        options v4l2loopback max_height=4096
+    '';
 
     environment.systemPackages = with pkgs; [
         docker-compose
+        v4l-utils
     ];
 
 # Allow normal users to mount NTFS filesystems.
