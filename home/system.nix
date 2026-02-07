@@ -358,8 +358,7 @@ in {
 
                     # Rust
                     rust-lang.rust-analyzer
-                    serayuzgur.crates
-                    njpwerner.autodocstring
+                    JScearcy.rust-doc-viewer
                 ];
 
                 userSettings = {
