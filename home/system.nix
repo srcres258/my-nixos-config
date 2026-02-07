@@ -382,19 +382,15 @@ in {
                     "window.dialogStyle" = "custom";
                     "debug.showBreakpointsInOverviewRuler" = true;
 
-                    "solidity.linter" = "solhint";
-                    "solidity.solhintRules" = {
-                        avoid-sha3 = "warn";
-                    };
-                    "solidity.packageDefaultDependenciesDirectory" = "lib";
-                    "solidity.packageDefaultDependenciesContractsDirectory" = "src";
-
                     # Type annotations for TypeScript
                     "typescript.inlayHints.parameterNames.enabled" = "all";
                     "typescript.inlayHints.parameterTypes.enabled" = true;
                     "typescript.inlayHints.variableTypes.enabled" = true;
                     "typescript.inlayHints.propertyDeclarationTypes.enabled" = true;
                     "typescript.inlayHints.functionLikeReturnTypes.enabled" = true;
+
+                    "rust-analyzer.completion.autoimport.enable" = true;
+                    "rust-analyzer.completion.autoimport.only" = true;
                 };
             };
         };
