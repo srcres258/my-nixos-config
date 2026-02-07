@@ -355,6 +355,11 @@ in {
                     msjsdiag.vscode-react-native
                     ecmel.vscode-html-css
                     bradlc.vscode-tailwindcss
+
+                    # Rust
+                    rust-lang.rust-analyzer
+                    serayuzgur.crates
+                    njpwerner.autodocstring
                 ];
 
                 userSettings = {
