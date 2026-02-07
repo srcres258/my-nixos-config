@@ -285,7 +285,10 @@ in {
 
         profiles = {
             default = {
-                extensions = with vscode-ext.vscode-marketplace; [
+                extensions = ((with pkgs.vscode-extensions; [
+                    # Rust
+                    rust-lang.rust-analyzer
+                ]) ++ (with vscode-ext.vscode-marketplace; [
                     ms-ceintl.vscode-language-pack-zh-hans
 
                     wayou.vscode-todo-highlight
@@ -357,9 +360,8 @@ in {
                     bradlc.vscode-tailwindcss
 
                     # Rust
-                    rust-lang.rust-analyzer
                     jscearcy.rust-doc-viewer
-                ];
+                ]));
 
                 userSettings = {
                     "editor.fontFamily" = "'Cascadia Code', 'monospace', monospace, 'Droid Sans Fallback'";

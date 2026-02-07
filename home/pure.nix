@@ -179,6 +179,8 @@ in {
         JAVA_HOME = "${javaPkg}";
         COURSIER_CACHE = "${config.xdg.cacheHome}/coursier";
         SBT_OPTS = "-Dsbt.ivy.home=${config.xdg.cacheHome}/ivy2 -Dsbt.global.base=${config.xdg.configHome}/sbt -Dsbt.coursier.home=${config.xdg.cacheHome}/coursier";
+
+        RUST_SRC_PATH = "${pkgs.rustPlatform.rustLibSrc}";
     };
     xdg.enable = true;
     xdg.cacheHome = builtins.toPath "/home/${config.home.username}/.cache";
