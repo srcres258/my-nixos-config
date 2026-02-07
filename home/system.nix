@@ -358,7 +358,7 @@ in {
 
                     # Rust
                     rust-lang.rust-analyzer
-                    JScearcy.rust-doc-viewer
+                    jscearcy.rust-doc-viewer
                 ];
 
                 userSettings = {
