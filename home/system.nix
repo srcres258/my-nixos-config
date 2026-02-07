@@ -388,9 +388,6 @@ in {
                     "typescript.inlayHints.variableTypes.enabled" = true;
                     "typescript.inlayHints.propertyDeclarationTypes.enabled" = true;
                     "typescript.inlayHints.functionLikeReturnTypes.enabled" = true;
-
-                    "rust-analyzer.completion.autoimport.enable" = true;
-                    "rust-analyzer.completion.autoimport.only" = true;
                 };
             };
         };
