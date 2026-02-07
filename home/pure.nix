@@ -41,7 +41,6 @@ in {
 
         nil
         lua-language-server
-        rust-analyzer
         pyright
         taplo
         marksman
@@ -113,6 +112,13 @@ in {
         scalafmt
         scalafix
         metals
+
+# Rust language
+        cargo
+        rustc
+        rustfmt
+        clippy
+        rust-analyzer
 
         (let
             base = pkgs.appimageTools.defaultFhsEnvArgs;
