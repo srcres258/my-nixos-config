@@ -391,6 +391,8 @@ in {
                     "typescript.inlayHints.variableTypes.enabled" = true;
                     "typescript.inlayHints.propertyDeclarationTypes.enabled" = true;
                     "typescript.inlayHints.functionLikeReturnTypes.enabled" = true;
+
+                    "workbench.colorTheme" = "Night Owl";
                 };
             };
         };
