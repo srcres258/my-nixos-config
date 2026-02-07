@@ -37,6 +37,8 @@ in {
 
         drawio
 
+        cmakeWithGui
+
 # Minecraft launchers
         hmcl
         prismlauncher

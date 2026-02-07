@@ -127,6 +127,7 @@
         gnumake
         ccache
         ddcutil
+        cmakeMinimal
 
 # Java
         jetbrains.jdk
