@@ -3,6 +3,7 @@
     config,
     lib,
     pkgs,
+    pkgs-unstable,
     srcres-password,
     ...
 }: {
@@ -66,7 +67,7 @@
 
 # List packages installed in system profile.
 # You can use https://search.nixos.org/ to find more packages (and options).
-    environment.systemPackages = with pkgs; ([
+    environment.systemPackages = (with pkgs; ([
         home-manager
 
 # Use Niri as the desktop environment.
@@ -161,7 +162,9 @@
         tcpdump
 
         cachix
-    ]);
+    ]) ++ (with pkgs-unstable; [
+        nix-sweep
+    ]));
 
     environment.variables.EDITOR = "vim";
 
