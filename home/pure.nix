@@ -75,8 +75,6 @@ in {
 
         wireshark
 
-        nur.repos.srcres258.ag
-
         hexo-cli
 
         coqPackages.coq
@@ -158,8 +156,6 @@ in {
             prompt-toolkit
             aprslib
             web3
-        ]) ++ ([
-            nur.repos.srcres258.simple-toml-configurator
         ]) ++ (config.my.python.packageGenerator ps))))
         yapf
         hatch
@@ -172,7 +168,10 @@ in {
         cabal-install
         haskell-language-server
         stack
-    ] ++ [ javaPkg scalaPkg ];
+    ] ++ (with nur.repos; [
+        srcres258.ag
+        srcres258.jyyslide-util
+    ]) ++ [ javaPkg scalaPkg ];
     home.sessionVariables = {
         EDITOR = "nvim";
         VISUAL = "nvim";
