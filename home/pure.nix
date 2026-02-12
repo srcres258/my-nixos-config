@@ -92,6 +92,8 @@ in {
         hlint
         universal-ctags
 
+        android-file-transfer
+
 # Ethereum
         inputs.go-ethereum-legacy-nixpkgs.legacyPackages.${system}.go-ethereum
         foundry-bin
