@@ -133,7 +133,7 @@ in {
                     tooltip-format = "RAM used: {used} / {total} ({percentage}%)";
                 };
                 disk = {
-                    format = "{}% Disk";
+                    format = "{}% Free Disk";
                     tooltip = true;
                     tooltip-format = "Disk available: {free} / {total} ({percentage_free}%)";
                 };
