@@ -858,9 +858,9 @@ vim.wo.wrap = false
 vim.opt.expandtab = true
 vim.opt.smarttab = false
 vim.opt.smartindent = true
-vim.opt.shiftwidth = 4
-vim.opt.tabstop = 4
-vim.opt.softtabstop = 4
+vim.opt.shiftwidth = 2
+vim.opt.tabstop = 2
+vim.opt.softtabstop = 2
 
 vim.opt.splitbelow = true
 vim.opt.splitright = true
