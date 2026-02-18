@@ -434,6 +434,8 @@ in {
 
     programs.poetry.enable = true;
 
+    programs.neomutt.enable = true;
+
     fonts.fontconfig = {
         defaultFonts = {
             emoji = [ "Noto Color Emoji" ];
