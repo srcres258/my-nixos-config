@@ -158,6 +158,7 @@ in {
             prompt-toolkit
             aprslib
             web3
+            sphinx
         ]) ++ (config.my.python.packageGenerator ps))))
         yapf
         hatch
