@@ -134,7 +134,7 @@
                 ./devices/srcres-laptop/home
             ];
             "${username}@srcres-wsl" = mkPureHomeConfig [
-                ./home/pure.nix
+                ./home/pure
             ];
             "${username}@srcres-desktop-x99" = mkHomeConfig [
                 ./devices/srcres-desktop-x99/home

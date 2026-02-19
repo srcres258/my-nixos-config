@@ -5,6 +5,6 @@
     inputs,
     ...
 }: {
-    imports = [ ./pure.nix ./system.nix ];
+    imports = [ ./pure ./system ];
 }
 

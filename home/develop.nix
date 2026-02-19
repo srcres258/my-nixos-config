@@ -5,7 +5,7 @@
         inputs,
         ...
 }: {
-    imports = [ ./pure.nix ];
+    imports = [ ./pure ];
 
     programs.fish = {
         enable = true;

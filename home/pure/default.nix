@@ -11,7 +11,7 @@
     javaPkg = pkgs.javaPackages.compiler.temurin-bin.jdk-21;
     scalaPkg = pkgs.scala_3;
 in {
-    imports = [ ./options.nix ];
+    imports = [ ../options.nix ];
 
     home = {
         inherit username;
