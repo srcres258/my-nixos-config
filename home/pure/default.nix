@@ -11,7 +11,7 @@
     javaPkg = pkgs.javaPackages.compiler.temurin-bin.jdk-21;
     scalaPkg = pkgs.scala_3;
 in {
-    imports = [ ../options.nix ];
+    imports = [ ../options.nix ./neomutt.nix ];
 
     home = {
         inherit username;
@@ -435,7 +435,15 @@ in {
 
     programs.poetry.enable = true;
 
-    programs.neomutt.enable = true;
+    programs.password-store.enable = true;
+
+    programs.gpg.enable = true;
+
+    services.gpg-agent = {
+      enable = true;
+      enableSshSupport = true;
+      pinentry.package = pkgs.pinentry-tty;
+    };
 
     fonts.fontconfig = {
         defaultFonts = {
