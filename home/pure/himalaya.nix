@@ -1,9 +1,16 @@
 {
   pkgs,
   ...
-}: {
+}: let
+  passPkg = pkgs.pass;
+in {
   # 全局启用 Himalaya（安装二进制 + 基本设置）
-  programs.himalaya.enable = true;
+  programs.himalaya = {
+    enable = true;
+    package = pkgs.himalaya.override {
+      buildFeatures = [ "oauth2" "keyring" ];
+    };
+  };
 
   # 邮件账户定义（这里以 Outlook / Microsoft 365 为例）
   accounts.email.accounts = {
@@ -23,58 +30,43 @@
 
         # 这里传入 TOML 片段（直接对应 ~/.config/himalaya/config.toml 中的 [accounts.outlook] 部分）
         # 参考：https://github.com/pimalaya/himalaya/blob/master/config.sample.toml
-        settings = {
-          # 账户名称（在 himalaya 命令中用 -a outlook 指定）
-          default = true;  # 可选：设为默认账户
+        settings = let
+          mailAddr = "srcres258@furdevs.cn";
+          auth = {
+            type = "oauth2";
+            method = "xoauth2";
+            client-id = "8a1b3af2-1641-4ef0-b0fc-e68862579fde";
+            client-secret.keyring = "outlook-oauth2-client-secret";
+            access-token.keyring = "outlook-oauth2-access-token";
+            refresh-token.keyring = "outlook-oauth2-refresh-token";
+            auth-url = "https://login.microsoftonline.com/common/oauth2/v2.0/authorize";
+            token-url = "https://login.microsoftonline.com/common/oauth2/v2.0/token";
+            pkce = true;
+            scopes = [
+              "https://outlook.office.com/IMAP.AccessAsUser.All"
+              "https://outlook.office.com/SMTP.Send"
+            ];
+          };
+        in {
+          email = mailAddr;
 
-          # 邮箱地址（通常和上面一致）
-          email = "srcres258@furdevs.cn";
-
-          # 使用 Microsoft 365 / Outlook 的 IMAP + OAuth2
           backend = {
             type = "imap";
             host = "outlook.office365.com";
             port = 993;
-            ssl = true;          # 或 starttls = false
-            # login = "your@email.com"  # 如果需要不同，通常省略
+            encryption.type = "tls";
+            login = mailAddr;
+            inherit auth;
           };
 
-          # 发送邮件（SMTP + OAuth2）
-          message.send = {
-            backend = {
-              type = "smtp";
-              host = "smtp-mail.office365.com";
-              port = 587;
-              ssl = false;           # 用 STARTTLS
-              # starttls = true;     # 或者明确指定
-            };
-
-            # 关键：启用 OAuth2
-            auth = {
-              type = "oauth2";
-              # 以下字段在第一次配置时会自动填充/交互式完成
-              # client-id = "你的 Azure App Client ID";
-              # client-secret = "你的 Client Secret";
-              # auth-url = "https://login.microsoftonline.com/common/oauth2/v2.0/authorize";
-              # token-url = "https://login.microsoftonline.com/common/oauth2/v2.0/token";
-              # redirect-uri = "http://localhost:8080";  # Himalaya 默认用这个
-              # scope = "https://outlook.office.com/IMAP.AccessAsUser.All https://outlook.office.com/SMTP.Send offline_access";
-              # refresh-token.keyring = "himalaya-outlook-refresh-token";  # 存储在系统 keyring
-            };
+          message.send.backend = {
+            type = "smtp";
+            host = "smtp-mail.outlook.com";
+            port = 587;
+            encryption.type = "start-tls";
+            login = mailAddr;
+            inherit auth;
           };
-
-          # 可选：文件夹映射（Outlook 常见结构）
-          folders = {
-            inbox = "INBOX";
-            sent = "Sent Items";
-            draft = "Drafts";
-            trash = "Deleted Items";
-            # templates = "...";
-          };
-
-          # 可选：其他偏好
-          # envelope.list = "threads";  # 线程视图
-          # message.read = "pager";     # 用 less 或内置 pager 阅读
         };
       };
     };
@@ -82,8 +74,6 @@
 
   # 强烈推荐：安装 keyring 支持（Himalaya 用它安全存储 refresh token）
   # Nixpkgs 的 himalaya 默认带 keyring 特征
-  home.packages = with pkgs; [
-    pass
-  ];
+  home.packages = [ passPkg ];
 }
 
