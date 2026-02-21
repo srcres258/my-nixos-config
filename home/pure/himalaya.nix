@@ -8,7 +8,7 @@ in {
   programs.himalaya = {
     enable = true;
     package = pkgs.himalaya.override {
-      buildFeatures = [ "oauth2" "keyring" ];
+      withFeatures = [ "oauth2" "keyring" ];
     };
   };
 
