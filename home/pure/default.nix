@@ -62,8 +62,6 @@ in {
 
         eza
 
-        kdePackages.okular
-
         nodejs_24
         electron
         pnpm
@@ -77,9 +75,6 @@ in {
         wireshark
 
         hexo-cli
-
-        coqPackages.coq
-        coqPackages.vscoq-language-server
 
         optnix
         nix-tree

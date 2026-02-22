@@ -21,7 +21,6 @@ in {
         kdePackages.okular
         kdePackages.kwallet
         kdePackages.gwenview
-        kdePackages.spectacle
         kwalletcli
 
         bilibili
@@ -47,12 +46,8 @@ in {
 
 # JetBrains IDEs
         jetbrains.idea
-        jetbrains.pycharm
-        jetbrains.webstorm
 
         nur.repos.srcres258.lceda-pro
-
-        flatpak
 
         feishu
 
@@ -61,8 +56,6 @@ in {
         networkmanagerapplet
 
         nomacs
-
-        qbittorrent-enhanced
 
         cqrlog
         tqsl
