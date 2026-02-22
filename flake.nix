@@ -7,6 +7,7 @@
 
         mill-legacy-nixpkgs.url = "github:NixOS/nixpkgs/de1864217bfa9b5845f465e771e0ecb48b30e02d";
         go-ethereum-legacy-nixpkgs.url = "github:NixOS/nixpkgs/0ffaecb6f04404db2c739beb167a5942993cfd87";
+        vscode-legacy-nixpkgs.url = "github:NixOS/nixpkgs/ae67888ff7ef9dff69b3cf0cc0fbfbcd3a722abe";
 
         nur = {
             url = "github:nix-community/NUR";
@@ -44,6 +45,7 @@
         nixpkgs-unstable,
         mill-legacy-nixpkgs,
         go-ethereum-legacy-nixpkgs,
+        vscode-legacy-nixpkgs,
         nur,
         home-manager,
         nixos-wsl,

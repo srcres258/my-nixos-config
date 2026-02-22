@@ -1,4 +1,5 @@
 {
+    system,
     config,
     pkgs,
     pkgs-unstable,
@@ -279,9 +280,16 @@ in {
         languagePacks = [ "zh-CN" ];
     };
 
-    programs.vscode = {
+    programs.vscode = let
+        vscode-pkgs = import inputs.vscode-legacy-nixpkgs {
+          inherit system;
+          config = {
+            allowUnfree = true;
+          };
+        };
+    in {
         enable = true;
-        package = pkgs-unstable.vscode;
+        package = vscode-pkgs.vscode;
 
         mutableExtensionsDir = true;
 
