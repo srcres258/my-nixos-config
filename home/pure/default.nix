@@ -90,8 +90,6 @@ in {
 
         android-file-transfer
 
-        opencode
-
 # Ethereum
         inputs.go-ethereum-legacy-nixpkgs.legacyPackages.${system}.go-ethereum
         foundry-bin
@@ -441,6 +439,22 @@ in {
       enable = true;
       enableSshSupport = true;
       pinentry.package = pkgs.pinentry-tty;
+    };
+
+    programs.opencode = {
+        enable = true;
+        settings = {
+            provider = {
+                openrouter = {
+                    npm = "@ai-sdk/openai-compatible";
+                    name = "OpenRouter";
+                    options = {
+                        baseURL = "https://openrouter.ai/api/v1";
+                        apiKey = "{env:OPENROUTER_API_KEY}";
+                    };
+                };
+            };
+        };
     };
 
     fonts.fontconfig = {
