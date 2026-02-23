@@ -96,6 +96,8 @@ in {
 
         unar
 
+        jadx
+
 # Ethereum
         inputs.go-ethereum-legacy-nixpkgs.legacyPackages.${system}.go-ethereum
         foundry-bin
