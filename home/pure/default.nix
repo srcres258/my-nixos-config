@@ -167,6 +167,7 @@ in {
             aprslib
             web3
             sphinx
+            z3-solver
         ]) ++ (config.my.python.packageGenerator ps))))
         yapf
         hatch
