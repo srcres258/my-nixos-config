@@ -366,6 +366,9 @@ in {
 
                     # Rust
                     jscearcy.rust-doc-viewer
+
+                    # Lean
+                    leanprover.lean4
                 ]));
 
                 userSettings = {
