@@ -183,6 +183,9 @@ in {
         cabal-install
         haskell-language-server
         stack
+
+# Lean language
+        elan
     ] ++ (with nur.repos; [
         srcres258.ag
         srcres258.jyyslide-util
