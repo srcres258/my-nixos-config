@@ -15,6 +15,7 @@ in {
         ../options.nix
         ./himalaya.nix
         ./newsboat.nix
+        ./git.nix
     ];
 
     home = {
@@ -364,8 +365,6 @@ in {
             nodePackages.typescript-language-server
         ];
     };
-
-    programs.lazygit.enable = true;
 
     programs.fzf.enable = true;
 
