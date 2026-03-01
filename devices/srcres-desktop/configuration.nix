@@ -56,6 +56,9 @@
 
     hardware.amdgpu.opencl.enable = true;
 
+    # v2raya for VPN
+    services.v2raya.enable = true;
+
 # This option defines the first version of NixOS you have installed on this particular machine,
 # and is used to maintain compatibility with application data (e.g. databases) created on older NixOS versions.
 #
