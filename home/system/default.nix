@@ -23,7 +23,7 @@ in {
         kdePackages.gwenview
         kwalletcli
 
-        bilibili
+        piliplus
         mission-center
         wpsoffice-cn
 
