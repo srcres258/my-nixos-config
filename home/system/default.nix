@@ -369,9 +369,16 @@ in {
 
                     # Lean
                     leanprover.lean4
+
+                    # LaTeX
+                    james-yu.latex-workshop
+                    ltex-plus.vscode-ltex-plus
                 ]));
 
-                userSettings = {
+                userSettings = let
+                    toSameValAttrSet = keys: v: builtins.foldl' (acc: x: acc // {"${x}" = v;}) {} keys;
+                    toIgnoreAttrSet = keys: toSameValAttrSet keys "ignore";
+                in {
                     "editor.fontFamily" = "'Cascadia Code', 'monospace', monospace, 'Droid Sans Fallback'";
                     "editor.fontSize" = 18;
                     "nix.enableLanguageServer" = true;
@@ -399,6 +406,93 @@ in {
                     "typescript.inlayHints.functionLikeReturnTypes.enabled" = true;
 
                     "workbench.colorTheme" = "Night Owl";
+
+                    # LaTeX workshop settings
+                    "latex-workshop.latex.tools" = [
+                        {
+                            name = "xelatex";
+                            command = "xelatex";
+                            args = [
+                                "-synctex=1"
+                                "-interaction=nonstopmode"
+                                "-file-line-error"
+                                "%DOC%"
+                            ];
+                        }
+                        {
+                            name = "bibtex";
+                            command = "bibtex";
+                            args = [
+                                "%DOCFILE%"
+                            ];
+                        }
+                    ];
+                    "latex-workshop.latex.recipes" = [
+                        {
+                            name = "xelatex";
+                            tools = ["xelatex"];
+                        }
+                        {
+                            name = "xelatex -> bibtex -> xelatex*2";
+                            tools = ["xelatex" "bibxtex" "xelatex" "xelatex"];
+                        }
+                    ];
+                    "#latex-workshop.formatting.latexindent.path#" = "latexindent";
+
+                    # LTeX+ settings
+                    "ltex.enabled" = true;
+                    "ltex.language" = "en-US";
+                    # 开启 "挑剔规则". 学术写作时强烈推荐.
+                    "ltex.additionalRules.enablePickyRules" = true;
+                    # 个人/项目常用单词 (避免专有名词拼写错误)
+                    "ltex.dictionary" = {
+                        en-US = [
+                            "LSTM" "GAN" "Transformer" "BERT" "ReLU" "Adam" "SGD"
+                            "GitHub" "arXiv" "NeurIPS" "ICLR" "CVPR" "ECCV"
+                            "pretrained" "fine-tune" "fine-tuning" "fine-tuned"
+                            "state-of-the-art" "SOTA" "TODO" "FIXME"
+                        ];
+                    };
+                    # 非常常见的禁用规则 (学术写作误报率最高的前几项)
+                    "ltex.disabledRules" = [
+                        "MORFOLOGIK_RULE_EN_US"
+                        "EN_QUOTES"
+                        "DASH_RULE"
+                        "PUNCTUATION_PARAGRAPH_END"
+                        "COMMA_PARENTHESIS_WHITESPACE"
+                        "SENTENCE_WHITESPACE"
+                        "UPPERCASE_SENTENCE_START"
+                    ];
+                    # LaTeX 特殊命令/环境处理
+                    "ltex.latex.commands" = toIgnoreAttrSet [
+                        "\\todo"
+                        "\\todo[inline]"
+                        "\\cite"
+                        "\\citep"
+                        "\\citet"
+                        "\\ref"
+                        "\\eqref"
+                        "\\SI"
+                        "\\qty"
+                        "\\SIrange"
+                        "\\textbf"
+                        "\\textit"
+                    ];
+                    "ltex.latex.environments" = toIgnoreAttrSet [
+                        "align"
+                        "align*"
+                        "equation"
+                        "equation*"
+                        "gather"
+                        "multline"
+                        "verbatim"
+                        "lstlisting"
+                        "minted"
+                        "tikzpicture"
+                    ];
+                    # 性能与体验平衡
+                    "ltex.checkFrequency" = "save";
+                    "ltex.diagnosticSeverity" = "information";
                 };
             };
         };

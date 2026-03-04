@@ -378,9 +378,11 @@ in {
                 collection-fontsrecommended
                 collection-langchinese
                 collection-bibtexextra
-# collection-science
+                # collection-science
                 collection-pictures
                 collection-publishers;
+
+            inherit (tpkgs) latexindent;
         };
     };
 
