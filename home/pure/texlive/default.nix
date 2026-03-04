@@ -50,6 +50,10 @@
         lipsum blindtext            # 调试占位文本
         enumitem parskip microtype  # 排版美化三件套
         acmart;                     # ACM 会议/期刊模板常用类
+
+      # 优质论文模板
+      inherit (tpkgs)
+        njuthesis;                  # 南大
     };
   };
 }
