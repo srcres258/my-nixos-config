@@ -49,6 +49,9 @@ in {
           # Copilot
           github.copilot
 
+          # OpenCode
+          sst-dev.opencode
+
           # TOML
           tamasfe.even-better-toml
 
