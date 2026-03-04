@@ -191,6 +191,9 @@ in {
 
 # Lean language
         elan
+
+# TeX language
+        ltex-ls-plus
     ] ++ (with nur.repos; [
         srcres258.ag
         srcres258.jyyslide-util
