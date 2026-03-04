@@ -6,10 +6,10 @@
     urls = [
       {
         tags = [
-          "AI"
+          "AR"
           "arxiv"
         ];
-        url = "https://rss.arxiv.org/rss/cs.AI";
+        url = "https://rss.arxiv.org/rss/cs.AR";
       }
     ];
     extraConfig = ''
