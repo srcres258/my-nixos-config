@@ -181,7 +181,7 @@ in {
               tools = ["xelatex" "bibxtex" "xelatex" "xelatex"];
             }
           ];
-          "#latex-workshop.formatting.latexindent.path#" = "latexindent";
+          "latex-workshop.formatting.latexindent.path" = "latexindent";
 
           # LTeX+ settings
           "ltex.enabled" = true;
@@ -198,15 +198,17 @@ in {
             ];
           };
           # 非常常见的禁用规则 (学术写作误报率最高的前几项)
-          "ltex.disabledRules" = [
-            "MORFOLOGIK_RULE_EN_US"
-            "EN_QUOTES"
-            "DASH_RULE"
-            "PUNCTUATION_PARAGRAPH_END"
-            "COMMA_PARENTHESIS_WHITESPACE"
-            "SENTENCE_WHITESPACE"
-            "UPPERCASE_SENTENCE_START"
-          ];
+          "ltex.disabledRules" = {
+            en-US = [
+              "MORFOLOGIK_RULE_EN_US"
+              "EN_QUOTES"
+              "DASH_RULE"
+              "PUNCTUATION_PARAGRAPH_END"
+              "COMMA_PARENTHESIS_WHITESPACE"
+              "SENTENCE_WHITESPACE"
+              "UPPERCASE_SENTENCE_START"
+            ];
+          };
           # LaTeX 特殊命令/环境处理
           "ltex.latex.commands" = toIgnoreAttrSet [
             "\\todo"
@@ -238,7 +240,7 @@ in {
           "ltex.checkFrequency" = "save";
           "ltex.diagnosticSeverity" = "information";
 
-          "ltex.ltex-ls-plus.path" = "${pkgs.ltex-ls-plus}/bin/ltex-ls-plus";
+          "ltex.ltex-ls.path" = "${pkgs.ltex-ls-plus}";
           "ltex.java.path" = "${ltex-jdk}/bin/java";
         };
       };
