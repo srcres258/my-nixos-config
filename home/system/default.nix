@@ -3,7 +3,7 @@
     pkgs,
     ...
 }: {
-    modules = [
+    imports = [
         ./vscode.nix
     ];
 

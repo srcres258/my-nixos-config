@@ -6,10 +6,10 @@
 }: let
   vscode-ext = pkgs.nix-vscode-extensions;
 in {
-	nixpkgs.config.allowUnfree = true;
-	nixpkgs.overlays = [
-		inputs.vscode-extensions.overlays.default
-	];
+  nixpkgs.config.allowUnfree = true;
+  nixpkgs.overlays = [
+    inputs.vscode-extensions.overlays.default
+  ];
 
   programs.vscode = let
     vscode-pkgs = import inputs.vscode-legacy-nixpkgs {
