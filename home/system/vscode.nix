@@ -5,11 +5,14 @@
   ...
 }: let
   vscode-ext = pkgs.nix-vscode-extensions;
+  ltex-jdk = pkgs.javaPackages.compiler.temurin-bin.jdk-21;
 in {
   nixpkgs.config.allowUnfree = true;
   nixpkgs.overlays = [
     inputs.vscode-extensions.overlays.default
   ];
+
+  home.packages = [ pkgs.ltex-ls-plus ltex-jdk ];
 
   programs.vscode = let
     vscode-pkgs = import inputs.vscode-legacy-nixpkgs {
@@ -231,6 +234,9 @@ in {
           # 性能与体验平衡
           "ltex.checkFrequency" = "save";
           "ltex.diagnosticSeverity" = "information";
+
+          "ltex.ltex-ls-plus.path" = "${pkgs.ltex-ls-plus}/bin/ltex-ls-plus";
+          "ltex.java.path" = "${ltex-jdk}/bin/java";
         };
       };
     };
