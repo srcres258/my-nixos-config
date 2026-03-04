@@ -48,7 +48,8 @@
         subfiles                    # 大论文分章节编译利器
         standalone                  # 单独编译 tikz 图片非常方便
         lipsum blindtext            # 调试占位文本
-        enumitem parskip microtype; # 排版美化三件套
+        enumitem parskip microtype  # 排版美化三件套
+        acmart;                     # ACM 会议/期刊模板常用类
     };
   };
 }
