@@ -137,9 +137,6 @@
 
         dig
 
-# qBittorrent
-        qbittorrent-enhanced
-
         jq
 
         nix-output-monitor
@@ -161,6 +158,10 @@
         tcpdump
 
         cachix
+
+        parted
+        e2fsprogs
+        util-linux
     ]) ++ (with pkgs-unstable; [
         nix-sweep
     ]));
