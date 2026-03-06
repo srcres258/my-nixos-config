@@ -182,6 +182,12 @@ in {
             }
           ];
           "latex-workshop.formatting.latexindent.path" = "latexindent";
+          # 保存时自动编译
+          "latex-workshop.latex.autoBuild.run" = "onSave";
+          # PDF 预览位置：右侧 Tab（最推荐）
+          "latex-workshop.view.pdf.viewer" = "tab";
+          # 反向同步（双击 PDF 跳回 tex 对应行，非常好用）
+          "latex-workshop.view.pdf.internal.synctex.keybinding" = "double-click";
 
           # LTeX+ settings
           "ltex.enabled" = true;
