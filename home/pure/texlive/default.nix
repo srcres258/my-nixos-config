@@ -53,7 +53,7 @@
 
       # 优质论文模板
       inherit (tpkgs)
-        njuthesis;                  # 南大
+        njuthesis njuvisual;        # 南大
     };
   };
 }
