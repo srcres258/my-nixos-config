@@ -40,7 +40,7 @@
 # JetBrains IDEs
         jetbrains.idea
 
-        nur.repos.srcres258.lceda-pro
+        # nur.repos.srcres258.lceda-pro
 
         feishu
 
