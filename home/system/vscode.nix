@@ -108,6 +108,9 @@ in {
           ecmel.vscode-html-css
           bradlc.vscode-tailwindcss
 
+          # CSS
+          sysoev.language-stylus
+
           # Rust
           jscearcy.rust-doc-viewer
 
