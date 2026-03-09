@@ -157,15 +157,6 @@
                 ];
             };
         };
-
-        devShells.${system} = let
-            baseDevShell = pkgs.mkShell {
-                buildInputs = [ self.packages.${system}.${username} ];
-            };
-        in {
-            "${username}-full" = baseDevShell;
-            default = baseDevShell;
-        };
     };
 }
 
