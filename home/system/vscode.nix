@@ -40,6 +40,9 @@ in {
           yzane.markdown-pdf
           gruntfuggly.todo-tree
 
+          # Icons
+          vscode-icons-team.vscode-icons
+
           # Theme
           sdras.night-owl
 
