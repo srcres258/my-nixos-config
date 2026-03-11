@@ -17,6 +17,7 @@ in {
         ./newsboat.nix
         ./git.nix
         ./fish.nix
+        ./yazi.nix
 
         ./texlive
     ];
@@ -215,36 +216,6 @@ in {
     };
     xdg.enable = true;
     xdg.cacheHome = builtins.toPath "/home/${config.home.username}/.cache";
-
-    programs.yazi = {
-        enable = true;
-
-        plugins = with pkgs.yaziPlugins; {
-            inherit toggle-pane;
-        };
-
-        keymap = {
-            manager = {
-                prepend_keymap = [
-                    {
-                        on = [ "<C-right>" ];
-                        run = "plugin toggle-pane max-preview";
-                        desc = "Roggle maxinize preview pane";
-                    }
-                ];
-            };
-        };
-
-        settings = {
-            preview = {
-                max_width = 2400;
-                max_height = 3600;
-                image_filter = "lanczos3";
-                image_quality = 90;
-                tab_size = 2;
-            };
-        };
-    };
 
     programs.neovim = let
         treesitter-parsers = pkgs.symlinkJoin {
