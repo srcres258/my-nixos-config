@@ -62,6 +62,8 @@
         tab_size = 2;
       };
     };
+
+    initLua = ./init.lua;
   };
 }
 

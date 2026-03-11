@@ -17,9 +17,9 @@ in {
         ./newsboat.nix
         ./git.nix
         ./fish.nix
-        ./yazi.nix
 
         ./texlive
+        ./yazi
     ];
 
     home = {
