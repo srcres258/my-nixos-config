@@ -25,8 +25,6 @@
       # 预览与内容增强
       inherit
         mediainfo         # 媒体文件（视频/音频/图片）详细元数据预览
-        glow              # Markdown 漂亮渲染预览
-        duckdb            # CSV/TSV/Parquet 等数据文件表格化预览（数据从业者爱用）
         piper;            # 任意 shell 命令输出作为预览器（极度灵活）
 
       # 导航与跳转
@@ -42,12 +40,21 @@
     };
 
     keymap = {
-      manager = {
+      mgr = {
         prepend_keymap = [
           {
             on = [ "<C-right>" ];
             run = "plugin toggle-pane max-preview";
             desc = "Roggle maxinize preview pane";
+          }
+          {
+            on = ["g" "c"];
+            run = "plugin vcs-files";
+            desc = "Show Git file changes";
+          }
+          {
+            on = "M";
+            run = "plugin mount";
           }
         ];
       };
@@ -60,6 +67,102 @@
         image_filter = "lanczos3";
         image_quality = 90;
         tab_size = 2;
+      };
+
+      plugin = {
+        prepend_preloaders = [
+          # Replace magick, image, video with mediainfo
+          {
+            mime = "{audio,video,image}/*";
+            run = "mediainfo";
+          }
+          {
+            mime = "application/subrip";
+            run = "mediainfo";
+          }
+          # Adobe Photoshop is image/adobe.photoshop, already handled above
+          # Adobe Illustrator
+          {
+            mime = "application/postscript";
+            run = "mediainfo";
+          }
+          {
+            mime = "application/illustrator";
+            run = "mediainfo";
+          }
+          {
+            mime = "application/dvb.ait";
+            run = "mediainfo";
+          }
+          {
+            mime = "application/vnd.adobe.illustrator";
+            run = "mediainfo";
+          }
+          {
+            mime = "image/x-eps";
+            run = "mediainfo";
+          }
+          {
+            mime = "application/eps";
+            run = "mediainfo";
+          }
+          {
+            url = "*.{ai,eps,ait}";
+            run = "mediainfo";
+          }
+        ];
+
+        prepend_previewers = [
+          {
+            mime = "application/{*zip,tar,bzip2,7z*,rar,xz,zstd,java-archive}";
+            run = "ouch";
+          }
+
+          # Replace magick, image, video with mediainfo
+          {
+            mime = "{audio,video,image}/*";
+            run = "mediainfo";
+          }
+          {
+            mime = "application/subrip";
+            run = "mediainfo";
+          }
+          # Adobe Photoshop is image/adobe.photoshop, already handled above
+          # Adobe Illustrator
+
+          {
+            mime = "application/postscript";
+            run = "mediainfo";
+          }
+          {
+            mime = "application/illustrator";
+            run = "mediainfo";
+          }
+          {
+            mime = "application/dvb.ait";
+            run = "mediainfo";
+          }
+          {
+            mime = "application/vnd.adobe.illustrator";
+            run = "mediainfo";
+          }
+          {
+            mime = "image/x-eps";
+            run = "mediainfo";
+          }
+          {
+            mime = "application/eps";
+            run = "mediainfo";
+          }
+        ];
+
+
+        # For a large file like Adobe Illustrator, Adobe Photoshop, etc
+        # you may need to increase the memory limit if no image is rendered.
+        # https://yazi-rs.github.io/docs/configuration/yazi#tasks
+        tasks = {
+          image_alloc = 1073741824; # = 1024*1024*1024 = 1024MB
+        };
       };
     };
 
