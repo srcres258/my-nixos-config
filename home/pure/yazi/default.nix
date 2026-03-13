@@ -30,8 +30,7 @@
       # 导航与跳转
       inherit
         jump-to-char      # vim 风格 f<char> 快速跳转
-        relative-motions  # 相对行号移动
-        smart-enter;      # 智能进入目录/文件
+        relative-motions; # 相对行号移动
 
       # 其他高阶
       inherit
@@ -55,6 +54,31 @@
           {
             on = "M";
             run = "plugin mount";
+          }
+          {
+            on = "f";
+            run = "plugin jump-to-char";
+            desc = "Jump to char";
+          }
+          {
+            on = "m";
+            run = "plugin relative-motions";
+            desc = "Trigger a new relative motion";
+          }
+          {
+            on = ["z" "h"];
+            run = "plugin time-travel prev";
+            desc = "Go to previous snapshot";
+          }
+          {
+            on = ["z" "l"];
+            run = "plugin time-travel next";
+            desc = "Go to next snapshot";
+          }
+          {
+            on = ["z" "e"];
+            run = "plugin time-travel exit";
+            desc = "Exit browsing snapshots";
           }
         ];
       };

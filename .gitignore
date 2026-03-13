@@ -8,3 +8,5 @@ result-*
 # Ignore wallpaper mp4 files
 wallpapers/
 
+# Ignore editor files
+.vscode
