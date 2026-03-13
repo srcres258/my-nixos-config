@@ -32,7 +32,9 @@ in {
         extensions = ((with pkgs.vscode-extensions; [
           # Rust
           rust-lang.rust-analyzer
-        ]) ++ (with vscode-ext.vscode-marketplace; [
+        ]) ++ (let
+          m = vscode-ext.vscode-marketplace;
+        in with m; [
           ms-ceintl.vscode-language-pack-zh-hans
 
           wayou.vscode-todo-highlight
@@ -123,6 +125,12 @@ in {
           # LaTeX
           james-yu.latex-workshop
           ltex-plus.vscode-ltex-plus
+
+          # Architecture
+          # x86_64
+          m."13xforever"."language-x86-64-assembly"
+          # riscv
+          sunshaoce.risc-v
         ]));
 
         userSettings = let
