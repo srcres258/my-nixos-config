@@ -17,6 +17,7 @@ in {
         ./newsboat.nix
         ./git.nix
         ./fish.nix
+        ./aichat.nix
 
         ./texlive
         ./yazi
