@@ -468,56 +468,6 @@ in {
                 "DejaVu Serif"
             ];
         };
-        configFile = {
-            kitty-fallback = {
-                enable = true;
-                label = "kitty-fallback";
-                priority = 20;
-                text = ''
-                    <?xml version="1.0"?>
-                    <!DOCTYPE fontconfig SYSTEM "urn:fontconfig:fonts.dtd">
-                    <fontconfig>
-
-                    <!-- 只对 kitty 生效（通过 prgname 匹配） -->
-                    <match target="pattern">
-                        <test name="prgname" compare="eq">
-                        <string>kitty</string>
-                        </test>
-
-                        <!-- 优先使用 Cascadia Code（或你喜欢的等宽英文字体） -->
-                        <edit name="family" mode="prepend" binding="strong">
-                        <string>Cascadia Mono PL</string>
-                        <!-- 可选：再加一两个英文等宽备选 -->
-                        <!-- <string>JetBrains Mono</string> -->
-                        <!-- <string>Fira Code</string> -->
-                        </edit>
-
-                        <!-- 立即接上中文字体作为 fallback -->
-                        <edit name="family" mode="append" binding="strong">
-                        <string>LXGW WenKai</string>
-                        <!-- 可选：更多中文字体备选，按顺序尝试 -->
-                        <!-- <string>Noto Sans CJK SC</string> -->
-                        <!-- <string>Source Han Sans SC</string> -->
-                        </edit>
-                    </match>
-
-                    <!-- 可选：给 Cascadia Code 建立更明确的 alias（推荐） -->
-                    <alias>
-                        <family>Cascadia Mono PL</family>
-                        <prefer>
-                        <family>Cascadia Mono PL</family>
-                        <family>LXGW WenKai</family>
-                        <!-- <family>Noto Color Emoji</family> -->   <!-- 如果你也想彩色 emoji -->
-                        <family>sans-serif</family>
-                        <family>serif</family>
-                        <family>monospace</family>
-                        </prefer>
-                    </alias>
-
-                    </fontconfig>
-                '';
-            };
-        };
     };
 
 # !IMPORTANT!
