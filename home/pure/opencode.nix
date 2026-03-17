@@ -1,4 +1,5 @@
 {
+  pkgs,
   ...
 }: {
   programs.opencode = {
@@ -24,4 +25,9 @@
       ];
     };
   };
+
+  home.packages = with pkgs; [
+    bun
+  ];
 }
+
