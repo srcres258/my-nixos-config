@@ -19,10 +19,6 @@
       permission = {
         "*" = "ask";
       };
-      # OpenCode 会在启动时自动从 npm 安装该插件
-      plugin = [
-        "oh-my-opencode@latest"
-      ];
     };
   };
 
