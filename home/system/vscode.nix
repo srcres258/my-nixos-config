@@ -66,6 +66,9 @@ in {
           ms-vscode.cpptools-extension-pack
           hars.cppsnippets
 
+          # Makefile
+          ms-vscode.makefile-tools
+
           # Scala
           scala-lang.scala
           scala-lang.scala-snippets
