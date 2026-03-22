@@ -119,7 +119,6 @@
                 ] ++ extraModules;
             };
             defaultHomeConfig = mkHomeConfig [];
-
             mkPureHomeConfig = extraModules: home-manager.lib.homeManagerConfiguration {
                 inherit pkgs;
                 extraSpecialArgs = {
