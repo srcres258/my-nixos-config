@@ -164,6 +164,7 @@ in {
           "typescript.inlayHints.functionLikeReturnTypes.enabled" = true;
 
           "workbench.colorTheme" = "Night Owl";
+          "workbench.iconTheme" = "vscode-icons";
 
           # LaTeX workshop settings
           "latex-workshop.latex.tools" = [
