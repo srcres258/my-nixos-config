@@ -20,10 +20,10 @@
         2606:50c0:8000::154 raw.githubusercontent.com
     '';
 
-# Set your time zone.
+    # Set your time zone.
     time.timeZone = "Asia/Shanghai";
-# Use local RTC time inside the hardware.
-    time.hardwareClockInLocalTime = true;
+    # Treat the hardware clock as UTC.
+    time.hardwareClockInLocalTime = false;
 
 # Configure network proxy if necessary
 # networking.proxy.default = "http://user:password@proxy:port/";
