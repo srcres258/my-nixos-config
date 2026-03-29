@@ -200,6 +200,7 @@ in {
             web3
             sphinx
             z3-solver
+            distlib
         ]) ++ (config.my.python.packageGenerator ps))))
         yapf
         hatch
