@@ -129,6 +129,9 @@ in {
           james-yu.latex-workshop
           ltex-plus.vscode-ltex-plus
 
+          # Typst
+          myriad-dreamin.tinymist
+
           # Architecture
           # x86_64
           m."13xforever"."language-x86-64-assembly"
