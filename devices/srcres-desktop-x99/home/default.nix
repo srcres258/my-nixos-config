@@ -11,7 +11,8 @@
     ]);
 
     systemd.user.services."mpvpaper" = let
-        wallpaperSrc = ./wallpapers/bg.mp4;
+        username = "srcres";
+        wallpaperSrc = builtins.toPath "/home/${username}/wallpaper.mp4";
         mpvOptions = [
             "loop=inf no-audio hwdec=vaapi vaapi-device=/dev/dri/renderD128"
         ];
