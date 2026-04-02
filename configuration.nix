@@ -162,6 +162,10 @@
         parted
         e2fsprogs
         util-linux
+
+        # man pages
+        man-pages
+        man-pages-posix
     ]) ++ (with pkgs-unstable; [
         nix-sweep
     ]));
@@ -333,5 +337,8 @@
         "root"
         "srcres"
     ];
+
+    # Enable man pages.
+    documentation.man.enable = true;
 }
 
