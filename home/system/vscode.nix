@@ -137,6 +137,9 @@ in {
           m."13xforever"."language-x86-64-assembly"
           # riscv
           sunshaoce.risc-v
+
+          # Blogging
+          fantasy.vscode-hexo-utils
         ]));
 
         userSettings = let
