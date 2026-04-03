@@ -48,8 +48,8 @@ in {
           # Theme
           sdras.night-owl
 
-          # VSCode Vim
-          vscodevim.vim
+          # VSCode Neovim
+          asvetliakov.vscode-neovim
 
           # Copilot
           github.copilot
@@ -149,9 +149,12 @@ in {
           "editor.fontFamily" = "'Cascadia Code', 'monospace', monospace, 'Droid Sans Fallback'";
           "editor.fontSize" = 18;
           "nix.enableLanguageServer" = true;
-          "vim.useSystemClipboard" = true;
           "editor.rulers" = [80 100 120];
           "editor.tabSize" = 2;
+          "vscode-neovim.neovimExecutablePaths.linux" = "${pkgs.neovim-unwrapped}/bin/nvim";
+          "extensions.experimental.affinity" = {
+            "asvetliakov.vscode-neovim" = 1;
+          };
 
           "files.autoGuessEncoding" = true;
           "editor.cursorSmoothCaretAnimation" = true;

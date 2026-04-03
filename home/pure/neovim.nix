@@ -80,39 +80,41 @@
       typst-vim
     ];
     extraLuaConfig = ''
-      require('nvim-treesitter.configs').setup {
-        ensure_installed = {},
-        parser_install_dir = "${treesitter-parsers}",
-        highlight = { enable = true },
-        indent = { enable = true },
-        incremental_selection = { enable = true },
+      if not vim.g.vscode then
+        require('nvim-treesitter.configs').setup {
+          ensure_installed = {},
+          parser_install_dir = "${treesitter-parsers}",
+          highlight = { enable = true },
+          indent = { enable = true },
+          incremental_selection = { enable = true },
 
-        textobjects = {
-          select = {
-            enable = true,
-            lookahead = true,
-            keymaps = {
-              ["af"] = "@function.outer",
-              ["if"] = "@function.inner",
-              ["ac"] = "@class.outer",
-              ["ic"] = "@class.inner"
+          textobjects = {
+            select = {
+              enable = true,
+              lookahead = true,
+              keymaps = {
+                ["af"] = "@function.outer",
+                ["if"] = "@function.inner",
+                ["ac"] = "@class.outer",
+                ["ic"] = "@class.inner"
+              }
+            },
+            move = {
+              enable = true,
+              set_jumps = true, -- enable function-jumping features by ']m' or '[m'
+                  goto_next_start = { ["]m"] = "@function.outer" },
+              goto_previous_start = { ["[m"] = "@function.outer" }
             }
           },
-          move = {
-            enable = true,
-            set_jumps = true, -- enable function-jumping features by ']m' or '[m'
-                goto_next_start = { ["]m"] = "@function.outer" },
-            goto_previous_start = { ["[m"] = "@function.outer" }
-          }
-        },
 
-        -- commonly used features in addition
-        context_commentstring = { enable = true }, -- integration with nvim-ts-context-commentstring
-        autotag = { enable = true }, -- integration with nvim-ts-autotag to close up HTML/JSX tags automatically
-        rainbow = { enable = true, extended_mode = true } -- rainbow blankets (requires nvim-ts-rainbow2)
-      }
+          -- commonly used features in addition
+          context_commentstring = { enable = true }, -- integration with nvim-ts-context-commentstring
+          autotag = { enable = true }, -- integration with nvim-ts-autotag to close up HTML/JSX tags automatically
+          rainbow = { enable = true, extended_mode = true } -- rainbow blankets (requires nvim-ts-rainbow2)
+        }
 
-      vim.opt.rtp:prepend("${treesitter-parsers}")
+        vim.opt.rtp:prepend("${treesitter-parsers}")
+      end
     '' + (let
       metalsBinaryPath = "${pkgs.metals}";
       customReplace = builtins.replaceStrings ["{{METALS_BINARY_PATH}}"] [metalsBinaryPath];

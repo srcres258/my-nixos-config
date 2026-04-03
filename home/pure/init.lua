@@ -1,3 +1,5 @@
+if not vim.g.vscode then
+
 -- Make the background transparent.
 vim.api.nvim_set_hl(0, 'Normal', { bg = 'none' })
 vim.api.nvim_set_hl(0, 'NormalFloat', { bg = 'none' })
@@ -987,4 +989,6 @@ vim.keymap.set("n", "#", "#<Cmd>lua require('hlslens').start()<CR>", { desc = "P
 vim.keymap.set("n", "g*", "g*<Cmd>lua require('hlslens').start()<CR>", { desc = "Next match", noremap = true, silent = true })
 vim.keymap.set("n", "g#", "g#<Cmd>lua require('hlslens').start()<CR>", { desc = "Previous match", noremap = true, silent = true })
 vim.keymap.set("n", "//", "<Cmd>noh<CR>", { desc = "Clear highlight", noremap = true, silent = true })
+
+end
 
