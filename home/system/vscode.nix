@@ -29,7 +29,7 @@ in {
 
     profiles = {
       default = {
-        extensions = ((with pkgs.vscode-extensions; [
+        extensions = ((with vscode-pkgs.vscode-extensions; [
           # Rust
           rust-lang.rust-analyzer
         ]) ++ (let
