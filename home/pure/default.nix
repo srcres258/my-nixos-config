@@ -20,6 +20,7 @@ in {
         ./aichat.nix
         ./opencode.nix
         ./neovim.nix
+        ./gh.nix
 
         ./texlive
         ./yazi
