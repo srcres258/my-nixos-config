@@ -121,6 +121,7 @@ in {
 
           # Rust
           jscearcy.rust-doc-viewer
+          dustypomerleau.rust-syntax
 
           # Lean
           leanprover.lean4
