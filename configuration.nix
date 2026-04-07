@@ -59,6 +59,7 @@
             "docker"
             "wireshark"
             "i2c"
+            "input" # Grant access to /dev/input devices
         ];
         shell = pkgs.fish;
     };
