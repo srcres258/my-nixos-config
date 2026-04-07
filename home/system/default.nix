@@ -7,7 +7,7 @@
         ./vscode.nix
     ];
 
-    home.packages = with pkgs; [
+    home.packages = (with pkgs; [
         pavucontrol
         kdePackages.dolphin
         kdePackages.kate
@@ -40,8 +40,6 @@
 # JetBrains IDEs
         jetbrains.idea
 
-        # nur.repos.srcres258.lceda-pro
-
         feishu
 
         gtkwave
@@ -56,7 +54,11 @@
         tor-browser
 
         freecad
-    ];
+    ]) ++ (with pkgs.nur.repos; [
+        # srcres258.lceda-pro
+
+        srcres258.keystroke
+    ]);
 
     xdg.configFile."niri/config.kdl".source = ./config.kdl;
 
