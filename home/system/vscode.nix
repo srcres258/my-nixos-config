@@ -132,6 +132,9 @@ in {
 
           # Typst
           myriad-dreamin.tinymist
+          
+          # KDL
+          kdl-org.kdl
 
           # Architecture
           # x86_64
