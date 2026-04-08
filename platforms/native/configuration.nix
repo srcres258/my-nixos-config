@@ -26,7 +26,7 @@
     };
     boot.kernelPackages = pkgs.linuxKernel.packages.linux_zen;
 # Enable cross-compile toolchains by emulation.
-    boot.binfmt.emulatedSystems = [ "riscv64-linux" ];
+    boot.binfmt.emulatedSystems = [ "aarch64-linux" "riscv64-linux" ];
 # Enable NTFS filesystem support.
     boot.supportedFilesystems = [ "ntfs" ];
 # Enable extra kernel modules.
