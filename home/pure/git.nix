@@ -1,8 +1,9 @@
-{
-  ...
-}: let
+{ ...
+}:
+let
   gitignore = ./ignore;
-in {
+in
+{
   programs.git = {
     enable = true;
     settings = {

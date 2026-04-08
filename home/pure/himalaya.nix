@@ -1,9 +1,10 @@
-{
-  pkgs,
-  ...
-}: let
+{ pkgs
+, ...
+}:
+let
   passPkg = pkgs.pass;
-in {
+in
+{
   # 全局启用 Himalaya（安装二进制 + 基本设置）
   programs.himalaya = {
     enable = true;
@@ -16,8 +17,8 @@ in {
   accounts.email.accounts = {
     outlook = {
       # 基本信息
-      address = "srcres258@furdevs.cn";  # 你的 Outlook 邮箱
-      realName = "Haowen Hu";                  # 显示名称
+      address = "srcres258@furdevs.cn"; # 你的 Outlook 邮箱
+      realName = "Haowen Hu"; # 显示名称
       userName = "srcres258@furdevs.cn"; # 通常和 address 一样
       primary = true;
 
@@ -30,44 +31,46 @@ in {
 
         # 这里传入 TOML 片段（直接对应 ~/.config/himalaya/config.toml 中的 [accounts.outlook] 部分）
         # 参考：https://github.com/pimalaya/himalaya/blob/master/config.sample.toml
-        settings = let
-          mailAddr = "srcres258@furdevs.cn";
-          auth = {
-            type = "oauth2";
-            method = "xoauth2";
-            client-id = "8a1b3af2-1641-4ef0-b0fc-e68862579fde";
-            client-secret.keyring = "outlook-oauth2-client-secret";
-            access-token.keyring = "outlook-oauth2-access-token";
-            refresh-token.keyring = "outlook-oauth2-refresh-token";
-            auth-url = "https://login.microsoftonline.com/common/oauth2/v2.0/authorize";
-            token-url = "https://login.microsoftonline.com/common/oauth2/v2.0/token";
-            pkce = true;
-            scopes = [
-              "https://outlook.office.com/IMAP.AccessAsUser.All"
-              "https://outlook.office.com/SMTP.Send"
-            ];
-          };
-        in {
-          email = mailAddr;
+        settings =
+          let
+            mailAddr = "srcres258@furdevs.cn";
+            auth = {
+              type = "oauth2";
+              method = "xoauth2";
+              client-id = "8a1b3af2-1641-4ef0-b0fc-e68862579fde";
+              client-secret.keyring = "outlook-oauth2-client-secret";
+              access-token.keyring = "outlook-oauth2-access-token";
+              refresh-token.keyring = "outlook-oauth2-refresh-token";
+              auth-url = "https://login.microsoftonline.com/common/oauth2/v2.0/authorize";
+              token-url = "https://login.microsoftonline.com/common/oauth2/v2.0/token";
+              pkce = true;
+              scopes = [
+                "https://outlook.office.com/IMAP.AccessAsUser.All"
+                "https://outlook.office.com/SMTP.Send"
+              ];
+            };
+          in
+          {
+            email = mailAddr;
 
-          backend = {
-            type = "imap";
-            host = "outlook.office365.com";
-            port = 993;
-            encryption.type = "tls";
-            login = mailAddr;
-            inherit auth;
-          };
+            backend = {
+              type = "imap";
+              host = "outlook.office365.com";
+              port = 993;
+              encryption.type = "tls";
+              login = mailAddr;
+              inherit auth;
+            };
 
-          message.send.backend = {
-            type = "smtp";
-            host = "smtp-mail.outlook.com";
-            port = 587;
-            encryption.type = "start-tls";
-            login = mailAddr;
-            inherit auth;
+            message.send.backend = {
+              type = "smtp";
+              host = "smtp-mail.outlook.com";
+              port = 587;
+              encryption.type = "start-tls";
+              login = mailAddr;
+              inherit auth;
+            };
           };
-        };
       };
     };
   };

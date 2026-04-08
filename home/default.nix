@@ -1,10 +1,9 @@
-{
-    config,
-    pkgs,
-    lib,
-    inputs,
-    ...
+{ config
+, pkgs
+, lib
+, inputs
+, ...
 }: {
-    imports = [ ./pure ./system ];
+  imports = [ ./pure ./system ];
 }
 
