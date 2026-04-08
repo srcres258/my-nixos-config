@@ -185,12 +185,14 @@
           "${username}@srcres-desktop" = mkHomeConfig {
             inherit system;
             extraModules = [
+              ./platforms/native/home
               ./devices/srcres-desktop/home
             ];
           };
           "${username}@srcres-laptop" = mkHomeConfig {
             inherit system;
             extraModules = [
+              ./platforms/native/home
               ./devices/srcres-laptop/home
             ];
           };
@@ -203,12 +205,14 @@
           "${username}@srcres-desktop-x99" = mkHomeConfig {
             inherit system;
             extraModules = [
+              ./platforms/native/home
               ./devices/srcres-desktop-x99/home
             ];
           };
           "${username}@srcres-orange-pi" = mkPureHomeConfig {
             system = "aarch64-linux";
             extraModules = [
+              ./platforms/orangepi/home
               ./devices/srcres-orange-pi/home
             ];
           };

@@ -9,6 +9,7 @@ Use this guide to keep agent changes safe, consistent, and verifiable.
 - System base module: `configuration.nix`
 - Home Manager entrypoint: `home/default.nix`
 - Host modules: `devices/*/configuration.nix` and `devices/*/home/default.nix`
+- Platform home modules: `platforms/*/home/default.nix` and companion files
 - Shared home modules: `home/pure/*` and `home/system/*`
 
 Primary language is **Nix**, with embedded shell snippets and some Lua
@@ -42,7 +43,7 @@ Run commands from repo root: `/home/srcres/nix-config`.
 ### 3.2 NixOS Build / Switch
 
 Known NixOS hosts from `flake.nix`:
-`srcres-desktop`, `srcres-laptop`, `srcres-wsl`, `srcres-desktop-x99`.
+`srcres-desktop`, `srcres-laptop`, `srcres-wsl`, `srcres-desktop-x99`, `srcres-orange-pi`.
 
 - Build one host closure (scoped validation):
   - `nix build .#nixosConfigurations.srcres-desktop.config.system.build.toplevel`

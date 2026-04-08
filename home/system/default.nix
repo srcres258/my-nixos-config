@@ -2,10 +2,6 @@
 , pkgs
 , ...
 }: {
-  imports = [
-    ./vscode.nix
-  ];
-
   home.packages = (with pkgs; [
     pavucontrol
     kdePackages.dolphin
@@ -17,19 +13,12 @@
 
     piliplus
     mission-center
-  ] ++ lib.optionals (!pkgs.stdenv.hostPlatform.isAarch64) [
-    wpsoffice-cn
-  ] ++ [
 
     vlc
 
     telegram-desktop
-    discord
-    wechat
 
     gimp
-
-    drawio
 
     cmakeWithGui
 
@@ -37,11 +26,6 @@
     hmcl
     prismlauncher
     portablemc
-
-    # JetBrains IDEs
-    jetbrains.idea
-
-    feishu
 
     gtkwave
 
@@ -51,8 +35,6 @@
 
     cqrlog
     tqsl
-
-    tor-browser
 
     freecad
   ]) ++ (with pkgs.nur.repos; [
@@ -269,9 +251,8 @@
     languagePacks = [ "zh-CN" ];
   };
 
-  programs.mpvpaper = {
-    enable = true;
-  };
+  # mpvpaper is host/platform-specific and is wired from platform home modules.
+
 
   i18n.inputMethod = {
     enable = true;
