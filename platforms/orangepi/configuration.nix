@@ -32,15 +32,20 @@
     usbutils
   ];
 
-  # 1. 彻底禁用 hwdb 生成（这是目前最推荐的方式）
-  systemd.hwdb.enable = lib.mkForce false;
-
-  # 2. 强制使用完整的 systemd（避免 Minimal 版本缺少 systemd-hwdb 工具）
+  # 1. 强制使用完整的 systemd（而不是 Minimal 版本，确保包含 systemd-hwdb 工具）
   systemd.package = lib.mkForce pkgs.systemd;
 
-  # 3. 用高优先级强制覆盖 hwdb.bin 为一个空文件（解决冲突）
-  environment.etc."udev/hwdb.bin".source = lib.mkForce (pkgs.writeText "empty-hwdb.bin" "");
+  # 2. 用最高优先级提供一个空的 hwdb.bin，覆盖官方模块生成的那个
+  #    这能直接让 hwdb.bin.drv 构建通过，而不触发内部的 systemd-hwdb 调用失败
+  environment.etc."udev/hwdb.bin".source = lib.mkForce (
+    pkgs.runCommand "empty-hwdb.bin" {} ''
+      touch $out
+    ''
+  );
 
-  # 可选：额外保险，防止 udev 模块继续尝试生成
+  # 3. 额外保险：清空 extraHwdb，减少需要合并的文件量
   services.udev.extraHwdb = lib.mkForce "";
+
+  # 4. 如果你的配置中启用了很多桌面/输入/蓝牙/pipewire 等包，可以临时禁用部分 hwdb 来源（可选）
+  # services.udev.extraHwdb = lib.mkForce "# disabled to avoid build failure";
 }
