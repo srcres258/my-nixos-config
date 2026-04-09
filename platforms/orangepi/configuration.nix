@@ -46,6 +46,34 @@
   # 3. 额外保险：清空 extraHwdb，减少需要合并的文件量
   services.udev.extraHwdb = lib.mkForce "";
 
+  # 为常见 USB 外设提供更完整的运行支持。
+  hardware.usb-modeswitch.enable = true;
+
+  services.pipewire = {
+    enable = true;
+    pulse.enable = true;
+    alsa.enable = true;
+    alsa.support32Bit = true;
+  };
+
+  security.rtkit.enable = true;
+
+  # Orange Pi 上 man-cache 生成会显著拉长/卡住构建，关闭缓存生成以提升构建稳定性。
+  documentation.man.generateCaches = false;
+
+  # USB 无线网卡在 SBC 上常见，优先使用 iwd 并关闭省电避免断流/掉速。
+  networking.networkmanager.wifi = {
+    backend = "iwd";
+    powersave = false;
+  };
+
+  # 兼容常见联发科 USB 设备模式切换。
+  services.udev.extraRules = ''
+    ACTION=="add", SUBSYSTEM=="usb", \
+        ATTRS{idVendor}=="0e8d", ATTRS{idProduct}=="2870", \
+        RUN+="${pkgs.usb-modeswitch}/bin/usb_modeswitch -v 0e8d -p 2870 -K -W"
+  '';
+
   # 4. 如果你的配置中启用了很多桌面/输入/蓝牙/pipewire 等包，可以临时禁用部分 hwdb 来源（可选）
   # services.udev.extraHwdb = lib.mkForce "# disabled to avoid build failure";
 }
