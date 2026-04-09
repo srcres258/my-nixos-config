@@ -32,7 +32,7 @@
     usbutils
   ];
 
-  environment.etc."udev/hwdb.bin".source = pkgs.runCommand "empty-hwdb" {} ''
+  environment.etc."udev/hwdb.bin".source = lib.mkForce pkgs.runCommand "empty-hwdb" {} ''
     touch $out
   '';
 }
