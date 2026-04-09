@@ -32,6 +32,5 @@
     usbutils
   ];
 
-  # Use minimal systemd
-  systemd.package = pkgs.systemdMinimal;
+  boot.extraModprobeConfig = "";
 }
