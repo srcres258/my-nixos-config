@@ -32,23 +32,15 @@
     usbutils
   ];
 
-  # 强制使用完整 systemd（避免 Minimal 版本缺少 systemd-hwdb）
-  # 如果你的 flake 里用了 systemdMinimal，这里强制覆盖
-  systemd.package = pkgs.systemd;   # 而不是 systemdMinimal
+  # 1. 彻底禁用 hwdb 生成（这是目前最推荐的方式）
+  systemd.hwdb.enable = lib.mkForce false;
 
-  # 如果上面还不行，添加这个 overlay 来确保 hwdb 构建使用正确的工具
-  nixpkgs.overlays = lib.mkBefore [
-    (final: prev: {
-      # 强制 hwdb 使用完整 systemd 的工具链
-      systemd = prev.systemd.override {
-        withHwdb = false;   # 尝试在包级别禁用（部分版本有效）
-      };
-    })
-  ];
+  # 2. 强制使用完整的 systemd（避免 Minimal 版本缺少 systemd-hwdb 工具）
+  systemd.package = lib.mkForce pkgs.systemd;
 
-  # 额外保险：提供一个空的 hwdb.bin（防止 etc 模块失败）
-  environment.etc."udev/hwdb.bin".source = pkgs.writeText "empty-hwdb.bin" "";
+  # 3. 用高优先级强制覆盖 hwdb.bin 为一个空文件（解决冲突）
+  environment.etc."udev/hwdb.bin".source = lib.mkForce (pkgs.writeText "empty-hwdb.bin" "");
 
-  # 可选：如果你有很多输入/硬件设备相关包，可以临时禁用部分 hwdb 来源
-  services.udev.extraHwdb = lib.mkDefault "";
+  # 可选：额外保险，防止 udev 模块继续尝试生成
+  services.udev.extraHwdb = lib.mkForce "";
 }
