@@ -315,17 +315,6 @@
     HandleLidSwitchDocked = "ignore";
   };
 
-  # Enable support for devices based on MediaTek chips.
-  hardware.usb-modeswitch.enable = true;
-  services.udev = {
-    packages = [ pkgs.ddcutil ];
-    extraRules = ''
-      ACTION=="add", SUBSYSTEM=="usb", \
-          ATTRS{idVendor}=="0e8d", ATTRS{idProduct}=="2870", \
-          RUN+="${pkgs.usb-modeswitch}/bin/usb_modeswitch -v 0e8d -p 2870 -K -W"
-    '';
-  };
-
   # Enable i2c hardware.
   hardware.i2c.enable = true;
 
