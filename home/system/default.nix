@@ -45,7 +45,6 @@
 
   xdg.configFile."niri/config.kdl".source = ./config.kdl;
   xdg.configFile."keystroke/config.toml".source = ./keystroke/config.toml;
-  home.file.".local/bin/start-keystroke.sh".source = ./keystroke/start-keystroke.sh;
 
   programs.waybar = {
     enable = true;
