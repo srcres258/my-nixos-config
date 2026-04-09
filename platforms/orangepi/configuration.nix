@@ -32,6 +32,6 @@
     usbutils
   ];
 
-  # Disable hwdb generation, which can cause issues on ARM devices with non-standard hardware.
-  systemd.hwdb.enable = false;
+  # Use minimal systemd
+  systemd.package = pkgs.systemdMinimal;
 }
