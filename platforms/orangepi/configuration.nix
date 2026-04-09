@@ -31,4 +31,7 @@
     lm_sensors
     usbutils
   ];
+
+  # Disable hwdb generation, which can cause issues on ARM devices with non-standard hardware.
+  systemd.hwdb.enable = false;
 }
