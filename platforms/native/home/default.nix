@@ -17,6 +17,8 @@
     feishu
 
     tor-browser
+
+    rkdeveloptool
   ];
 
   programs.mpvpaper = {
