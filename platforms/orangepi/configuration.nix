@@ -32,5 +32,7 @@
     usbutils
   ];
 
-  boot.extraModprobeConfig = "";
+  environment.etc."udev/hwdb.bin".source = pkgs.runCommand "empty-hwdb" {} ''
+    touch $out
+  '';
 }
