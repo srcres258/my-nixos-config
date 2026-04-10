@@ -6,9 +6,15 @@
   nixpkgs.hostPlatform = lib.mkDefault "aarch64-linux";
 
   # Typical bootloader path for ARM SBC images.
+  # Orange Pi 5 with SPI-flashed U-Boot boots from /boot/extlinux/extlinux.conf.
   boot.loader = {
     grub.enable = false;
-    generic-extlinux-compatible.enable = true;
+    timeout = 3;
+    generic-extlinux-compatible = {
+      enable = true;
+      # Keep a few generations in extlinux menu for rollback while avoiding clutter.
+      configurationLimit = 10;
+    };
   };
 
   # Keep close to upstream-supported kernel stack.
