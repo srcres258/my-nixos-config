@@ -29,8 +29,8 @@
   ];
   
   # Add kernel modules needed during stage-1 (NVMe + device-mapper path).
-  boot.initrd.availableKernelModules = [ "nvme" "nvme_core" "pci" "xhci_pci" "dm_mod" ];
-  boot.initrd.kernelModules = [ "nvme" "dm_mod" ];
+  boot.initrd.availableKernelModules = [ "nvme" "nvme_core" "pci" "xhci_pci" "dm_mod" "btrfs" ];
+  boot.initrd.kernelModules = [ "nvme" "dm_mod" "btrfs" ];
 
   # Common device support expected on RK3588-based boards.
   hardware.enableRedistributableFirmware = true;
