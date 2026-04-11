@@ -27,6 +27,10 @@
     "f2fs"
     "vfat"
   ];
+  
+  # Add kernel modules to identify NVMe SSD devices during booting phases.
+  boot.initrd.availableKernelModules = [ "nvme" "nvme_core" "pci" "xhci_pci" ];
+  boot.initrd.kernelModules = [ "nvme" ];
 
   # Common device support expected on RK3588-based boards.
   hardware.enableRedistributableFirmware = true;
