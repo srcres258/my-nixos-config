@@ -38,23 +38,42 @@
         udevadm settle --timeout=3 || true
       fi
 
-      if [ -b /dev/nvme0n1p3 ]; then
+      if command -v blkid >/dev/null 2>&1; then
+        nixosRootDev="$(blkid -L nixos || true)"
+        if [ -n "$nixosRootDev" ]; then
+          mkdir -p /dev/disk/by-label
+          ln -sf "$nixosRootDev" /dev/disk/by-label/nixos
+        fi
+
+        swapDev="$(blkid -L swap || true)"
+        if [ -n "$swapDev" ]; then
+          mkdir -p /dev/disk/by-label
+          ln -sf "$swapDev" /dev/disk/by-label/swap
+        fi
+
+        bootDev="$(blkid -L boot || true)"
+        if [ -n "$bootDev" ]; then
+          mkdir -p /dev/disk/by-label
+          ln -sf "$bootDev" /dev/disk/by-label/boot
+        fi
+      fi
+
+      if [ -e /dev/disk/by-label/nixos ]; then
         break
       fi
 
       sleep 1
     done
   '';
-  boot.kernelParams = lib.mkAfter [ "root=/dev/nvme0n1p3" "rootwait" "rootdelay=60" "rootfstype=btrfs" ];
+  boot.kernelParams = lib.mkAfter [ "root=LABEL=nixos" "rootwait" "rootdelay=60" "rootfstype=btrfs" ];
 
-  # Stage-1 was repeatedly timing out on /dev/disk/by-label and /dev/disk/by-uuid.
-  # On this board we mount by direct NVMe partition nodes to bypass udev symlink races
-  # during early boot.
-  fileSystems."/".device = lib.mkForce "/dev/nvme0n1p3";
-  fileSystems."/home".device = lib.mkForce "/dev/nvme0n1p3";
-  fileSystems."/nix".device = lib.mkForce "/dev/nvme0n1p3";
-  fileSystems."/boot".device = lib.mkForce "/dev/nvme0n1p1";
-  swapDevices = lib.mkForce [ { device = "/dev/nvme0n1p2"; } ];
+  # The NVMe index can change across boots on RK3588. Prefer stable labels and
+  # recreate label symlinks in stage-1 as a fallback when udev is late.
+  fileSystems."/".device = lib.mkForce "/dev/disk/by-label/nixos";
+  fileSystems."/home".device = lib.mkForce "/dev/disk/by-label/nixos";
+  fileSystems."/nix".device = lib.mkForce "/dev/disk/by-label/nixos";
+  fileSystems."/boot".device = lib.mkForce "/dev/disk/by-label/boot";
+  swapDevices = lib.mkForce [ { device = "/dev/disk/by-label/swap"; } ];
 
   networking = {
     hostName = "srcres-orange-pi";
