@@ -1,7 +1,19 @@
-{ ... }: {
+{ lib, ... }: {
   imports = [
     ./hardware-configuration.nix
   ];
+
+  # Ensure NVMe root-on-SSD is discoverable in stage-1 initrd on RK3588.
+  # hardware-configuration.nix may contain a minimal module list from scan time,
+  # so we append required PCI/NVMe modules here at host level.
+  boot.initrd.availableKernelModules = lib.mkAfter [
+    "pci"
+    "pcie_rockchip_host"
+    "nvme_core"
+    "nvme"
+  ];
+  boot.initrd.kernelModules = lib.mkAfter [ "pcie_rockchip_host" "nvme_core" "nvme" ];
+  boot.kernelParams = lib.mkAfter [ "rootwait" ];
 
   networking = {
     hostName = "srcres-orange-pi";
