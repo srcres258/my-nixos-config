@@ -42,19 +42,8 @@
     usbutils
   ];
 
-  # 1. 强制使用完整的 systemd（而不是 Minimal 版本，确保包含 systemd-hwdb 工具）
+  # Keep full systemd userspace for normal udev tooling availability.
   systemd.package = lib.mkForce pkgs.systemd;
-
-  # 2. 用最高优先级提供一个空的 hwdb.bin，覆盖官方模块生成的那个
-  #    这能直接让 hwdb.bin.drv 构建通过，而不触发内部的 systemd-hwdb 调用失败
-  environment.etc."udev/hwdb.bin".source = lib.mkForce (
-    pkgs.runCommand "empty-hwdb.bin" {} ''
-      touch $out
-    ''
-  );
-
-  # 3. 额外保险：清空 extraHwdb，减少需要合并的文件量
-  services.udev.extraHwdb = lib.mkForce "";
 
   # 为常见 USB 外设提供更完整的运行支持。
   hardware.usb-modeswitch.enable = true;
