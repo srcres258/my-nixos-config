@@ -11,11 +11,12 @@
     "pci"
     "nvme_core"
     "nvme"
+    "dm_mod"
     "xhci_pci"
     "mmc_block"
     "sd_mod"
   ];
-  boot.initrd.kernelModules = lib.mkForce [ "pcie_rockchip_host" "pci" "nvme_core" "nvme" ];
+  boot.initrd.kernelModules = lib.mkForce [ "pcie_rockchip_host" "pci" "nvme_core" "nvme" "dm_mod" ];
   boot.initrd.systemd.enable = false;
   boot.initrd.postDeviceCommands = ''
     for _ in $(seq 1 60); do
@@ -27,6 +28,7 @@
       modprobe pci >/dev/null 2>&1 || true
       modprobe nvme_core >/dev/null 2>&1 || true
       modprobe nvme >/dev/null 2>&1 || true
+      modprobe dm_mod >/dev/null 2>&1 || true
 
       if command -v udevadm >/dev/null 2>&1; then
         udevadm trigger --subsystem-match=pci --action=add || true

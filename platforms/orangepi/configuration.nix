@@ -28,9 +28,9 @@
     "vfat"
   ];
   
-  # Add kernel modules to identify NVMe SSD devices during booting phases.
-  boot.initrd.availableKernelModules = [ "nvme" "nvme_core" "pci" "xhci_pci" ];
-  boot.initrd.kernelModules = [ "nvme" ];
+  # Add kernel modules needed during stage-1 (NVMe + device-mapper path).
+  boot.initrd.availableKernelModules = [ "nvme" "nvme_core" "pci" "xhci_pci" "dm_mod" ];
+  boot.initrd.kernelModules = [ "nvme" "dm_mod" ];
 
   # Common device support expected on RK3588-based boards.
   hardware.enableRedistributableFirmware = true;
