@@ -14,7 +14,19 @@
     "sd_mod"
   ];
   boot.initrd.kernelModules = lib.mkAfter [ "pcie_rockchip_host" "nvme_core" "nvme" "pci" ];
-  boot.kernelParams = lib.mkAfter [ "rootwait" ];
+  boot.initrd.systemd.enable = false;
+  boot.initrd.postDeviceCommands = ''
+    for _ in 1 2 3; do
+      if [ -e /sys/bus/pci/rescan ]; then
+        echo 1 > /sys/bus/pci/rescan
+      fi
+      if command -v udevadm >/dev/null 2>&1; then
+        udevadm settle --timeout=30 || true
+      fi
+      sleep 1
+    done
+  '';
+  boot.kernelParams = lib.mkAfter [ "root=/dev/nvme0n1p3" "rootwait" "rootfstype=btrfs" ];
 
   # Stage-1 was repeatedly timing out on /dev/disk/by-label and /dev/disk/by-uuid.
   # On this board we mount by direct NVMe partition nodes to bypass udev symlink races
@@ -23,7 +35,7 @@
   fileSystems."/home".device = lib.mkForce "/dev/nvme0n1p3";
   fileSystems."/nix".device = lib.mkForce "/dev/nvme0n1p3";
   fileSystems."/boot".device = lib.mkForce "/dev/nvme0n1p1";
-  swapDevices = [ { device = "/dev/nvme0n1p2"; } ];
+  swapDevices = lib.mkForce [ { device = "/dev/nvme0n1p2"; } ];
 
   networking = {
     hostName = "srcres-orange-pi";
