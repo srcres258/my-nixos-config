@@ -4,16 +4,26 @@
   ];
 
   # Ensure NVMe root-on-SSD is discoverable in stage-1 initrd on RK3588.
-  # hardware-configuration.nix may contain a minimal module list from scan time,
-  # so we append required PCI/NVMe modules here at host level.
+  # Keep PCIe/NVMe modules force-loaded early and give slow-link bring-up more time.
   boot.initrd.availableKernelModules = lib.mkAfter [
     "pci"
     "pcie_rockchip_host"
     "nvme_core"
     "nvme"
+    "mmc_block"
+    "sd_mod"
   ];
-  boot.initrd.kernelModules = lib.mkAfter [ "pcie_rockchip_host" "nvme_core" "nvme" ];
+  boot.initrd.kernelModules = lib.mkAfter [ "pcie_rockchip_host" "nvme_core" "nvme" "pci" ];
   boot.kernelParams = lib.mkAfter [ "rootwait" ];
+
+  # Stage-1 was repeatedly timing out on /dev/disk/by-label and /dev/disk/by-uuid.
+  # On this board we mount by direct NVMe partition nodes to bypass udev symlink races
+  # during early boot.
+  fileSystems."/".device = lib.mkForce "/dev/nvme0n1p3";
+  fileSystems."/home".device = lib.mkForce "/dev/nvme0n1p3";
+  fileSystems."/nix".device = lib.mkForce "/dev/nvme0n1p3";
+  fileSystems."/boot".device = lib.mkForce "/dev/nvme0n1p1";
+  swapDevices = [ { device = "/dev/nvme0n1p2"; } ];
 
   networking = {
     hostName = "srcres-orange-pi";
