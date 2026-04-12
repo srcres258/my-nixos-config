@@ -40,12 +40,9 @@
     freecad
   ]) ++ (with pkgs.nur.repos; [
     # srcres258.lceda-pro
-
-    srcres258.keystroke
   ]);
 
   xdg.configFile."niri/config.kdl".source = lib.mkDefault ./config.kdl;
-  xdg.configFile."keystroke/config.toml".source = ./keystroke/config.toml;
 
   programs.waybar = {
     enable = true;

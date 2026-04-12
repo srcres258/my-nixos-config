@@ -429,7 +429,6 @@ spawn-at-startup "niri-switch-daemon"
 spawn-at-startup "waybar"
 spawn-at-startup "kitty"
 spawn-at-startup "nm-applet"
-spawn-at-startup "keystroke"
 spawn-sh-at-startup "fcitx5 -d -r"
 spawn-sh-at-startup "fcitx5-remote -r"
 
