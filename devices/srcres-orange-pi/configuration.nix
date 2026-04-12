@@ -13,6 +13,9 @@
     "pci"
     "nvme_core"
     "nvme"
+    # crc32c hash is required by btrfs for data checksum and is a loadable
+    # module on this kernel; without it mount fails with ENOENT.
+    "crc32c_cryptoapi"
     "dm_mod"
     "btrfs"
     "vfat"
@@ -26,7 +29,7 @@
   # Keep default initrd modules enabled to avoid missing core block/udev helpers
   # during early boot discovery on RK3588.
   boot.initrd.includeDefaultModules = lib.mkForce true;
-  boot.initrd.kernelModules = lib.mkForce [ "phy_rockchip_naneng_combphy" "pcie_rockchip_host" "pci" "nvme_core" "nvme" "dm_mod" "btrfs" ];
+  boot.initrd.kernelModules = lib.mkForce [ "phy_rockchip_naneng_combphy" "pcie_rockchip_host" "pci" "nvme_core" "nvme" "crc32c_cryptoapi" "dm_mod" "btrfs" ];
   boot.kernelModules = [ "pcie_rockchip_host" "nvme" "nvme_core" ];
   boot.initrd.postDeviceCommands = ''
     rootUuid="1aab64c8-3fe8-46f4-8aff-124f2ea7868d"
