@@ -87,7 +87,58 @@
     RUST_SRC_PATH = "${pkgs.rustPlatform.rustLibSrc}";
   };
   
-  xdg.configFile."niri/config.kdl".text = "";
+  # Override the shared niri config for Orange Pi 5 (RK3588S).
+  #
+  # The RK3588 SoC exposes two DRM devices:
+  #   card0 / renderD128 = panthor (Mali G610, 3D rendering, no display output)
+  #   card1              = rockchip-drm (display output, no 3D)
+  #
+  # Without an explicit render-drm-device, niri/smithay's automatic device
+  # enumeration may attempt EGL initialisation on the rockchip-drm node that
+  # has no 3D capability, causing an immediate SIGSEGV.
+  #
+  # See: https://github.com/niri-wm/niri/wiki/Getting-Started#asahi-arm-and-other-kmsro-devices
+  xdg.configFile."niri/config.kdl".text = ''
+    debug {
+        render-drm-device "/dev/dri/renderD128"
+    }
+
+    input {
+        keyboard {
+            xkb {
+                layout "us"
+            }
+        }
+
+        touchpad {
+            tap
+            natural-scroll
+        }
+    }
+
+    hotkey-overlay {
+        skip-at-startup
+    }
+
+    binds {
+        Mod+Return { spawn "kitty"; }
+        Mod+Q { close-window; }
+        Mod+Shift+Q { quit; }
+
+        Mod+Left  { focus-column-left; }
+        Mod+Right { focus-column-right; }
+        Mod+Down  { focus-window-down; }
+        Mod+Up    { focus-window-up; }
+
+        Mod+Shift+Left  { move-column-left; }
+        Mod+Shift+Right { move-column-right; }
+    }
+
+    layout {
+        gaps 8
+        default-column-width { proportion 0.5; }
+    }
+  '';
 
   xdg.enable = true;
   xdg.cacheHome = builtins.toPath "/home/${config.home.username}/.cache";
