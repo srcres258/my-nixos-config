@@ -80,12 +80,12 @@ input {
     mod-key-nested "Alt"
 }
 
-// output "DP-1" {
-//     focus-at-startup
-//     mode "1920x1080@120.030"
-//     transform "normal"
-//     position x=0 y=0
-// }
+output "DP-1" {
+    focus-at-startup
+    mode "1920x1080@120.030"
+    transform "normal"
+    position x=0 y=0
+}
 
 binds {
     Alt+Tab { spawn "niri-switch"; }
@@ -462,7 +462,7 @@ cursor {
 }
 
 window-rule {
-    // open-on-output "DP-1"
+    open-on-output "DP-1"
     geometry-corner-radius 5
     clip-to-geometry true
     border {
