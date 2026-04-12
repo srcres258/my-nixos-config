@@ -21,14 +21,18 @@
     "sd_mod"
     "usb_storage"
   ];
+  boot.initrd.includeDefaultModules = lib.mkForce false;
   boot.initrd.kernelModules = lib.mkForce [ "pcie_rockchip_host" "pci" "nvme_core" "nvme" "dm_mod" "btrfs" ];
   boot.initrd.systemd.enable = false;
+  boot.kernelModules = [ "pcie_rockchip_host" "nvme" "nvme_core" ];
   boot.initrd.postDeviceCommands = ''
     rootUuid="1aab64c8-3fe8-46f4-8aff-124f2ea7868d"
     swapUuid="b439618d-cd52-4bc9-8509-c327a3c026aa"
     bootUuid="3A12-AB1C"
 
-    for _ in $(seq 1 90); do
+    echo "[initrd] waiting for NVMe/UUID devices"
+
+    for _ in $(seq 1 120); do
       if [ -e /sys/bus/pci/rescan ]; then
         echo 1 > /sys/bus/pci/rescan
       fi
@@ -39,41 +43,43 @@
       modprobe nvme >/dev/null 2>&1 || true
       modprobe dm_mod >/dev/null 2>&1 || true
       modprobe btrfs >/dev/null 2>&1 || true
+      modprobe mmc_block >/dev/null 2>&1 || true
+      modprobe sd_mod >/dev/null 2>&1 || true
+      modprobe usb_storage >/dev/null 2>&1 || true
 
       if command -v udevadm >/dev/null 2>&1; then
         udevadm trigger --subsystem-match=pci --action=add || true
+        udevadm trigger --subsystem-match=nvme --action=add || true
         udevadm trigger --subsystem-match=block --action=add || true
-        udevadm settle --timeout=3 || true
+        udevadm settle --timeout=4 || true
       fi
 
-      if command -v blkid >/dev/null 2>&1; then
-        rootDev="$(blkid -U "$rootUuid" || true)"
-        if [ -n "$rootDev" ]; then
-          mkdir -p /dev/disk/by-uuid
-          ln -sf "$rootDev" "/dev/disk/by-uuid/$rootUuid"
-        fi
+      if [ -e /dev/nvme0n1 ] || [ -e /dev/nvme1n1 ]; then
+        mkdir -p /dev/disk/by-uuid
 
-        swapDev="$(blkid -U "$swapUuid" || true)"
-        if [ -n "$swapDev" ]; then
-          mkdir -p /dev/disk/by-uuid
-          ln -sf "$swapDev" "/dev/disk/by-uuid/$swapUuid"
-        fi
-
-        bootDev="$(blkid -U "$bootUuid" || true)"
-        if [ -n "$bootDev" ]; then
-          mkdir -p /dev/disk/by-uuid
-          ln -sf "$bootDev" "/dev/disk/by-uuid/$bootUuid"
-        fi
+        for dev in /dev/nvme*n* /dev/mmcblk*p* /dev/sd*; do
+          if [ -b "$dev" ]; then
+            uuid="$(blkid -s UUID -o value "$dev" 2>/dev/null || true)"
+            if [ -n "$uuid" ]; then
+              ln -sf "$dev" "/dev/disk/by-uuid/$uuid"
+            fi
+          fi
+        done
       fi
 
-      if [ -e "/dev/disk/by-uuid/$rootUuid" ]; then
+      if [ -e "/dev/disk/by-uuid/$rootUuid" ] && [ -e "/dev/disk/by-uuid/$swapUuid" ] && [ -e "/dev/disk/by-uuid/$bootUuid" ]; then
+        echo "[initrd] all required by-uuid links are present"
         break
       fi
 
       sleep 1
     done
+
+    if [ ! -e "/dev/disk/by-uuid/$rootUuid" ]; then
+      echo "[initrd] root UUID still missing: $rootUuid"
+    fi
   '';
-  boot.kernelParams = lib.mkAfter [ "root=UUID=1aab64c8-3fe8-46f4-8aff-124f2ea7868d" "rootwait" "rootdelay=90" "rootfstype=btrfs" ];
+  boot.kernelParams = lib.mkAfter [ "root=UUID=1aab64c8-3fe8-46f4-8aff-124f2ea7868d" "rootwait" "rootdelay=120" "rootfstype=btrfs" "boot.trace" "udev.log_priority=debug" ];
 
   # The NVMe index can change across boots on RK3588. Prefer UUID-based root
   # lookup and recreate by-uuid symlinks in stage-1 if udev is late.
