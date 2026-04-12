@@ -21,7 +21,9 @@
     "sd_mod"
     "usb_storage"
   ];
-  boot.initrd.includeDefaultModules = lib.mkForce false;
+  # Keep default initrd modules enabled to avoid missing core block/udev helpers
+  # during early boot discovery on RK3588.
+  boot.initrd.includeDefaultModules = lib.mkForce true;
   boot.initrd.kernelModules = lib.mkForce [ "pcie_rockchip_host" "pci" "nvme_core" "nvme" "dm_mod" "btrfs" ];
   boot.kernelModules = [ "pcie_rockchip_host" "nvme" "nvme_core" ];
   boot.initrd.postDeviceCommands = ''
@@ -46,18 +48,33 @@
         udevadm trigger --subsystem-match=pci --action=add || true
         udevadm trigger --subsystem-match=nvme --action=add || true
         udevadm trigger --subsystem-match=block --action=add || true
-        udevadm settle --timeout=2 || true
+        udevadm settle --timeout=3 || true
       fi
 
+      # Ensure by-uuid links are materialized from current udev state first.
       mkdir -p /dev/disk/by-uuid
-      for dev in /dev/nvme*n* /dev/mmcblk*p* /dev/sd*; do
-        if [ -b "$dev" ]; then
-          uuid="$(blkid -s UUID -o value "$dev" 2>/dev/null || true)"
-          if [ -n "$uuid" ]; then
-            ln -sf "$dev" "/dev/disk/by-uuid/$uuid"
+      if [ -d /run/udev/data ] && command -v sed >/dev/null 2>&1; then
+        for meta in /run/udev/data/b*; do
+          [ -f "$meta" ] || continue
+          devname="$(sed -n 's/^N://p' "$meta" | head -n 1)"
+          uuid="$(sed -n 's/^E:ID_FS_UUID=//p' "$meta" | head -n 1)"
+          if [ -n "$devname" ] && [ -n "$uuid" ] && [ -b "/dev/$devname" ]; then
+            ln -sf "/dev/$devname" "/dev/disk/by-uuid/$uuid"
           fi
-        fi
-      done
+        done
+      fi
+
+      # Fallback probe with blkid if udev metadata is incomplete.
+      if command -v blkid >/dev/null 2>&1; then
+        for dev in /dev/nvme*n* /dev/mmcblk*p* /dev/sd*; do
+          if [ -b "$dev" ]; then
+            uuid="$(blkid -s UUID -o value "$dev" 2>/dev/null || true)"
+            if [ -n "$uuid" ]; then
+              ln -sf "$dev" "/dev/disk/by-uuid/$uuid"
+            fi
+          fi
+        done
+      fi
 
       if [ -e "/dev/disk/by-uuid/$rootUuid" ]; then
         break
