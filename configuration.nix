@@ -52,9 +52,11 @@
     isNormalUser = true;
     description = "src_resources";
     extraGroups = [
-      "wheel" # Enable ‘sudo’ for the user.
+      "wheel" # Enable 'sudo' for the user.
       "networkmanager"
       "audio"
+      "video" # Grant access to /dev/dri/card* DRM devices
+      "render" # Grant access to /dev/dri/renderD* render nodes
       "docker"
       "wireshark"
       "i2c"
