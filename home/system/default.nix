@@ -1,5 +1,6 @@
 { config
 , pkgs
+, lib
 , ...
 }: {
   home.packages = (with pkgs; [
@@ -43,7 +44,7 @@
     srcres258.keystroke
   ]);
 
-  xdg.configFile."niri/config.kdl".source = ./config.kdl;
+  xdg.configFile."niri/config.kdl".source = lib.mkDefault ./config.kdl;
   xdg.configFile."keystroke/config.toml".source = ./keystroke/config.toml;
 
   programs.waybar = {

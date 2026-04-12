@@ -86,6 +86,8 @@
 
     RUST_SRC_PATH = "${pkgs.rustPlatform.rustLibSrc}";
   };
+  
+  xdg.configFile."niri/config.kdl".source = ./config.kdl;
 
   xdg.enable = true;
   xdg.cacheHome = builtins.toPath "/home/${config.home.username}/.cache";
