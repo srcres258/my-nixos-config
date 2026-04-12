@@ -7,7 +7,9 @@
   # Force deterministic module inclusion/load order and add active reprobe loop
   # because the PCIe/NVMe link can come up late on this board.
   boot.initrd.availableKernelModules = lib.mkForce [
+    # PCIe controller + combo PHY required to bring the NVMe link up on RK3588S.
     "pcie_rockchip_host"
+    "phy_rockchip_naneng_combphy"
     "pci"
     "nvme_core"
     "nvme"
@@ -24,7 +26,7 @@
   # Keep default initrd modules enabled to avoid missing core block/udev helpers
   # during early boot discovery on RK3588.
   boot.initrd.includeDefaultModules = lib.mkForce true;
-  boot.initrd.kernelModules = lib.mkForce [ "pcie_rockchip_host" "pci" "nvme_core" "nvme" "dm_mod" "btrfs" ];
+  boot.initrd.kernelModules = lib.mkForce [ "phy_rockchip_naneng_combphy" "pcie_rockchip_host" "pci" "nvme_core" "nvme" "dm_mod" "btrfs" ];
   boot.kernelModules = [ "pcie_rockchip_host" "nvme" "nvme_core" ];
   boot.initrd.postDeviceCommands = ''
     rootUuid="1aab64c8-3fe8-46f4-8aff-124f2ea7868d"
@@ -34,6 +36,7 @@
         echo 1 > /sys/bus/pci/rescan
       fi
 
+      modprobe phy_rockchip_naneng_combphy >/dev/null 2>&1 || true
       modprobe pcie_rockchip_host >/dev/null 2>&1 || true
       modprobe pci >/dev/null 2>&1 || true
       modprobe nvme_core >/dev/null 2>&1 || true
