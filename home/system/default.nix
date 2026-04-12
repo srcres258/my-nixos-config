@@ -42,8 +42,6 @@
     # srcres258.lceda-pro
   ]);
 
-  xdg.configFile."niri/config.kdl".source = lib.mkDefault ./config.kdl;
-
   programs.waybar = {
     enable = true;
     settings = {
