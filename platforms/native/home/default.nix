@@ -1,4 +1,7 @@
-{ pkgs, ... }: {
+{ pkgs
+, lib
+, ...
+}: {
   imports = [
     ./vscode.nix
   ];
@@ -20,6 +23,8 @@
 
     rkdeveloptool
   ];
+
+  xdg.configFile."niri/config.kdl".source = ./config.kdl;
 
   programs.mpvpaper = {
     enable = true;
