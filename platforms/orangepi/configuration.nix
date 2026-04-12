@@ -1,5 +1,6 @@
 { pkgs
 , lib
+, config
 , ...
 }: {
   # Orange Pi 5 (RK3588s) runs on aarch64 Linux.
@@ -75,4 +76,16 @@
 
   # 4. 如果你的配置中启用了很多桌面/输入/蓝牙/pipewire 等包，可以临时禁用部分 hwdb 来源（可选）
   # services.udev.extraHwdb = lib.mkForce "# disabled to avoid build failure";
+
+  services.greetd = {
+    enable = true;
+    settings = {
+      default_session = {
+        command = "${pkgs.tuigreet}/bin/tuigreet " +
+          "--time --asterisks --remember --remember-session " +
+          "--sessions ${config.services.displayManager.sessionData.desktops}/share/wayland-sessions";
+      };
+    };
+  };
+
 }
