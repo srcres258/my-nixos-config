@@ -99,7 +99,6 @@
     "rootdelay=60"
     "rootfstype=btrfs"
     "console=tty0"
-    "console=ttyS2,1500000"
     "earlycon"
   ];
 
