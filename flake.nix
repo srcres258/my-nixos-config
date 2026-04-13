@@ -231,6 +231,10 @@
               };
               modules = [
                 ./home/develop.nix
+
+                ({
+                  home.stateVersion = "25.11";
+                })
               ];
             }).activationPackage
           ];
