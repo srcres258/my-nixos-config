@@ -6,9 +6,6 @@
 }:
 let
   username = "srcres";
-
-  javaPkg = pkgs.javaPackages.compiler.temurin-bin.jdk-21;
-  scalaPkg = pkgs.scala_3;
 in
 {
   imports = [
@@ -234,10 +231,6 @@ in
   home.sessionVariables = {
     EDITOR = "nvim";
     VISUAL = "nvim";
-
-    JAVA_HOME = "${javaPkg}";
-    COURSIER_CACHE = "${config.xdg.cacheHome}/coursier";
-    SBT_OPTS = "-Dsbt.ivy.home=${config.xdg.cacheHome}/ivy2 -Dsbt.global.base=${config.xdg.configHome}/sbt -Dsbt.coursier.home=${config.xdg.cacheHome}/coursier";
 
     RUST_SRC_PATH = "${pkgs.rustPlatform.rustLibSrc}";
   };
