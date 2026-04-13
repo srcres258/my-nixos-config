@@ -92,7 +92,6 @@
   ] ++ [
 
     cowsay
-    file
     which
     tree
     gnused
