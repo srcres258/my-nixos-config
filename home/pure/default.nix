@@ -51,8 +51,6 @@ in
   home.packages = with pkgs; [
     cascadia-code
 
-    qemu
-
     nil
     lua-language-server
     pyright
@@ -80,10 +78,6 @@ in
     electron
     pnpm
 
-    pkgsCross.riscv64.stdenv.cc # Linux GNU
-    pkgsCross.riscv64-embedded.stdenv.cc # bare-metal ELF
-    pkgsCross.riscv32-embedded.stdenv.cc
-
     scons
 
     wireshark
@@ -108,20 +102,11 @@ in
 
     jadx
 
-    whisper-cpp
-    spek
-    fcrackzip
-
     thunderbird
 
     espeak
 
     haskellPackages.pandoc-crossref
-
-    gtkwave
-    circt
-    verilator
-    iverilog
 
     mediainfo
 
@@ -142,24 +127,9 @@ in
 
     minicom
 
-    # Ethereum
-    inputs.go-ethereum-legacy-nixpkgs.legacyPackages.${system}.go-ethereum
-    foundry-bin
-    solc
-    python312Packages.pyevmasm
-
     # Nix language
     nixd
     nixpkgs-fmt
-
-    # Scala language
-    scala-cli
-    sbt
-    inputs.mill-legacy-nixpkgs.legacyPackages.${system}.mill
-    ammonite
-    scalafmt
-    scalafix
-    metals
 
     # Rust language
     cargo
@@ -193,9 +163,6 @@ in
 
     # Go language
     gopls
-
-    # Verilog / SystemVerilog language
-    verible
 
     # Python language
     (python313.withPackages (ps: ((with ps; [

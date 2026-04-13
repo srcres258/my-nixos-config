@@ -26,7 +26,39 @@ in {
 
     rkdeveloptool
 
+    gtkwave
+    circt
+    verilator
+    iverilog
+
+    pkgsCross.riscv64.stdenv.cc # Linux GNU
+    pkgsCross.riscv64-embedded.stdenv.cc # bare-metal ELF
+    pkgsCross.riscv32-embedded.stdenv.cc
+
+    qemu
+
+    whisper-cpp
+    spek
+    fcrackzip
+
+    # Ethereum
+    inputs.go-ethereum-legacy-nixpkgs.legacyPackages.${system}.go-ethereum
+    foundry-bin
+    solc
+    python312Packages.pyevmasm
+
+    # Scala language
+    scala-cli
+    sbt
+    inputs.mill-legacy-nixpkgs.legacyPackages.${system}.mill
+    ammonite
+    scalafmt
+    scalafix
+    metals
     bloop
+
+    # Verilog / SystemVerilog language
+    verible
   ];
 
   xdg.configFile."niri/config.kdl".source = ./config.kdl;
