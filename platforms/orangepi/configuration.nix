@@ -72,6 +72,9 @@
     ACTION=="add", SUBSYSTEM=="usb", \
         ATTRS{idVendor}=="0e8d", ATTRS{idProduct}=="2870", \
         RUN+="${pkgs.usb-modeswitch}/bin/usb_modeswitch -v 0e8d -p 2870 -K -W"
+
+    ATTR{idVendor}=="0bda", ATTR{idProduct}=="1a2b", \
+        RUN+="${pkgs.usb-modeswitch}/bin/usb_modeswitch -K -v 0bda -p 1a2b"
   '';
 
   # 4. 如果你的配置中启用了很多桌面/输入/蓝牙/pipewire 等包，可以临时禁用部分 hwdb 来源（可选）
@@ -88,5 +91,4 @@
       };
     };
   };
-
 }
