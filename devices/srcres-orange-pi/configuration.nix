@@ -48,7 +48,16 @@ let
       mkdir -p $out/lib/firmware
       cp -r fw/aic8800D80 $out/lib/firmware/
       mkdir -p $out/lib/udev/rules.d
-      install -m 644 aic.rules $out/lib/udev/rules.d/aic.rules
+      cat > $out/lib/udev/rules.d/99-aic8800d80-mode-switch.rules <<'EOF'
+      ACTION=="add", SUBSYSTEM=="block", ENV{DEVTYPE}=="disk", KERNEL=="sd*", ATTRS{idVendor}=="a69c", ATTRS{idProduct}=="5721", RUN+="${pkgs.util-linux}/bin/eject /dev/%k"
+      ACTION=="add", SUBSYSTEM=="block", ENV{DEVTYPE}=="disk", KERNEL=="sd*", ATTRS{idVendor}=="a69c", ATTRS{idProduct}=="5723", RUN+="${pkgs.util-linux}/bin/eject /dev/%k"
+      ACTION=="add", SUBSYSTEM=="block", ENV{DEVTYPE}=="disk", KERNEL=="sd*", ATTRS{idVendor}=="a69c", ATTRS{idProduct}=="5724", RUN+="${pkgs.util-linux}/bin/eject /dev/%k"
+      ACTION=="add", SUBSYSTEM=="block", ENV{DEVTYPE}=="disk", KERNEL=="sd*", ATTRS{idVendor}=="a69c", ATTRS{idProduct}=="5725", RUN+="${pkgs.util-linux}/bin/eject /dev/%k"
+      ACTION=="add", SUBSYSTEM=="block", ENV{DEVTYPE}=="disk", KERNEL=="sd*", ATTRS{idVendor}=="a69c", ATTRS{idProduct}=="5726", RUN+="${pkgs.util-linux}/bin/eject /dev/%k"
+      ACTION=="add", SUBSYSTEM=="block", ENV{DEVTYPE}=="disk", KERNEL=="sd*", ATTRS{idVendor}=="a69c", ATTRS{idProduct}=="5727", RUN+="${pkgs.util-linux}/bin/eject /dev/%k"
+      ACTION=="add", SUBSYSTEM=="block", ENV{DEVTYPE}=="disk", KERNEL=="sd*", ATTRS{idVendor}=="a69c", ATTRS{idProduct}=="572a", RUN+="${pkgs.util-linux}/bin/eject /dev/%k"
+      ACTION=="add", SUBSYSTEM=="block", ENV{DEVTYPE}=="disk", KERNEL=="sd*", ATTRS{idVendor}=="a69c", ATTRS{idProduct}=="572c", RUN+="${pkgs.util-linux}/bin/eject /dev/%k"
+      EOF
       runHook postInstall
     '';
   };
@@ -196,16 +205,7 @@ in {
 
   # AIC8800D80 USB Wi-Fi driver (aic8800_fdrv + aic_load_fw) and firmware.
   hardware.firmware = [ aic8800d80Firmware ];
-  services.udev.extraRules = ''
-    KERNEL=="sd*", ATTRS{idVendor}=="a69c", ATTRS{idProduct}=="5721",  SYMLINK+="aicudisk", RUN+="${pkgs.util-linux}/bin/eject /dev/%k"
-    KERNEL=="sd*", ATTRS{idVendor}=="a69c", ATTRS{idProduct}=="5723",  SYMLINK+="tendaudisk", RUN+="${pkgs.util-linux}/bin/eject /dev/%k"
-    KERNEL=="sd*", ATTRS{idVendor}=="a69c", ATTRS{idProduct}=="5724",  SYMLINK+="ugreenax900", RUN+="${pkgs.util-linux}/bin/eject /dev/%k"
-    KERNEL=="sd*", ATTRS{idVendor}=="a69c", ATTRS{idProduct}=="5725",  SYMLINK+="tendaudiskv2", RUN+="${pkgs.util-linux}/bin/eject /dev/%k"
-    KERNEL=="sd*", ATTRS{idVendor}=="a69c", ATTRS{idProduct}=="5726",  SYMLINK+="tendaudiskv3", RUN+="${pkgs.util-linux}/bin/eject /dev/%k"
-    KERNEL=="sd*", ATTRS{idVendor}=="a69c", ATTRS{idProduct}=="5727",  SYMLINK+="tendaudiskv4", RUN+="${pkgs.util-linux}/bin/eject /dev/%k"
-    KERNEL=="sd*", ATTRS{idVendor}=="a69c", ATTRS{idProduct}=="572a",  SYMLINK+="tendaudiskv5", RUN+="${pkgs.util-linux}/bin/eject /dev/%k"
-    KERNEL=="sd*", ATTRS{idVendor}=="a69c", ATTRS{idProduct}=="572c",  SYMLINK+="cudydiskv2", RUN+="${pkgs.util-linux}/bin/eject /dev/%k"
-  '';
+  services.udev.packages = [ aic8800d80Firmware ];
 
   # This option defines the first version of NixOS installed on this host.
   system.stateVersion = "25.11";
