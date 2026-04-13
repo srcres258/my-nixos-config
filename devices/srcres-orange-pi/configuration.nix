@@ -1,4 +1,58 @@
-{ lib, ... }: {
+{ lib, pkgs, config, ... }:
+let
+  aic8800d80Src = pkgs.fetchFromGitHub {
+    owner = "shenmintao";
+    repo = "aic8800d80";
+    rev = "05710dff05dabce66ab3ee80f40484892c512b3c";
+    hash = "sha256-QVpuJrCssBf4fwycq7oN0Oi9OxpQUqrSTQuHk5UE9+U=";
+  };
+
+  aic8800d80 = config.boot.kernelPackages.callPackage (
+    {
+      stdenv,
+      kernel,
+    }:
+    stdenv.mkDerivation {
+      pname = "aic8800d80";
+      version = "unstable-2026-04-13";
+      src = aic8800d80Src;
+
+      nativeBuildInputs = kernel.moduleBuildDependencies;
+
+      buildPhase = ''
+        runHook preBuild
+        make -C drivers/aic8800 \
+          KVER=${kernel.modDirVersion} \
+          KDIR=${kernel.dev}/lib/modules/${kernel.modDirVersion}/build
+        runHook postBuild
+      '';
+
+      installPhase = ''
+        runHook preInstall
+        modDir=$out/lib/modules/${kernel.modDirVersion}/kernel/drivers/net/wireless/aic8800
+        mkdir -p "$modDir"
+        install -m 644 drivers/aic8800/aic_load_fw/aic_load_fw.ko "$modDir"/
+        install -m 644 drivers/aic8800/aic8800_fdrv/aic8800_fdrv.ko "$modDir"/
+        runHook postInstall
+      '';
+    }
+  ) { };
+
+  aic8800d80Firmware = pkgs.stdenvNoCC.mkDerivation {
+    pname = "aic8800d80-firmware";
+    version = "unstable-2026-04-13";
+    src = aic8800d80Src;
+
+    installPhase = ''
+      runHook preInstall
+      mkdir -p $out/lib/firmware
+      cp -r fw/aic8800D80 $out/lib/firmware/
+      mkdir -p $out/lib/udev/rules.d
+      install -m 644 aic.rules $out/lib/udev/rules.d/aic.rules
+      runHook postInstall
+    '';
+  };
+in {
   imports = [
     ./hardware-configuration.nix
   ];
@@ -30,7 +84,14 @@
   # during early boot discovery on RK3588.
   boot.initrd.includeDefaultModules = lib.mkForce true;
   boot.initrd.kernelModules = lib.mkForce [ "phy_rockchip_naneng_combphy" "pcie_rockchip_host" "pci" "nvme_core" "nvme" "crc32c_cryptoapi" "dm_mod" "btrfs" ];
-  boot.kernelModules = [ "pcie_rockchip_host" "nvme" "nvme_core" ];
+  boot.kernelModules = [
+    "pcie_rockchip_host"
+    "nvme"
+    "nvme_core"
+    "aic_load_fw"
+    "aic8800_fdrv"
+  ];
+  boot.extraModulePackages = [ aic8800d80 ];
   boot.initrd.postDeviceCommands = ''
     rootUuid="1aab64c8-3fe8-46f4-8aff-124f2ea7868d"
 
@@ -132,6 +193,19 @@
 
   # Keep ARM-specific graphics path explicit and minimal.
   hardware.graphics.enable = true;
+
+  # AIC8800D80 USB Wi-Fi driver (aic8800_fdrv + aic_load_fw) and firmware.
+  hardware.firmware = [ aic8800d80Firmware ];
+  services.udev.extraRules = ''
+    KERNEL=="sd*", ATTRS{idVendor}=="a69c", ATTRS{idProduct}=="5721",  SYMLINK+="aicudisk", RUN+="${pkgs.util-linux}/bin/eject /dev/%k"
+    KERNEL=="sd*", ATTRS{idVendor}=="a69c", ATTRS{idProduct}=="5723",  SYMLINK+="tendaudisk", RUN+="${pkgs.util-linux}/bin/eject /dev/%k"
+    KERNEL=="sd*", ATTRS{idVendor}=="a69c", ATTRS{idProduct}=="5724",  SYMLINK+="ugreenax900", RUN+="${pkgs.util-linux}/bin/eject /dev/%k"
+    KERNEL=="sd*", ATTRS{idVendor}=="a69c", ATTRS{idProduct}=="5725",  SYMLINK+="tendaudiskv2", RUN+="${pkgs.util-linux}/bin/eject /dev/%k"
+    KERNEL=="sd*", ATTRS{idVendor}=="a69c", ATTRS{idProduct}=="5726",  SYMLINK+="tendaudiskv3", RUN+="${pkgs.util-linux}/bin/eject /dev/%k"
+    KERNEL=="sd*", ATTRS{idVendor}=="a69c", ATTRS{idProduct}=="5727",  SYMLINK+="tendaudiskv4", RUN+="${pkgs.util-linux}/bin/eject /dev/%k"
+    KERNEL=="sd*", ATTRS{idVendor}=="a69c", ATTRS{idProduct}=="572a",  SYMLINK+="tendaudiskv5", RUN+="${pkgs.util-linux}/bin/eject /dev/%k"
+    KERNEL=="sd*", ATTRS{idVendor}=="a69c", ATTRS{idProduct}=="572c",  SYMLINK+="cudydiskv2", RUN+="${pkgs.util-linux}/bin/eject /dev/%k"
+  '';
 
   # This option defines the first version of NixOS installed on this host.
   system.stateVersion = "25.11";
