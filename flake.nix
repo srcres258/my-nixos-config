@@ -209,7 +209,7 @@
               ./devices/srcres-desktop-x99/home
             ];
           };
-          "${username}@srcres-orange-pi" = mkPureHomeConfig {
+          "${username}@srcres-orange-pi" = mkHomeConfig {
             system = "aarch64-linux";
             extraModules = [
               ./platforms/orangepi/home
