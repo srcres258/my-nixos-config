@@ -93,7 +93,15 @@
       echo "[initrd] root UUID still missing: $rootUuid"
     fi
   '';
-  boot.kernelParams = lib.mkAfter [ "root=UUID=1aab64c8-3fe8-46f4-8aff-124f2ea7868d" "rootwait" "rootdelay=60" "rootfstype=btrfs" ];
+  boot.kernelParams = lib.mkAfter [
+    "root=UUID=1aab64c8-3fe8-46f4-8aff-124f2ea7868d"
+    "rootwait"
+    "rootdelay=60"
+    "rootfstype=btrfs"
+    "console=tty0"
+    "console=ttyS2,1500000"
+    "earlycon"
+  ];
 
   # The NVMe index can change across boots on RK3588. Prefer UUID-based root
   # lookup and recreate by-uuid symlinks in stage-1 if udev is late.
