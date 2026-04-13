@@ -156,7 +156,6 @@ in
     scala-cli
     sbt
     inputs.mill-legacy-nixpkgs.legacyPackages.${system}.mill
-    bloop
     ammonite
     scalafmt
     scalafix
