@@ -71,10 +71,6 @@
 
     # Fonts
     lxgw-wenkai
-
-    mesa-demos
-
-    weston
   ] ++ (with pkgs.nur.repos; [
     srcres258.ag
     srcres258.jyyslide-util
