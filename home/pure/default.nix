@@ -149,6 +149,7 @@ in
             pkg-config
             ncurses
             SDL2
+            file
 
             # ... add more dependencies here ...
           ]);
