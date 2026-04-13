@@ -200,6 +200,7 @@
             inherit system;
             extraModules = [
               ./home/pure
+              ./devices/srcres-wsl/home
             ];
           };
           "${username}@srcres-desktop-x99" = mkHomeConfig {
