@@ -116,6 +116,11 @@ in {
     "aic_load_fw"
     "aic8800_fdrv"
   ];
+  # AICSemi driver reads firmware via aic_load_fw module parameter aic_fw_path.
+  # On NixOS firmware lives under /run/current-system/firmware.
+  boot.extraModprobeConfig = ''
+    options aic_load_fw aic_fw_path=/run/current-system/firmware
+  '';
   boot.extraModulePackages = [ aic8800d80 ];
   boot.initrd.postDeviceCommands = ''
     rootUuid="1aab64c8-3fe8-46f4-8aff-124f2ea7868d"
