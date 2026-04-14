@@ -77,6 +77,225 @@ let
       runHook postInstall
     '';
   };
+
+  singBoxSyncConfig = pkgs.writeShellApplication {
+    name = "singbox-sync-config";
+    runtimeInputs = with pkgs; [ coreutils curl gnugrep gnused jq sing-box systemd ];
+    text = ''
+      set -euo pipefail
+
+      stateDir=/var/lib/sing-box
+      subscriptionsDir="$stateDir/subscriptions"
+      subscriptionsFile="$subscriptionsDir/list.txt"
+      secretFile="$stateDir/ui-secret"
+      outputConfig="$stateDir/config.json"
+
+      mkdir -p "$subscriptionsDir"
+      touch "$subscriptionsFile"
+      chmod 600 "$subscriptionsFile"
+
+      if [ ! -s "$secretFile" ]; then
+        tr -dc 'A-Za-z0-9' < /dev/urandom | head -c 32 > "$secretFile"
+        echo >> "$secretFile"
+      fi
+      chmod 600 "$secretFile"
+      secret="$(tr -d '\n' < "$secretFile")"
+
+      workDir="$(mktemp -d)"
+      trap 'rm -rf "$workDir"' EXIT
+
+      outboundsJson="$workDir/outbounds.json"
+      echo '[]' > "$outboundsJson"
+
+      while IFS= read -r rawUrl; do
+        url="$(printf '%s' "$rawUrl" | sed 's/^\s*//;s/\s*$//')"
+        if [ -z "$url" ] || [ "''${url#\#}" != "$url" ]; then
+          continue
+        fi
+
+        sourceJson="$workDir/sub-$(printf '%s' "$url" | sha256sum | cut -d' ' -f1).json"
+        if ! curl --fail --silent --show-error --location "$url" --output "$sourceJson"; then
+          echo "[sing-box] skip unreachable subscription: $url" >&2
+          continue
+        fi
+
+        if ! jq -e '. | type == "object" and (.outbounds | type == "array")' "$sourceJson" > /dev/null; then
+          echo "[sing-box] skip non sing-box JSON subscription: $url" >&2
+          continue
+        fi
+
+        mergedOutbounds="$workDir/outbounds.next.json"
+        jq -s '
+          .[0] + (
+            .[1]
+            | map(
+                select(
+                  has("type")
+                  and (.type | type == "string")
+                  and has("tag")
+                  and (.tag | type == "string")
+                )
+              )
+          )
+        ' "$outboundsJson" <(jq '.outbounds' "$sourceJson") > "$mergedOutbounds"
+        mv "$mergedOutbounds" "$outboundsJson"
+      done < "$subscriptionsFile"
+
+      dedupOutbounds="$workDir/outbounds.dedup.json"
+      jq 'unique_by(.tag)' "$outboundsJson" > "$dedupOutbounds"
+
+      proxyTagsJson="$workDir/proxy-tags.json"
+      jq '
+        [ .[]
+          | .tag
+          | select(
+              . != "proxy"
+              and . != "auto"
+              and . != "direct"
+              and . != "block"
+              and . != "dns-out"
+            )
+        ]
+      ' "$dedupOutbounds" > "$proxyTagsJson"
+
+      generated="$workDir/config.json"
+      jq -n \
+        --arg secret "$secret" \
+        --argjson providerOutbounds "$(cat "$dedupOutbounds")" \
+        --argjson proxyTags "$(cat "$proxyTagsJson")" \
+        '
+          {
+            log: {
+              level: "info",
+              timestamp: true
+            },
+            dns: {
+              servers: [
+                {
+                  tag: "dns-remote",
+                  address: "https://1.1.1.1/dns-query",
+                  detour: "proxy"
+                },
+                {
+                  tag: "dns-direct",
+                  address: "https://223.5.5.5/dns-query",
+                  detour: "direct"
+                }
+              ],
+              rules: [
+                {
+                  clash_mode: "Direct",
+                  server: "dns-direct"
+                },
+                {
+                  clash_mode: "Global",
+                  server: "dns-remote"
+                }
+              ],
+              final: "dns-remote"
+            },
+            inbounds: [
+              {
+                type: "tun",
+                tag: "tun-in",
+                interface_name: "singtun0",
+                address: ["172.19.0.1/30"],
+                mtu: 9000,
+                stack: "system",
+                auto_route: true,
+                strict_route: true,
+                auto_redirect: true,
+                endpoint_independent_nat: true
+              }
+            ],
+            outbounds:
+              (
+                $providerOutbounds
+                + [
+                    {
+                      type: "selector",
+                      tag: "proxy",
+                      outbounds: (($proxyTags + ["direct"]) | unique)
+                    }
+                  ]
+                + (
+                    if ($proxyTags | length) > 0 then
+                      [
+                        {
+                          type: "urltest",
+                          tag: "auto",
+                          outbounds: ($proxyTags | unique),
+                          interval: "10m",
+                          tolerance: 50
+                        }
+                      ]
+                    else
+                      []
+                    end
+                  )
+                + [
+                    {
+                      type: "direct",
+                      tag: "direct"
+                    },
+                    {
+                      type: "block",
+                      tag: "block"
+                    },
+                    {
+                      type: "dns",
+                      tag: "dns-out"
+                    }
+                  ]
+              ),
+            route: {
+              auto_detect_interface: true,
+              final: "proxy",
+              rules: [
+                {
+                  protocol: "dns",
+                  outbound: "dns-out"
+                },
+                {
+                  ip_is_private: true,
+                  outbound: "direct"
+                },
+                {
+                  clash_mode: "Direct",
+                  outbound: "direct"
+                },
+                {
+                  clash_mode: "Global",
+                  outbound: "proxy"
+                }
+              ]
+            },
+            experimental: {
+              cache_file: {
+                enabled: true,
+                path: "/var/lib/sing-box/cache.db",
+                store_selected: true,
+                store_fakeip: true
+              },
+              clash_api: {
+                external_controller: "0.0.0.0:9090",
+                secret: $secret,
+                default_mode: "Rule",
+                access_control_allow_origin: [
+                  "http://127.0.0.1:9099",
+                  "http://localhost:9099",
+                  "http://srcres-orange-pi:9099"
+                ],
+                access_control_allow_private_network: true
+              }
+            }
+          }
+        ' > "$generated"
+
+      sing-box check -c "$generated"
+      install -o sing-box -g sing-box -m 600 "$generated" "$outputConfig"
+    '';
+  };
 in {
   imports = [
     ./hardware-configuration.nix
@@ -113,6 +332,7 @@ in {
     "pcie_rockchip_host"
     "nvme"
     "nvme_core"
+    "tun"
     "aic_load_fw"
     "aic8800_fdrv"
   ];
@@ -208,6 +428,189 @@ in {
     networkmanager.enable = true;
     nftables.enable = true;
     firewall.enable = false;
+
+  };
+
+  # sing-box TUN transparent proxy requires forwarding for routed traffic.
+  boot.kernel.sysctl = {
+    "net.ipv4.ip_forward" = 1;
+    "net.ipv6.conf.all.forwarding" = 1;
+  };
+
+  environment.systemPackages = with pkgs; [
+    sing-box
+    metacubexd
+    singBoxSyncConfig
+  ];
+
+  services.sing-box = {
+    enable = true;
+    settings = {
+      log = {
+        level = "info";
+        timestamp = true;
+      };
+      inbounds = [
+        {
+          type = "tun";
+          tag = "tun-in";
+          interface_name = "singtun0";
+          address = [ "172.19.0.1/30" ];
+          mtu = 9000;
+          stack = "system";
+          auto_route = true;
+          strict_route = true;
+          auto_redirect = true;
+          endpoint_independent_nat = true;
+        }
+      ];
+      outbounds = [
+        {
+          type = "selector";
+          tag = "proxy";
+          outbounds = [ "direct" ];
+        }
+        {
+          type = "direct";
+          tag = "direct";
+        }
+        {
+          type = "block";
+          tag = "block";
+        }
+        {
+          type = "dns";
+          tag = "dns-out";
+        }
+      ];
+      route = {
+        auto_detect_interface = true;
+        final = "proxy";
+        rules = [
+          {
+            protocol = "dns";
+            outbound = "dns-out";
+          }
+          {
+            ip_is_private = true;
+            outbound = "direct";
+          }
+          {
+            clash_mode = "Direct";
+            outbound = "direct";
+          }
+          {
+            clash_mode = "Global";
+            outbound = "proxy";
+          }
+        ];
+      };
+      dns = {
+        servers = [
+          {
+            tag = "dns-remote";
+            address = "https://1.1.1.1/dns-query";
+            detour = "proxy";
+          }
+          {
+            tag = "dns-direct";
+            address = "https://223.5.5.5/dns-query";
+            detour = "direct";
+          }
+        ];
+        rules = [
+          {
+            clash_mode = "Direct";
+            server = "dns-direct";
+          }
+          {
+            clash_mode = "Global";
+            server = "dns-remote";
+          }
+        ];
+        final = "dns-remote";
+      };
+      experimental = {
+        cache_file = {
+          enabled = true;
+          path = "/var/lib/sing-box/cache.db";
+          store_selected = true;
+          store_fakeip = true;
+        };
+        clash_api = {
+          external_controller = "0.0.0.0:9090";
+          secret = "replace-after-bootstrap";
+          default_mode = "Rule";
+          access_control_allow_origin = [
+            "http://127.0.0.1:9099"
+            "http://localhost:9099"
+            "http://srcres-orange-pi:9099"
+          ];
+          access_control_allow_private_network = true;
+        };
+      };
+    };
+  };
+
+  services.nginx = {
+    enable = true;
+    virtualHosts."srcres-orange-pi" = {
+      default = true;
+      listen = [
+        {
+          addr = "0.0.0.0";
+          port = 9099;
+        }
+      ];
+      root = "${pkgs.metacubexd}";
+      locations."/" = {
+        index = "index.html";
+        tryFiles = "$uri $uri/ /index.html";
+      };
+    };
+  };
+
+  systemd.tmpfiles.rules = [
+    "d /var/lib/sing-box 0700 sing-box sing-box -"
+    "d /var/lib/sing-box/subscriptions 0700 root root -"
+    "f /var/lib/sing-box/subscriptions/list.txt 0600 root root -"
+  ];
+
+  systemd.services.singbox-sync = {
+    description = "Generate runtime sing-box config from subscription list";
+    after = [ "network-online.target" ];
+    wants = [ "network-online.target" ];
+    before = [ "sing-box.service" ];
+    serviceConfig = {
+      Type = "oneshot";
+      User = "root";
+      Group = "root";
+      ExecStart = "${singBoxSyncConfig}/bin/singbox-sync-config";
+    };
+    wantedBy = [ "multi-user.target" ];
+  };
+
+  systemd.timers.singbox-sync = {
+    wantedBy = [ "timers.target" ];
+    timerConfig = {
+      OnBootSec = "5min";
+      OnUnitActiveSec = "1h";
+      Unit = "singbox-sync.service";
+    };
+  };
+
+  # Ensure runtime-generated config and secret override module defaults.
+  systemd.services.sing-box = {
+    after = [ "singbox-sync.service" ];
+    wants = [ "singbox-sync.service" ];
+    serviceConfig = {
+      ExecStart = lib.mkForce "${pkgs.sing-box}/bin/sing-box run -c /var/lib/sing-box/config.json";
+      Restart = "always";
+      RestartSec = 2;
+      CapabilityBoundingSet = [ "CAP_NET_ADMIN" "CAP_NET_BIND_SERVICE" ];
+      AmbientCapabilities = [ "CAP_NET_ADMIN" "CAP_NET_BIND_SERVICE" ];
+      ReadWritePaths = [ "/var/lib/sing-box" ];
+    };
   };
 
   # Orange Pi 5 normally runs headless for infra/dev workloads.
