@@ -220,6 +220,9 @@ in {
   hardware.graphics.enable = true;
 
   # AIC8800D80 USB Wi-Fi driver (aic8800_fdrv + aic_load_fw) and firmware.
+  # This out-of-tree driver requests raw .bin/.txt filenames via request_firmware
+  # and does not resolve NixOS-compressed .zst firmware paths.
+  hardware.firmwareCompression = "none";
   hardware.firmware = [ aic8800d80Firmware ];
   services.udev.packages = [ aic8800d80Firmware ];
 
