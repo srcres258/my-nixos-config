@@ -202,8 +202,8 @@ let
       generated="$workDir/config.json"
       jq -n \
         --arg secret "$secret" \
-        --argfile providerOutbounds "$dedupOutbounds" \
-        --argfile proxyTags "$proxyTagsJson" \
+        --slurpfile providerOutbounds "$dedupOutbounds" \
+        --slurpfile proxyTags "$proxyTagsJson" \
         '
           {
             log: {
@@ -251,21 +251,21 @@ let
             ],
             outbounds:
               (
-                $providerOutbounds
+                ($providerOutbounds[0] // [])
                 + [
                     {
                       type: "selector",
                       tag: "proxy",
-                      outbounds: (($proxyTags + ["direct"]) | unique)
+                      outbounds: ((($proxyTags[0] // []) + ["direct"]) | unique)
                     }
                   ]
                 + (
-                    if ($proxyTags | length) > 0 then
+                    if (($proxyTags[0] // []) | length) > 0 then
                       [
                         {
                           type: "urltest",
                           tag: "auto",
-                          outbounds: ($proxyTags | unique),
+                          outbounds: (($proxyTags[0] // []) | unique),
                           interval: "10m",
                           tolerance: 50
                         }
