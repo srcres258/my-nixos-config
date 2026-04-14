@@ -1,6 +1,7 @@
 { pkgs
 , lib
 , config
+, inputs
 , ...
 }: let
   javaPkg = pkgs.javaPackages.compiler.temurin-bin.jdk-21;
