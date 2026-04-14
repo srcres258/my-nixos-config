@@ -604,7 +604,13 @@ in {
     after = [ "singbox-sync.service" ];
     wants = [ "singbox-sync.service" ];
     serviceConfig = {
-      ExecStart = lib.mkForce "${pkgs.sing-box}/bin/sing-box run -c /var/lib/sing-box/config.json";
+      # In systemd drop-ins, ExecStart appends unless explicitly reset first.
+      # Without the empty entry, we end up with two ExecStart lines and
+      # systemd marks the unit as bad-setting (non-oneshot services allow one).
+      ExecStart = lib.mkForce [
+        ""
+        "${pkgs.sing-box}/bin/sing-box run -c /var/lib/sing-box/config.json"
+      ];
       Restart = "always";
       RestartSec = 2;
       CapabilityBoundingSet = [ "CAP_NET_ADMIN" "CAP_NET_BIND_SERVICE" ];
