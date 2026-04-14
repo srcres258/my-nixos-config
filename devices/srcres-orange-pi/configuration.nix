@@ -119,13 +119,19 @@ let
           continue
         fi
 
-        if ! jq -e '. | type == "object" and (.outbounds | type == "array")' "$sourceJson" > /dev/null; then
+        if ! jq -e '. | type == "object" and (.outbounds | type == "array")' "$sourceJson" > /dev/null 2>&1; then
           echo "[sing-box] skip non sing-box JSON subscription: $url" >&2
           continue
         fi
 
+        sourceOutbounds="$workDir/source-outbounds.json"
+        if ! jq -c '.outbounds' "$sourceJson" > "$sourceOutbounds" 2>/dev/null; then
+          echo "[sing-box] skip malformed subscription payload: $url" >&2
+          continue
+        fi
+
         mergedOutbounds="$workDir/outbounds.next.json"
-        jq -s '
+        if ! jq -s '
           .[0] + (
             .[1]
             | map(
@@ -134,10 +140,35 @@ let
                   and (.type | type == "string")
                   and has("tag")
                   and (.tag | type == "string")
+                  and (
+                    .type
+                    | ascii_downcase
+                    | IN(
+                        "anytls",
+                        "direct",
+                        "http",
+                        "hysteria",
+                        "hysteria2",
+                        "selector",
+                        "shadowsocks",
+                        "socks",
+                        "ssh",
+                        "tor",
+                        "trojan",
+                        "tuic",
+                        "urltest",
+                        "vless",
+                        "vmess",
+                        "wireguard"
+                      )
+                  )
                 )
               )
           )
-        ' "$outboundsJson" <(jq '.outbounds' "$sourceJson") > "$mergedOutbounds"
+        ' "$outboundsJson" "$sourceOutbounds" > "$mergedOutbounds"; then
+          echo "[sing-box] skip invalid outbound entries from subscription: $url" >&2
+          continue
+        fi
         mv "$mergedOutbounds" "$outboundsJson"
       done < "$subscriptionsFile"
 
@@ -158,11 +189,21 @@ let
         ]
       ' "$dedupOutbounds" > "$proxyTagsJson"
 
+      if ! jq -e 'type == "array"' "$dedupOutbounds" > /dev/null 2>&1; then
+        echo "[sing-box] merged outbounds JSON invalid, fallback to empty list" >&2
+        echo '[]' > "$dedupOutbounds"
+      fi
+
+      if ! jq -e 'type == "array"' "$proxyTagsJson" > /dev/null 2>&1; then
+        echo "[sing-box] proxy tags JSON invalid, fallback to empty list" >&2
+        echo '[]' > "$proxyTagsJson"
+      fi
+
       generated="$workDir/config.json"
       jq -n \
         --arg secret "$secret" \
-        --argjson providerOutbounds "$(cat "$dedupOutbounds")" \
-        --argjson proxyTags "$(cat "$proxyTagsJson")" \
+        --argfile providerOutbounds "$dedupOutbounds" \
+        --argfile proxyTags "$proxyTagsJson" \
         '
           {
             log: {
@@ -241,10 +282,6 @@ let
                     {
                       type: "block",
                       tag: "block"
-                    },
-                    {
-                      type: "dns",
-                      tag: "dns-out"
                     }
                   ]
               ),
@@ -254,7 +291,7 @@ let
               rules: [
                 {
                   protocol: "dns",
-                  outbound: "dns-out"
+                  action: "hijack-dns"
                 },
                 {
                   ip_is_private: true,
@@ -292,8 +329,11 @@ let
           }
         ' > "$generated"
 
-      sing-box check -c "$generated"
-      install -o sing-box -g sing-box -m 600 "$generated" "$outputConfig"
+      if sing-box check -c "$generated" > /dev/null 2>&1; then
+        install -o sing-box -g sing-box -m 600 "$generated" "$outputConfig"
+      else
+        echo "[sing-box] generated config failed validation; keep previous config" >&2
+      fi
     '';
   };
 in {
