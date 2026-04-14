@@ -46,7 +46,23 @@ let
     installPhase = ''
       runHook preInstall
       mkdir -p $out/lib/firmware
-      cp -r fw/aic8800D80 $out/lib/firmware/
+      cp -r fw/* $out/lib/firmware/
+
+      # Some AIC8800 USB variants probe as "AIC8800DC" while others use
+      # "AIC8800D80" firmware layout. Provide compatibility links so both
+      # probe paths resolve at runtime.
+      if [ -d $out/lib/firmware/aic8800D80 ] && [ ! -e $out/lib/firmware/aic8800DC ]; then
+        ln -s aic8800D80 $out/lib/firmware/aic8800DC
+      fi
+      if [ -d $out/lib/firmware/aic8800DC ] && [ ! -e $out/lib/firmware/aic8800D80 ]; then
+        ln -s aic8800DC $out/lib/firmware/aic8800D80
+      fi
+
+      if [ -e $out/lib/firmware/aic8800D80/fmacfw_patch_8800dc_u02.bin ] && [ ! -e $out/lib/firmware/aic8800DC/fmacfw_patch_8800dc_u02.bin ]; then
+        mkdir -p $out/lib/firmware/aic8800DC
+        ln -s ../aic8800D80/fmacfw_patch_8800dc_u02.bin $out/lib/firmware/aic8800DC/fmacfw_patch_8800dc_u02.bin
+      fi
+
       mkdir -p $out/lib/udev/rules.d
       cat > $out/lib/udev/rules.d/99-aic8800d80-mode-switch.rules <<'EOF'
       ACTION=="add", SUBSYSTEM=="block", ENV{DEVTYPE}=="disk", KERNEL=="sd*", ATTRS{idVendor}=="a69c", ATTRS{idProduct}=="5721", RUN+="${pkgs.util-linux}/bin/eject /dev/%k"
