@@ -67,6 +67,8 @@ in {
   programs.mpvpaper = {
     enable = true;
   };
+
+  services.remmina.enable = true;
   
   home.sessionVariables = {
     JAVA_HOME = "${javaPkg}";
