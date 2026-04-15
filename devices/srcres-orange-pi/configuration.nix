@@ -513,7 +513,6 @@ config = {
         "cache_file": {
             "enabled": True,
             "path": "/var/lib/sing-box/cache.db",
-            "store_selected": True,
             "store_fakeip": True,
         },
         "clash_api": {
@@ -777,7 +776,6 @@ in {
         cache_file = {
           enabled = true;
           path = "/var/lib/sing-box/cache.db";
-          store_selected = true;
           store_fakeip = true;
         };
         clash_api = {
