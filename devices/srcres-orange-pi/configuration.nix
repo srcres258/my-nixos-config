@@ -864,7 +864,7 @@ in {
   services.xrdp = {
     enable = true;
     openFirewall = true;
-    defaultWindowManager = "${pkgs.xfce4-14.xfce4-session}/bin/xfce4-session";
+    defaultWindowManager = "${pkgs.xfce.xfce4-session}/bin/xfce4-session";
   };
   services.xserver.enable = true;
   services.xserver.desktopManager.xfce.enable = true;
