@@ -80,7 +80,7 @@ let
 
   singBoxSyncConfig = pkgs.writeShellApplication {
     name = "singbox-sync-config";
-    runtimeInputs = with pkgs; [ coreutils curl gnugrep gnused jq sing-box systemd ];
+    runtimeInputs = with pkgs; [ coreutils curl gnugrep gnused jq python3 sing-box systemd ];
     text = ''
       set -euo pipefail
 
@@ -113,21 +113,258 @@ let
           continue
         fi
 
-        sourceJson="$workDir/sub-$(printf '%s' "$url" | sha256sum | cut -d' ' -f1).json"
-        if ! curl --fail --silent --show-error --location "$url" --output "$sourceJson"; then
+        sourcePayload="$workDir/sub-$(printf '%s' "$url" | sha256sum | cut -d' ' -f1).payload"
+        if ! curl --fail --silent --show-error --location "$url" --output "$sourcePayload"; then
           echo "[sing-box] skip unreachable subscription: $url" >&2
           continue
         fi
 
-        if ! jq -e '. | type == "object" and (.outbounds | type == "array")' "$sourceJson" > /dev/null 2>&1; then
-          echo "[sing-box] skip non sing-box JSON subscription: $url" >&2
-          continue
-        fi
+        sourceOutbounds="$workDir/source-outbounds-$(printf '%s' "$url" | sha256sum | cut -d' ' -f1).json"
+        if jq -e '. | type == "object" and (.outbounds | type == "array")' "$sourcePayload" > /dev/null 2>&1; then
+          if ! jq -c '.outbounds' "$sourcePayload" > "$sourceOutbounds" 2>/dev/null; then
+            echo "[sing-box] skip malformed sing-box JSON payload: $url" >&2
+            continue
+          fi
+        else
+          if ! python3 - "$sourcePayload" "$sourceOutbounds" <<'PY'
+import base64
+import json
+import re
+import sys
+from urllib.parse import parse_qs, unquote, urlsplit
 
-        sourceOutbounds="$workDir/source-outbounds.json"
-        if ! jq -c '.outbounds' "$sourceJson" > "$sourceOutbounds" 2>/dev/null; then
-          echo "[sing-box] skip malformed subscription payload: $url" >&2
-          continue
+
+def decode_base64(data: str):
+    compact = re.sub(r"\s+", "", data)
+    if not compact:
+        return None
+    padding = "=" * ((4 - len(compact) % 4) % 4)
+    for decoder in (base64.b64decode, base64.urlsafe_b64decode):
+        try:
+            return decoder((compact + padding).encode("utf-8")).decode("utf-8", errors="ignore")
+        except Exception:
+            continue
+    return None
+
+
+def parse_bool(value: str):
+    return value.lower() in {"1", "true", "yes", "on"}
+
+
+def parse_port(value: str, default: int):
+    try:
+        return int(value)
+    except Exception:
+        return default
+
+
+def parse_vmess(uri: str, idx: int):
+    raw = uri[len("vmess://") :]
+    decoded = decode_base64(raw)
+    if not decoded:
+        return None
+    try:
+        node = json.loads(decoded)
+    except Exception:
+        return None
+
+    server = node.get("add") or node.get("server")
+    if not server:
+        return None
+
+    outbound = {
+        "type": "vmess",
+        "tag": node.get("ps") or f"vmess-{idx}",
+        "server": server,
+        "server_port": parse_port(str(node.get("port", "0")), 443),
+        "uuid": node.get("id", ""),
+        "security": "auto",
+        "alter_id": parse_port(str(node.get("aid", "0")), 0),
+    }
+
+    network = str(node.get("net", "tcp") or "tcp").lower()
+    if network != "tcp":
+        outbound["transport"] = {"type": network}
+
+    host = node.get("host")
+    path = node.get("path")
+    if network == "ws":
+        transport = {"type": "ws"}
+        if path:
+            transport["path"] = path
+        if host:
+            transport["headers"] = {"Host": host}
+        outbound["transport"] = transport
+
+    tls_mode = str(node.get("tls", "") or "").lower()
+    if tls_mode in {"tls", "reality", "1", "true"}:
+        tls = {"enabled": True}
+        sni = node.get("sni") or host
+        if sni:
+            tls["server_name"] = sni
+        outbound["tls"] = tls
+
+    if not outbound.get("uuid"):
+        return None
+    return outbound
+
+
+def parse_standard_uri(uri: str, scheme: str, idx: int):
+    split = urlsplit(uri)
+    if not split.hostname:
+        return None
+
+    query = parse_qs(split.query)
+    tag = unquote(split.fragment) if split.fragment else f"{scheme}-{idx}"
+
+    if scheme == "ss":
+        raw = uri[len("ss://") :]
+        raw = raw.split("#", 1)[0]
+        raw = raw.split("?", 1)[0]
+        if "@" in raw:
+            userinfo, hostpart = raw.rsplit("@", 1)
+        else:
+            decoded = decode_base64(raw)
+            if not decoded or "@" not in decoded:
+                return None
+            userinfo, hostpart = decoded.rsplit("@", 1)
+        if ":" not in userinfo:
+            return None
+        method, password = userinfo.split(":", 1)
+        host = split.hostname or hostpart.split(":", 1)[0]
+        port = split.port
+        if port is None and ":" in hostpart:
+            port = parse_port(hostpart.rsplit(":", 1)[1], 8388)
+        return {
+            "type": "shadowsocks",
+            "tag": tag,
+            "server": host,
+            "server_port": parse_port(str(port or 8388), 8388),
+            "method": method,
+            "password": password,
+        }
+
+    base = {
+        "tag": tag,
+        "server": split.hostname,
+        "server_port": parse_port(str(split.port or 443), 443),
+    }
+
+    username = unquote(split.username or "")
+
+    if scheme == "vless":
+        if not username:
+            return None
+        outbound = {
+            **base,
+            "type": "vless",
+            "uuid": username,
+            "flow": query.get("flow", [""])[0] or "",
+        }
+    elif scheme == "trojan":
+        if not username:
+            return None
+        outbound = {
+            **base,
+            "type": "trojan",
+            "password": username,
+        }
+    elif scheme == "anytls":
+        if not username:
+            return None
+        outbound = {
+            **base,
+            "type": "anytls",
+            "password": username,
+        }
+    elif scheme in {"hysteria", "hysteria2"}:
+        outbound = {
+            **base,
+            "type": "hysteria2",
+            "password": username,
+        }
+    else:
+        return None
+
+    transport_type = (query.get("type", [""])[0] or "").lower()
+    if transport_type:
+        outbound["transport"] = {"type": transport_type}
+        if transport_type == "ws":
+            path = query.get("path", [""])[0]
+            host = query.get("host", [""])[0]
+            if path:
+                outbound["transport"]["path"] = path
+            if host:
+                outbound["transport"]["headers"] = {"Host": host}
+
+    security = (query.get("security", [""])[0] or "").lower()
+    if security in {"tls", "reality"} or scheme in {"anytls", "trojan", "hysteria", "hysteria2"}:
+        tls = {"enabled": True}
+        sni = query.get("sni", [""])[0] or split.hostname
+        if sni:
+            tls["server_name"] = sni
+        insecure = query.get("allowInsecure", [""])[0] or query.get("insecure", [""])[0]
+        if insecure and parse_bool(insecure):
+            tls["insecure"] = True
+        outbound["tls"] = tls
+
+    return outbound
+
+
+def payload_to_text(raw_bytes: bytes):
+    text = raw_bytes.decode("utf-8", errors="ignore").strip()
+    if not text:
+        return ""
+
+    lines = [line.strip() for line in text.splitlines() if line.strip() and not line.strip().startswith("#")]
+    if lines and all("://" in line for line in lines):
+        return "\n".join(lines)
+
+    decoded = decode_base64(text)
+    if not decoded:
+        return ""
+
+    decoded_lines = [line.strip() for line in decoded.splitlines() if line.strip() and not line.strip().startswith("#")]
+    return "\n".join(decoded_lines)
+
+
+def main():
+    source_payload = sys.argv[1]
+    source_outbounds = sys.argv[2]
+
+    with open(source_payload, "rb") as fh:
+        raw = fh.read()
+
+    text = payload_to_text(raw)
+    if not text:
+        return 1
+
+    outbounds = []
+    supported = {"vmess", "vless", "trojan", "anytls", "hysteria", "hysteria2", "ss"}
+    for idx, line in enumerate(text.splitlines(), start=1):
+        scheme = line.split("://", 1)[0].lower() if "://" in line else ""
+        if scheme not in supported:
+            continue
+        if scheme == "vmess":
+            outbound = parse_vmess(line, idx)
+        else:
+            outbound = parse_standard_uri(line, scheme, idx)
+        if outbound:
+            outbounds.append(outbound)
+
+    with open(source_outbounds, "w", encoding="utf-8") as fh:
+        json.dump(outbounds, fh, ensure_ascii=False)
+
+    return 0 if outbounds else 1
+
+
+if __name__ == "__main__":
+    raise SystemExit(main())
+PY
+          then
+            echo "[sing-box] skip unsupported subscription payload format: $url" >&2
+            continue
+          fi
         fi
 
         mergedOutbounds="$workDir/outbounds.next.json"
