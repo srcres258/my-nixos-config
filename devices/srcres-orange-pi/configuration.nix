@@ -455,7 +455,6 @@ config = {
                 "type": "https",
                 "tag": "dns-direct",
                 "server": "223.5.5.5",
-                "detour": "direct",
             },
         ],
         "rules": [
@@ -489,6 +488,7 @@ config = {
     "outbounds": outbounds,
     "route": {
         "auto_detect_interface": True,
+        "default_domain_resolver": "dns-direct",
         "final": "proxy",
         "rules": [
             {
@@ -708,7 +708,6 @@ in {
             type = "https";
             tag = "dns-direct";
             server = "223.5.5.5";
-            detour = "direct";
           }
         ];
         rules = [
@@ -752,6 +751,7 @@ in {
       ];
       route = {
         auto_detect_interface = true;
+        default_domain_resolver = "dns-direct";
         final = "proxy";
         rules = [
           {
