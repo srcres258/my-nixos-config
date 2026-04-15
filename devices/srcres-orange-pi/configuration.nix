@@ -683,6 +683,8 @@ in {
   environment.systemPackages = with pkgs; [
     sing-box
     singBoxSyncConfig
+    xfce.xfce4-session
+    xwayland
   ];
 
   services.sing-box = {
@@ -859,7 +861,13 @@ in {
   services.udev.packages = [ aic8800d80Firmware ];
   
   # xrdp
-  services.xrdp.enable = true;
+  services.xrdp = {
+    enable = true;
+    openFirewall = true;
+    defaultWindowManager = "${pkgs.xfce4-14.xfce4-session}/bin/xfce4-session";
+  };
+  services.xserver.enable = true;
+  services.xserver.desktopManager.xfce.enable = true;
 
   # This option defines the first version of NixOS installed on this host.
   system.stateVersion = "25.11";
