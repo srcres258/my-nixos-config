@@ -519,11 +519,7 @@ config = {
             "external_controller": "0.0.0.0:9090",
             "secret": secret,
             "default_mode": "Rule",
-            "access_control_allow_origin": [
-                "http://127.0.0.1:9099",
-                "http://localhost:9099",
-                "http://srcres-orange-pi:9099",
-            ],
+            "access_control_allow_origin": [],
             "access_control_allow_private_network": True,
         },
     },
@@ -782,11 +778,7 @@ in {
           external_controller = "0.0.0.0:9090";
           secret = "replace-after-bootstrap";
           default_mode = "Rule";
-          access_control_allow_origin = [
-            "http://127.0.0.1:9099"
-            "http://localhost:9099"
-            "http://srcres-orange-pi:9099"
-          ];
+          access_control_allow_origin = [ ];
           access_control_allow_private_network = true;
         };
       };
