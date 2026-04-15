@@ -517,6 +517,7 @@ config = {
         },
         "clash_api": {
             "external_controller": "0.0.0.0:9090",
+            "external_ui": "/var/lib/sing-box/ui",
             "secret": secret,
             "default_mode": "Rule",
             "access_control_allow_origin": [],
@@ -681,7 +682,6 @@ in {
 
   environment.systemPackages = with pkgs; [
     sing-box
-    metacubexd
     singBoxSyncConfig
   ];
 
@@ -776,6 +776,7 @@ in {
         };
         clash_api = {
           external_controller = "0.0.0.0:9090";
+          external_ui = "/var/lib/sing-box/ui";
           secret = "replace-after-bootstrap";
           default_mode = "Rule";
           access_control_allow_origin = [ ];
@@ -785,28 +786,12 @@ in {
     };
   };
 
-  services.nginx = {
-    enable = true;
-    virtualHosts."srcres-orange-pi" = {
-      default = true;
-      listen = [
-        {
-          addr = "0.0.0.0";
-          port = 9099;
-        }
-      ];
-      root = "${pkgs.metacubexd}";
-      locations."/" = {
-        index = "index.html";
-        tryFiles = "$uri $uri/ /index.html";
-      };
-    };
-  };
-
   systemd.tmpfiles.rules = [
     "d /var/lib/sing-box 0700 sing-box sing-box -"
     "d /var/lib/sing-box/subscriptions 0700 root root -"
     "f /var/lib/sing-box/subscriptions/list.txt 0600 root root -"
+    # Symlink metacubexd static files so sing-box external_ui can serve them.
+    "L+ /var/lib/sing-box/ui - - - - ${pkgs.metacubexd}"
   ];
 
   systemd.services.singbox-sync = {
