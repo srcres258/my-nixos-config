@@ -1,168 +1,155 @@
 # AGENTS.md
 
-This repository is a personal NixOS/Home Manager flake.
-Use this guide to keep agent changes safe, consistent, and verifiable.
+Personal NixOS/Home Manager flake. Follow these rules to keep changes
+safe, consistent, and verifiable.
 
-## 1) Repository Scope
+## 1) Repository Layout
 
-- Root flake: `flake.nix`
-- System base module: `configuration.nix`
-- Home Manager entrypoint: `home/default.nix`
-- Host modules: `devices/*/configuration.nix` and `devices/*/home/default.nix`
-- Platform home modules: `platforms/*/home/default.nix` and companion files
-- Shared home modules: `home/pure/*` and `home/system/*`
+```
+flake.nix                                 # Flake entry
+configuration.nix                         # Shared base NixOS module
+home/default.nix                          # Home Manager entry (imports ./pure + ./system)
+home/options.nix                          # Custom my.* option declarations
+home/pure/                                # Portable home modules (CLI-only, works on WSL)
+home/system/                              # System-dependent home modules (GUI, Wayland)
+home/develop.nix                          # Standalone dev-only home profile
+devices/<host>/configuration.nix          # Per-host system config
+devices/<host>/home/default.nix           # Per-host home overlay
+devices/<host>/hardware-configuration.nix # Hardware scan (auto-generated)
+platforms/native/                         # Native (physical machine) platform modules
+platforms/orangepi/                       # Orange Pi platform modules
+```
 
-Primary language is **Nix**, with embedded shell snippets and some Lua
-(`home/pure/init.lua`, `home/pure/yazi/init.lua`).
+Primary: **Nix**. Secondary: **Lua** (`home/pure/init.lua`,
+`home/pure/yazi/init.lua`), shell snippets, KDL (`platforms/*/home/config.kdl`).
 
-## 2) Additional Rule Files (Checked)
+No `.cursorrules`, `.cursor/rules/`, or `.github/copilot-instructions.md`.
+If added later, treat as higher priority.
 
-No extra agent rule files are currently present:
+## 2) Build / Lint / Test Commands
 
-- `.cursorrules`: not found
-- `.cursor/rules/`: not found
-- `.github/copilot-instructions.md`: not found
+Run all commands from repo root. No task runner or test framework —
+use the smallest flake build as a "single test".
 
-If these are added later, treat them as higher-priority instruction sources.
+| Action | Command |
+|--------|---------|
+| Update lock file | `nix flake update` |
+| Show outputs | `nix flake show --no-write-lock-file` |
+| Check (eval only) | `nix flake check --no-build` |
+| Check (full build) | `nix flake check` |
 
-## 3) Build / Lint / Test Commands
+**NixOS Hosts**: `srcres-desktop` · `srcres-laptop` · `srcres-wsl`
+· `srcres-desktop-x99` · `srcres-orange-pi` (aarch64-linux)
 
-Run commands from repo root: `/home/srcres/nix-config`.
+```bash
+nix build .#nixosConfigurations.srcres-desktop.config.system.build.toplevel
+sudo nixos-rebuild switch --flake .#srcres-desktop
+```
 
-### 3.1 Core Flake Commands
+**Home Manager**: `srcres@srcres-desktop` · `srcres@srcres-laptop` · `srcres@srcres-wsl`
+· `srcres@srcres-desktop-x99` · `srcres@srcres-orange-pi`
 
-- Update lock file inputs:
-  - `nix flake update`
-- Show outputs:
-  - `nix flake show --no-write-lock-file`
-- Evaluate checks without building:
-  - `nix flake check --no-build`
-- Run full flake checks:
-  - `nix flake check`
+```bash
+nix build .#homeConfigurations."srcres@srcres-desktop".activationPackage
+home-manager switch --flake .#srcres@srcres-desktop
+nix run nixpkgs#home-manager -- switch --flake .#srcres@srcres-desktop  # fallback
+```
 
-### 3.2 NixOS Build / Switch
+| Language | Formatter |
+|----------|-----------|
+| Nix | `nixpkgs-fmt <file-or-dir>` |
+| Lua | `stylua <path>` |
+| Python | `yapf -ir <path>` / `pyright` |
+| Rust | `cargo fmt` / `cargo clippy` |
 
-Known NixOS hosts from `flake.nix`:
-`srcres-desktop`, `srcres-laptop`, `srcres-wsl`, `srcres-desktop-x99`, `srcres-orange-pi`.
+Flake package: `nix build .#packages.x86_64-linux.srcres`
 
-- Build one host closure (scoped validation):
-  - `nix build .#nixosConfigurations.srcres-desktop.config.system.build.toplevel`
-- Switch on target machine:
-  - `sudo nixos-rebuild switch --flake .#srcres-desktop`
+## 3) Flake Architecture
 
-For other hosts, substitute the host key accordingly.
+### Factory Functions
 
-### 3.3 Home Manager Build / Switch
+| Factory | Output | specialArgs | modules |
+|---------|--------|-------------|---------|
+| `mkNixOSConfig` | `nixosSystem` | `inputs`, `system`, `pkgs-unstable`, `srcres-password` | `[ ./configuration.nix ] ++ extraModules` |
+| `mkHomeConfig` | `homeManagerConfiguration` | `inputs`, `system`, `pkgs-unstable` | `[ ./home ] ++ extraModules` |
+| `mkPureHomeConfig` | `homeManagerConfiguration` | `inputs`, `system`, `pkgs-unstable` | `extraModules` only (WSL) |
 
-Known Home Manager targets are `<user>@<host>`;
-for example: `srcres@srcres-desktop`.
+### Module Hierarchy
 
-- Build activation package:
-  - `nix build .#homeConfigurations."srcres@srcres-desktop".activationPackage`
-- Switch Home Manager:
-  - `home-manager switch --flake .#srcres@srcres-desktop`
-- If `home-manager` is unavailable globally:
-  - `nix run nixpkgs#home-manager -- switch --flake .#srcres@srcres-desktop`
+```
+flake.nix factories
+ ├── configuration.nix          (shared base system)
+ │    ├── platforms/<platform>/configuration.nix
+ │    └── devices/<host>/configuration.nix → hardware-configuration.nix
+ └── home/                      (full home: mkHomeConfig)
+      ├── pure/                 (portable: also used by mkPureHomeConfig)
+      │    ├── options.nix      (custom my.* options)
+      │    └── *.nix
+      └── system/               (GUI / platform-dependent)
+           └── *.nix
+```
 
-### 3.4 Flake Package Build
-
-- Build exported package env:
-  - `nix build .#packages.x86_64-linux.srcres`
-
-### 3.5 Formatting / Typecheck Tools
-
-There is no single root task runner (`Makefile`, `package.json`, `pyproject.toml`,
-or root Cargo workspace command).
-Use tooling by touched language:
-
-- Nix format:
-  - `nixpkgs-fmt <file-or-dir>`
-- Lua format (if available):
-  - `stylua <path>`
-- Python (if introduced/changed):
-  - `yapf -ir <path>`
-  - `pyright`
-- Rust (if introduced/changed):
-  - `cargo fmt`
-  - `cargo clippy`
-
-### 3.6 Running a Single Test (Important)
-
-This repo has **no canonical root unit-test framework**.
-So there is no stable built-in single-test command like `pytest -k`,
-`cargo test <name>`, or `npm test -- <pattern>`.
-
-Use the smallest affected flake build as a practical single-test equivalent:
-
-- System scope:
-  - `nix build .#nixosConfigurations.<host>.config.system.build.toplevel`
-- Home scope:
-  - `nix build .#homeConfigurations."<user>@<host>".activationPackage`
+Secrets via `builtins.getEnv` at flake boundary only, never hardcoded.
 
 ## 4) Code Style Guidelines
 
-### 4.1 Nix Style and Structure
+### Nix Syntax
 
-- Use 4-space indentation in Nix files.
-- Prefer `let ... in` for computed locals and intermediate values.
-- Use `inherit` to forward existing names (`inherit system pkgs`).
-- Keep wiring explicit via `imports = [ ... ];`.
-- Prefer `with pkgs; [ ... ]` for package lists when already used nearby.
-- Use descriptive `lowerCamelCase` attribute names.
+- **4-space indentation** throughout. 2-space inside `let ... in`.
+- **Function arguments**: comma-first, one per line, `...` at end:
+  `{ config, pkgs, lib, ... }:`
+- **`let ... in`** for computed locals.
+- **`inherit`** to forward names (`inherit system pkgs;`).
+- **`with pkgs; [ ... ]`** for package lists.
+- **`imports = [ ... ];`** for module composition; prefer over duplication.
+- **Attribute names**: `lowerCamelCase` (`packageGenerator`, `javaPkg`).
 
-### 4.2 Imports and Module Composition
+### Module Patterns
 
-- Preserve the existing split:
-  - `home/default.nix` imports `./pure` and `./system`.
-  - Device-specific logic stays under `devices/<host>/...`.
-- Add new modules to the nearest existing subtree.
-- Prefer composing modules through `imports` over duplicating blocks.
+- One `.nix` file per program/concern (`git.nix`, `waybar.nix`).
+  Group sub-concerns in directories with `default.nix`.
+- Minimal modules: `{ ... }: { ... }` when no args needed.
+- Declare `pkgs`/`config`/`inputs` in function signature when used.
+- `home.stateVersion` set **per-device** only, never globally.
+- `home.username` and `home.homeDirectory` in `home/pure/default.nix`.
+- Use `lib.mkDefault` for overridable defaults.
 
-### 4.3 Flake Wiring Patterns
+### Package Lists
 
-- Follow `flake.nix` factory patterns (`mkNixOSConfig`, `mkHomeConfig`).
-- Keep `specialArgs` / `extraSpecialArgs` explicit and minimal.
-- Pass secrets via environment at flake boundary (e.g. `builtins.getEnv` in
-  `flake.nix`), not by hardcoding in modules.
+- `with pkgs; [ ... ]`, grouped by purpose with section comments
+  (`# Rust language`, `# Fonts`).
+- Conditional: `++ lib.optionals (!pkgs.stdenv.hostPlatform.isAarch64) [ ... ]`.
+- NUR: `with nur.repos; [ srcres258.X ]`.
+- Unstable: `with pkgs-unstable; [ ... ]`.
+- Pinned: `inputs.<name>.legacyPackages.${system}.<pkg>`.
 
-### 4.4 Formatting and Readability
+### Custom Options
 
-- `nixpkgs-fmt` output is authoritative for Nix formatting.
-- Wrap long lists/strings for readability.
-- Keep comments concise and high-signal.
+- Declared in `home/options.nix` under `my.*` prefix.
+- Example: `my.python.packageGenerator` — device modules inject
+  extra packages via `my.python.packageGenerator = ps: [ ... ];`.
 
-### 4.5 Types, Naming, and Explicitness
+### Lua Conventions
 
-- Nix is dynamic; clarity comes from explicit local names and structure.
-- For Lua, prefer `local` bindings and guarded optional integration (`pcall`).
-- For typed languages added later, prefer explicit public API types.
-- Keep host/output names stable once introduced.
+- `local` bindings; `pcall` for guarded optional integration.
+- Neovim `init.lua` loaded via `builtins.readFile` + `builtins.replaceStrings`
+  for Nix store path interpolation (e.g. `{{METALS_BINARY_PATH}}`).
+- `require('plugin').setup({ ... })` pattern for plugin config.
+- Guard VSCode code: `if not vim.g.vscode then ... end`.
 
-### 4.6 Error Handling and Safety
+### Formatting & Safety
 
-- Nix: rely on evaluation/build failures rather than opaque fallbacks.
-- Document assumptions around environment reads (`builtins.getEnv`).
-- Keep embedded shell snippets idempotent and safe to rerun.
+- `nixpkgs-fmt` output is authoritative for Nix.
+- Rely on eval/build failures, not opaque fallbacks.
+- Never suppress errors with `null` unless using `lib.mkDefault`.
+- Keep `hardware-configuration.nix` auto-generated; do not hand-edit.
+- Keep embedded shell snippets idempotent.
 
-## 5) Validation Strategy for Agents
+## 5) Validation Strategy
 
-After modifying Nix modules, run the smallest relevant validation first:
-
-1. `nix flake check --no-build`
+1. `nix flake check --no-build` — catch eval errors fast.
 2. Targeted build for changed scope:
-   - system: `nix build .#nixosConfigurations.<host>.config.system.build.toplevel`
-   - home: `nix build .#homeConfigurations."<user>@<host>".activationPackage`
-3. Run broader checks only when needed:
-   - `nix flake check`
-
-## 6) Quick Command Cheat Sheet
-
-- `nix flake show --no-write-lock-file`
-- `nix flake check --no-build`
-- `nix build .#nixosConfigurations.srcres-desktop.config.system.build.toplevel`
-- `sudo nixos-rebuild switch --flake .#srcres-desktop`
-- `nix build .#homeConfigurations."srcres@srcres-desktop".activationPackage`
-- `home-manager switch --flake .#srcres@srcres-desktop`
-- `nix build .#packages.x86_64-linux.srcres`
-
-When unsure, validate by building the smallest affected flake attribute first.
+   - System: `nix build .#nixosConfigurations.<host>.config.system.build.toplevel`
+   - Home: `nix build .#homeConfigurations."<user>@<host>".activationPackage`
+3. `nix flake check` — full check only when needed.
+4. `nixpkgs-fmt <file>` on changed Nix files.
