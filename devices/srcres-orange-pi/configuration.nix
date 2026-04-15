@@ -80,7 +80,7 @@ let
 
   singBoxSyncConfig = pkgs.writeShellApplication {
     name = "singbox-sync-config";
-    runtimeInputs = with pkgs; [ coreutils curl gnugrep gnused jq python3 sing-box systemd ];
+    runtimeInputs = with pkgs; [ coreutils curl python3 sing-box systemd ];
     text = ''
       set -euo pipefail
 
@@ -104,11 +104,11 @@ let
       workDir="$(mktemp -d)"
       trap 'rm -rf "$workDir"' EXIT
 
-      outboundsJson="$workDir/outbounds.json"
-      echo '[]' > "$outboundsJson"
+      allOutbounds="$workDir/outbounds.json"
+      echo '[]' > "$allOutbounds"
 
-      while IFS= read -r rawUrl; do
-        url="$(printf '%s' "$rawUrl" | sed 's/^\s*//;s/\s*$//')"
+      while IFS= read -r rawUrl || [ -n "$rawUrl" ]; do
+        url="$(printf '%s' "$rawUrl" | sed 's/^[[:space:]]*//;s/[[:space:]]*$//')"
         if [ -z "$url" ] || [ "''${url#\#}" != "$url" ]; then
           continue
         fi
@@ -119,14 +119,7 @@ let
           continue
         fi
 
-        sourceOutbounds="$workDir/source-outbounds-$(printf '%s' "$url" | sha256sum | cut -d' ' -f1).json"
-        if jq -e '. | type == "object" and (.outbounds | type == "array")' "$sourcePayload" > /dev/null 2>&1; then
-          if ! jq -c '.outbounds' "$sourcePayload" > "$sourceOutbounds" 2>/dev/null; then
-            echo "[sing-box] skip malformed sing-box JSON payload: $url" >&2
-            continue
-          fi
-        else
-          if ! python3 - "$sourcePayload" "$sourceOutbounds" <<'PY'
+        if ! python3 - "$sourcePayload" "$allOutbounds" <<'PY'
 import base64
 import json
 import re
@@ -159,7 +152,7 @@ def parse_port(value: str, default: int):
 
 
 def parse_vmess(uri: str, idx: int):
-    raw = uri[len("vmess://") :]
+    raw = uri[len("vmess://"):]
     decoded = decode_base64(raw)
     if not decoded:
         return None
@@ -218,7 +211,7 @@ def parse_standard_uri(uri: str, scheme: str, idx: int):
     tag = unquote(split.fragment) if split.fragment else f"{scheme}-{idx}"
 
     if scheme == "ss":
-        raw = uri[len("ss://") :]
+        raw = uri[len("ss://"):]
         raw = raw.split("#", 1)[0]
         raw = raw.split("?", 1)[0]
         if "@" in raw:
@@ -287,7 +280,7 @@ def parse_standard_uri(uri: str, scheme: str, idx: int):
         return None
 
     transport_type = (query.get("type", [""])[0] or "").lower()
-    if transport_type:
+    if transport_type and transport_type != "tcp":
         outbound["transport"] = {"type": transport_type}
         if transport_type == "ws":
             path = query.get("path", [""])[0]
@@ -311,265 +304,242 @@ def parse_standard_uri(uri: str, scheme: str, idx: int):
     return outbound
 
 
-def payload_to_text(raw_bytes: bytes):
+SUPPORTED = {"vmess", "vless", "trojan", "anytls", "hysteria", "hysteria2", "ss"}
+ALLOWED_TYPES = {
+    "anytls", "direct", "http", "hysteria", "hysteria2",
+    "shadowsocks", "socks", "ssh", "tor", "trojan",
+    "tuic", "vless", "vmess", "wireguard",
+}
+RESERVED_TAGS = {"proxy", "auto", "direct"}
+
+
+def payload_to_lines(raw_bytes: bytes):
     text = raw_bytes.decode("utf-8", errors="ignore").strip()
     if not text:
-        return ""
+        return []
 
-    lines = [line.strip() for line in text.splitlines() if line.strip() and not line.strip().startswith("#")]
-    if lines and all("://" in line for line in lines):
-        return "\n".join(lines)
+    lines = [l.strip() for l in text.splitlines() if l.strip() and not l.strip().startswith("#")]
+    if lines and all("://" in l for l in lines):
+        return lines
 
     decoded = decode_base64(text)
     if not decoded:
-        return ""
+        return []
 
-    decoded_lines = [line.strip() for line in decoded.splitlines() if line.strip() and not line.strip().startswith("#")]
-    return "\n".join(decoded_lines)
+    return [l.strip() for l in decoded.splitlines() if l.strip() and not l.strip().startswith("#")]
 
 
 def main():
     source_payload = sys.argv[1]
-    source_outbounds = sys.argv[2]
+    existing_outbounds_file = sys.argv[2]
 
     with open(source_payload, "rb") as fh:
         raw = fh.read()
 
-    text = payload_to_text(raw)
-    if not text:
+    lines = payload_to_lines(raw)
+    if not lines:
+        print("[sing-box] no URI lines found in subscription payload", file=sys.stderr)
         return 1
 
-    outbounds = []
-    supported = {"vmess", "vless", "trojan", "anytls", "hysteria", "hysteria2", "ss"}
-    for idx, line in enumerate(text.splitlines(), start=1):
+    with open(existing_outbounds_file, "r") as fh:
+        existing = json.load(fh)
+
+    new_outbounds = []
+    for idx, line in enumerate(lines, start=1):
         scheme = line.split("://", 1)[0].lower() if "://" in line else ""
-        if scheme not in supported:
+        if scheme not in SUPPORTED:
             continue
         if scheme == "vmess":
-            outbound = parse_vmess(line, idx)
+            ob = parse_vmess(line, idx)
         else:
-            outbound = parse_standard_uri(line, scheme, idx)
-        if outbound:
-            outbounds.append(outbound)
+            ob = parse_standard_uri(line, scheme, idx)
+        if not ob:
+            continue
+        if ob.get("type", "").lower() not in ALLOWED_TYPES:
+            continue
+        if not ob.get("tag"):
+            continue
+        if ob["tag"] in RESERVED_TAGS:
+            ob["tag"] = f"{ob['tag']}-{idx}"
+        new_outbounds.append(ob)
 
-    with open(source_outbounds, "w", encoding="utf-8") as fh:
-        json.dump(outbounds, fh, ensure_ascii=False)
+    # Deduplicate by tag, keeping first occurrence
+    seen_tags = set()
+    for ob in existing:
+        seen_tags.add(ob.get("tag"))
 
-    return 0 if outbounds else 1
+    for ob in new_outbounds:
+        if ob["tag"] not in seen_tags:
+            existing.append(ob)
+            seen_tags.add(ob["tag"])
+
+    with open(existing_outbounds_file, "w", encoding="utf-8") as fh:
+        json.dump(existing, fh, ensure_ascii=False)
+
+    return 0
 
 
 if __name__ == "__main__":
     raise SystemExit(main())
 PY
-          then
-            echo "[sing-box] skip unsupported subscription payload format: $url" >&2
-            continue
-          fi
-        fi
-
-        mergedOutbounds="$workDir/outbounds.next.json"
-        if ! jq -s '
-          .[0] + (
-            .[1]
-            | map(
-                select(
-                  has("type")
-                  and (.type | type == "string")
-                  and has("tag")
-                  and (.tag | type == "string")
-                  and (
-                    .type
-                    | ascii_downcase
-                    | IN(
-                        "anytls",
-                        "direct",
-                        "http",
-                        "hysteria",
-                        "hysteria2",
-                        "selector",
-                        "shadowsocks",
-                        "socks",
-                        "ssh",
-                        "tor",
-                        "trojan",
-                        "tuic",
-                        "urltest",
-                        "vless",
-                        "vmess",
-                        "wireguard"
-                      )
-                  )
-                )
-              )
-          )
-        ' "$outboundsJson" "$sourceOutbounds" > "$mergedOutbounds"; then
-          echo "[sing-box] skip invalid outbound entries from subscription: $url" >&2
+        then
+          echo "[sing-box] skip unsupported subscription payload format: $url" >&2
           continue
         fi
-        mv "$mergedOutbounds" "$outboundsJson"
       done < "$subscriptionsFile"
 
-      dedupOutbounds="$workDir/outbounds.dedup.json"
-      jq 'unique_by(.tag)' "$outboundsJson" > "$dedupOutbounds"
+      # Build proxy tag list (all provider outbound tags except reserved names)
+      proxyTags="$(python3 -c "
+import json, sys
+obs = json.load(open(sys.argv[1]))
+tags = [o['tag'] for o in obs if o.get('tag') not in {'proxy','auto','direct'}]
+json.dump(tags, sys.stdout)
+" "$allOutbounds")"
 
-      proxyTagsJson="$workDir/proxy-tags.json"
-      jq '
-        [ .[]
-          | .tag
-          | select(
-              . != "proxy"
-              and . != "auto"
-              and . != "direct"
-              and . != "block"
-              and . != "dns-out"
-            )
-        ]
-      ' "$dedupOutbounds" > "$proxyTagsJson"
-
-      if ! jq -e 'type == "array"' "$dedupOutbounds" > /dev/null 2>&1; then
-        echo "[sing-box] merged outbounds JSON invalid, fallback to empty list" >&2
-        echo '[]' > "$dedupOutbounds"
-      fi
-
-      if ! jq -e 'type == "array"' "$proxyTagsJson" > /dev/null 2>&1; then
-        echo "[sing-box] proxy tags JSON invalid, fallback to empty list" >&2
-        echo '[]' > "$proxyTagsJson"
-      fi
-
+      # Generate sing-box 1.12+ config via Python (no jq needed)
       generated="$workDir/config.json"
-      jq -n \
-        --arg secret "$secret" \
-        --slurpfile providerOutbounds "$dedupOutbounds" \
-        --slurpfile proxyTags "$proxyTagsJson" \
-        '
-          {
-            log: {
-              level: "info",
-              timestamp: true
-            },
-            dns: {
-              servers: [
-                {
-                  tag: "dns-remote",
-                  address: "https://1.1.1.1/dns-query",
-                  detour: "proxy"
-                },
-                {
-                  tag: "dns-direct",
-                  address: "https://223.5.5.5/dns-query",
-                  detour: "direct"
-                }
-              ],
-              rules: [
-                {
-                  clash_mode: "Direct",
-                  server: "dns-direct"
-                },
-                {
-                  clash_mode: "Global",
-                  server: "dns-remote"
-                }
-              ],
-              final: "dns-remote"
-            },
-            inbounds: [
-              {
-                type: "tun",
-                tag: "tun-in",
-                interface_name: "singtun0",
-                address: ["172.19.0.1/30"],
-                mtu: 9000,
-                stack: "system",
-                auto_route: true,
-                strict_route: true,
-                auto_redirect: true,
-                endpoint_independent_nat: true
-              }
-            ],
-            outbounds:
-              (
-                ($providerOutbounds[0] // [])
-                + [
-                    {
-                      type: "selector",
-                      tag: "proxy",
-                      outbounds: ((($proxyTags[0] // []) + ["direct"]) | unique)
-                    }
-                  ]
-                + (
-                    if (($proxyTags[0] // []) | length) > 0 then
-                      [
-                        {
-                          type: "urltest",
-                          tag: "auto",
-                          outbounds: (($proxyTags[0] // []) | unique),
-                          interval: "10m",
-                          tolerance: 50
-                        }
-                      ]
-                    else
-                      []
-                    end
-                  )
-                + [
-                    {
-                      type: "direct",
-                      tag: "direct"
-                    },
-                    {
-                      type: "block",
-                      tag: "block"
-                    }
-                  ]
-              ),
-            route: {
-              auto_detect_interface: true,
-              final: "proxy",
-              rules: [
-                {
-                  protocol: "dns",
-                  action: "hijack-dns"
-                },
-                {
-                  ip_is_private: true,
-                  outbound: "direct"
-                },
-                {
-                  clash_mode: "Direct",
-                  outbound: "direct"
-                },
-                {
-                  clash_mode: "Global",
-                  outbound: "proxy"
-                }
-              ]
-            },
-            experimental: {
-              cache_file: {
-                enabled: true,
-                path: "/var/lib/sing-box/cache.db",
-                store_selected: true,
-                store_fakeip: true
-              },
-              clash_api: {
-                external_controller: "0.0.0.0:9090",
-                secret: $secret,
-                default_mode: "Rule",
-                access_control_allow_origin: [
-                  "http://127.0.0.1:9099",
-                  "http://localhost:9099",
-                  "http://srcres-orange-pi:9099"
-                ],
-                access_control_allow_private_network: true
-              }
-            }
-          }
-        ' > "$generated"
+      python3 - "$allOutbounds" "$secret" "$generated" <<'PYGEN'
+import json
+import sys
 
-      if sing-box check -c "$generated" > /dev/null 2>&1; then
+outbounds_file = sys.argv[1]
+secret = sys.argv[2]
+output_file = sys.argv[3]
+
+with open(outbounds_file) as fh:
+    provider_outbounds = json.load(fh)
+
+proxy_tags = [
+    o["tag"] for o in provider_outbounds
+    if o.get("tag") not in {"proxy", "auto", "direct"}
+]
+
+# Build outbounds list
+outbounds = list(provider_outbounds)
+
+# selector: proxy
+selector_outbounds = list(dict.fromkeys(proxy_tags + ["auto", "direct"]))
+outbounds.append({
+    "type": "selector",
+    "tag": "proxy",
+    "outbounds": selector_outbounds,
+})
+
+# urltest: auto
+if proxy_tags:
+    outbounds.append({
+        "type": "urltest",
+        "tag": "auto",
+        "outbounds": list(dict.fromkeys(proxy_tags)),
+        "interval": "10m",
+        "tolerance": 50,
+    })
+
+# direct outbound
+outbounds.append({"type": "direct", "tag": "direct"})
+
+config = {
+    "log": {
+        "level": "info",
+        "timestamp": True,
+    },
+    "dns": {
+        "servers": [
+            {
+                "type": "https",
+                "tag": "dns-remote",
+                "server": "1.1.1.1",
+                "detour": "proxy",
+            },
+            {
+                "type": "https",
+                "tag": "dns-direct",
+                "server": "223.5.5.5",
+                "detour": "direct",
+            },
+        ],
+        "rules": [
+            {
+                "clash_mode": "Direct",
+                "action": "route",
+                "server": "dns-direct",
+            },
+            {
+                "clash_mode": "Global",
+                "action": "route",
+                "server": "dns-remote",
+            },
+        ],
+        "final": "dns-remote",
+    },
+    "inbounds": [
+        {
+            "type": "tun",
+            "tag": "tun-in",
+            "interface_name": "singtun0",
+            "address": ["172.19.0.1/30"],
+            "mtu": 9000,
+            "stack": "system",
+            "auto_route": True,
+            "strict_route": True,
+            "auto_redirect": True,
+            "endpoint_independent_nat": True,
+        }
+    ],
+    "outbounds": outbounds,
+    "route": {
+        "auto_detect_interface": True,
+        "final": "proxy",
+        "rules": [
+            {
+                "protocol": "dns",
+                "action": "hijack-dns",
+            },
+            {
+                "ip_is_private": True,
+                "outbound": "direct",
+            },
+            {
+                "clash_mode": "Direct",
+                "outbound": "direct",
+            },
+            {
+                "clash_mode": "Global",
+                "outbound": "proxy",
+            },
+        ],
+    },
+    "experimental": {
+        "cache_file": {
+            "enabled": True,
+            "path": "/var/lib/sing-box/cache.db",
+            "store_selected": True,
+            "store_fakeip": True,
+        },
+        "clash_api": {
+            "external_controller": "0.0.0.0:9090",
+            "secret": secret,
+            "default_mode": "Rule",
+            "access_control_allow_origin": [
+                "http://127.0.0.1:9099",
+                "http://localhost:9099",
+                "http://srcres-orange-pi:9099",
+            ],
+            "access_control_allow_private_network": True,
+        },
+    },
+}
+
+with open(output_file, "w", encoding="utf-8") as fh:
+    json.dump(config, fh, indent=2, ensure_ascii=False)
+PYGEN
+
+      if sing-box check -c "$generated"; then
         install -o sing-box -g sing-box -m 600 "$generated" "$outputConfig"
+        echo "[sing-box] config installed successfully with $(echo "$proxyTags" | python3 -c "import json,sys; print(len(json.load(sys.stdin)))" 2>/dev/null || echo '?') proxies"
       else
         echo "[sing-box] generated config failed validation; keep previous config" >&2
+        exit 1
       fi
     '';
   };
@@ -727,6 +697,35 @@ in {
         level = "info";
         timestamp = true;
       };
+      dns = {
+        servers = [
+          {
+            type = "https";
+            tag = "dns-remote";
+            server = "1.1.1.1";
+            detour = "proxy";
+          }
+          {
+            type = "https";
+            tag = "dns-direct";
+            server = "223.5.5.5";
+            detour = "direct";
+          }
+        ];
+        rules = [
+          {
+            clash_mode = "Direct";
+            action = "route";
+            server = "dns-direct";
+          }
+          {
+            clash_mode = "Global";
+            action = "route";
+            server = "dns-remote";
+          }
+        ];
+        final = "dns-remote";
+      };
       inbounds = [
         {
           type = "tun";
@@ -751,14 +750,6 @@ in {
           type = "direct";
           tag = "direct";
         }
-        {
-          type = "block";
-          tag = "block";
-        }
-        {
-          type = "dns";
-          tag = "dns-out";
-        }
       ];
       route = {
         auto_detect_interface = true;
@@ -766,7 +757,7 @@ in {
         rules = [
           {
             protocol = "dns";
-            outbound = "dns-out";
+            action = "hijack-dns";
           }
           {
             ip_is_private = true;
@@ -781,31 +772,6 @@ in {
             outbound = "proxy";
           }
         ];
-      };
-      dns = {
-        servers = [
-          {
-            tag = "dns-remote";
-            address = "https://1.1.1.1/dns-query";
-            detour = "proxy";
-          }
-          {
-            tag = "dns-direct";
-            address = "https://223.5.5.5/dns-query";
-            detour = "direct";
-          }
-        ];
-        rules = [
-          {
-            clash_mode = "Direct";
-            server = "dns-direct";
-          }
-          {
-            clash_mode = "Global";
-            server = "dns-remote";
-          }
-        ];
-        final = "dns-remote";
       };
       experimental = {
         cache_file = {
