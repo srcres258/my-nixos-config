@@ -857,6 +857,9 @@ in {
   hardware.firmwareCompression = "none";
   hardware.firmware = [ aic8800d80Firmware ];
   services.udev.packages = [ aic8800d80Firmware ];
+  
+  # xrdp
+  services.xrdp.enable = true;
 
   # This option defines the first version of NixOS installed on this host.
   system.stateVersion = "25.11";
