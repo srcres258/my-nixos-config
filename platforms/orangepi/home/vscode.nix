@@ -5,6 +5,7 @@
 }:
 let
   vscode-ext = pkgs.nix-vscode-extensions;
+  ltex-jdk = pkgs.javaPackages.compiler.temurin-bin.jdk-21;
 in
 {
   nixpkgs.config.allowUnfree = true;
@@ -62,18 +63,159 @@ in
             ]
           );
 
-          userSettings = {
-            "editor.fontFamily" = "'Cascadia Code', 'monospace', monospace, 'Droid Sans Fallback'";
-            "editor.fontSize" = 18;
-            "editor.rulers" = [ 80 100 120 ];
-            "editor.tabSize" = 2;
-            "workbench.colorTheme" = "Night Owl";
-            "vscode-neovim.neovimExecutablePaths.linux" = "${pkgs.neovim-unwrapped}/bin/nvim";
+          userSettings =
+            let
+              toSameValAttrSet = keys: v: builtins.foldl' (acc: x: acc // { "${x}" = v; }) { } keys;
+              toIgnoreAttrSet = keys: toSameValAttrSet keys "ignore";
+            in
+            {
+              "editor.fontFamily" = "'Cascadia Code', 'monospace', monospace, 'Droid Sans Fallback'";
+              "editor.fontSize" = 18;
+              "nix.enableLanguageServer" = true;
+              "editor.rulers" = [ 80 100 120 ];
+              "editor.tabSize" = 2;
+              "vscode-neovim.neovimExecutablePaths.linux" = "${pkgs.neovim-unwrapped}/bin/nvim";
+              "extensions.experimental.affinity" = {
+                "asvetliakov.vscode-neovim" = 1;
+              };
 
-            # Keep save-time build loops lightweight on Orange Pi.
-            "latex-workshop.latex.autoBuild.run" = "onSave";
-            "latex-workshop.view.pdf.viewer" = "tab";
-          };
+              "files.autoGuessEncoding" = true;
+              "editor.cursorSmoothCaretAnimation" = true;
+              "editor.smoothScrolling" = true;
+              "editor.cursorBlinking" = "smooth";
+              "editor.mouseWheelZoom" = false;
+              "editor.wordWrap" = "off";
+              "editor.suggest.snippetsPreventQuickSuggestions" = false;
+              "editor.acceptSuggestionOnEnter" = "smart";
+              "editor.suggestSelection" = "recentlyUsed";
+              "window.dialogStyle" = "custom";
+              "debug.showBreakpointsInOverviewRuler" = true;
+
+              # Type annotations for TypeScript
+              "typescript.inlayHints.parameterNames.enabled" = "all";
+              "typescript.inlayHints.parameterTypes.enabled" = true;
+              "typescript.inlayHints.variableTypes.enabled" = true;
+              "typescript.inlayHints.propertyDeclarationTypes.enabled" = true;
+              "typescript.inlayHints.functionLikeReturnTypes.enabled" = true;
+
+              "workbench.colorTheme" = "Night Owl";
+              "workbench.iconTheme" = "vscode-icons";
+
+              # LaTeX workshop settings
+              "latex-workshop.latex.tools" = [
+                {
+                  name = "xelatex";
+                  command = "xelatex";
+                  args = [
+                    "-synctex=1"
+                    "-interaction=nonstopmode"
+                    "-file-line-error"
+                    "%DOC%"
+                  ];
+                }
+                {
+                  name = "bibtex";
+                  command = "bibtex";
+                  args = [
+                    "%DOCFILE%"
+                  ];
+                }
+              ];
+              "latex-workshop.latex.recipes" = [
+                {
+                  name = "xelatex";
+                  tools = [ "xelatex" ];
+                }
+                {
+                  name = "xelatex -> bibtex -> xelatex*2";
+                  tools = [ "xelatex" "bibxtex" "xelatex" "xelatex" ];
+                }
+              ];
+              "latex-workshop.formatting.latexindent.path" = "latexindent";
+              # 保存时自动编译
+              "latex-workshop.latex.autoBuild.run" = "onSave";
+              # PDF 预览位置：右侧 Tab（最推荐）
+              "latex-workshop.view.pdf.viewer" = "tab";
+              # 反向同步（双击 PDF 跳回 tex 对应行，非常好用）
+              "latex-workshop.view.pdf.internal.synctex.keybinding" = "double-click";
+
+              # LTeX+ settings
+              "ltex.enabled" = true;
+              "ltex.language" = "en-US";
+              # 开启 "挑剔规则". 学术写作时强烈推荐.
+              "ltex.additionalRules.enablePickyRules" = true;
+              # 个人/项目常用单词 (避免专有名词拼写错误)
+              "ltex.dictionary" = {
+                en-US = [
+                  "LSTM"
+                  "GAN"
+                  "Transformer"
+                  "BERT"
+                  "ReLU"
+                  "Adam"
+                  "SGD"
+                  "GitHub"
+                  "arXiv"
+                  "NeurIPS"
+                  "ICLR"
+                  "CVPR"
+                  "ECCV"
+                  "pretrained"
+                  "fine-tune"
+                  "fine-tuning"
+                  "fine-tuned"
+                  "state-of-the-art"
+                  "SOTA"
+                  "TODO"
+                  "FIXME"
+                ];
+              };
+              # 非常常见的禁用规则 (学术写作误报率最高的前几项)
+              "ltex.disabledRules" = {
+                en-US = [
+                  "MORFOLOGIK_RULE_EN_US"
+                  "EN_QUOTES"
+                  "DASH_RULE"
+                  "PUNCTUATION_PARAGRAPH_END"
+                  "COMMA_PARENTHESIS_WHITESPACE"
+                  "SENTENCE_WHITESPACE"
+                  "UPPERCASE_SENTENCE_START"
+                ];
+              };
+              # LaTeX 特殊命令/环境处理
+              "ltex.latex.commands" = toIgnoreAttrSet [
+                "\\todo"
+                "\\todo[inline]"
+                "\\cite"
+                "\\citep"
+                "\\citet"
+                "\\ref"
+                "\\eqref"
+                "\\SI"
+                "\\qty"
+                "\\SIrange"
+                "\\textbf"
+                "\\textit"
+              ];
+              "ltex.latex.environments" = toIgnoreAttrSet [
+                "align"
+                "align*"
+                "equation"
+                "equation*"
+                "gather"
+                "multline"
+                "verbatim"
+                "lstlisting"
+                "minted"
+                "tikzpicture"
+              ];
+              # 性能与体验平衡
+              "ltex.checkFrequency" = "save";
+              "ltex.diagnosticSeverity" = "information";
+
+              "ltex.ltex-ls.path" = "${pkgs.ltex-ls-plus}";
+              "ltex.java.path" = "${ltex-jdk}/bin/java";
+            };
         };
       };
     };
