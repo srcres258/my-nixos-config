@@ -229,6 +229,14 @@ in
   hardware.firmware = [ aic8800d80Firmware ];
   services.udev.packages = [ aic8800d80Firmware ];
   
+  # Clash Verge
+  programs.clash-verge = {
+    enable = true;
+    autoStart = true;
+    serviceMode = true;
+    tunMode = true;
+  };
+
   # This option defines the first version of NixOS installed on this host.
   system.stateVersion = "25.11";
 }
