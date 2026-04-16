@@ -68,8 +68,6 @@ in {
     enable = true;
   };
 
-  services.remmina.enable = true;
-  
   home.sessionVariables = {
     JAVA_HOME = "${javaPkg}";
     COURSIER_CACHE = "${config.xdg.cacheHome}/coursier";
