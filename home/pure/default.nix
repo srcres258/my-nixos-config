@@ -197,6 +197,7 @@ in
   ] ++ (with nur.repos; [
     srcres258.ag
     srcres258.jyyslide-util
+    srcres258.adif-manage
   ]) ++ [ javaPkg scalaPkg ];
   home.sessionVariables = {
     EDITOR = "nvim";
