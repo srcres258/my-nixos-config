@@ -20,6 +20,8 @@
     {
       Unit = {
         Description = "mpvpaper dynamic wallpaper";
+        After = [ "niri.service" ];
+        BindsTo = [ "niri.service" ];
       };
 
       Service = {
