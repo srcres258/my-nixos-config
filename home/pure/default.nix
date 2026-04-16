@@ -150,6 +150,7 @@ in
             ncurses
             SDL2
             file
+            glibc.static
 
             # ... add more dependencies here ...
           ]);
