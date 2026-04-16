@@ -229,9 +229,6 @@ in
   hardware.firmware = [ aic8800d80Firmware ];
   services.udev.packages = [ aic8800d80Firmware ];
   
-  # V2RayA
-  services.v2raya.enable = true;
-
   # This option defines the first version of NixOS installed on this host.
   system.stateVersion = "25.11";
 }
