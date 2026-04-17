@@ -29,7 +29,7 @@ in
     in
     {
       enable = true;
-      package = vscode-pkgs.vscode;
+      package = vscode-pkgs.vscode.fhs;
 
       mutableExtensionsDir = true;
 
