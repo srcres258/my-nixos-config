@@ -26,6 +26,8 @@ let
     ''}";
     extraOutputsToInstall = [ "dev" ];
   };
+
+  json = pkgs.formats.json {};
 in
 {
   programs.opencode = {
@@ -33,6 +35,14 @@ in
     package = fhsWrapper;
     settings = {
       # Note: "$schema": "https://opencode.ai/config.json" is automatically added.
+      permission = {
+        "*" = "ask";
+      };
+    };
+  };
+
+  xdg.configFile."opencode/oh-my-opencode.jsonc".source =
+    json.generate "oh-my-opencode.jsonc" {
       agents = let
         ds = "deepseek/deepseek-v4-flash";
       in {
@@ -56,11 +66,7 @@ in
           variant = "max";
         };
       };
-      permission = {
-        "*" = "ask";
-      };
     };
-  };
 
   home.packages = with pkgs; [
     bun
