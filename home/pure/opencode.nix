@@ -33,14 +33,27 @@ in
     package = fhsWrapper;
     settings = {
       # Note: "$schema": "https://opencode.ai/config.json" is automatically added.
-      provider = {
-        openrouter = {
-          npm = "@ai-sdk/openai-compatible";
-          name = "OpenRouter";
-          options = {
-            baseURL = "https://openrouter.ai/api/v1";
-            apiKey = "{env:OPENROUTER_API_KEY}";
-          };
+      agents = let
+        ds = "deepseek/deepseek-v4-flash";
+      in {
+        sisyphus = {
+          model = ds;
+          reasoningEffort = "high";
+        };
+        hephaestus = {
+          model = ds;
+        };
+        prometheus = {
+          model = ds;
+        };
+        atlas = {
+          model = ds;
+          variant = "max";
+        };
+
+        metis = {
+          model = ds;
+          variant = "max";
         };
       };
       permission = {
