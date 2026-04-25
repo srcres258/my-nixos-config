@@ -127,6 +127,8 @@ in
 
     minicom
 
+    viu
+
     # Nix language
     nixd
     nixpkgs-fmt
