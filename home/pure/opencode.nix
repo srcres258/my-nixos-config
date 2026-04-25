@@ -65,6 +65,10 @@ in
           model = ds;
           variant = "max";
         };
+        momus = {
+          model = ds;
+          reasoningEffort = "high";
+        };
       };
     };
 
