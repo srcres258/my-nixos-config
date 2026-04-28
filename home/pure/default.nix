@@ -129,6 +129,8 @@ in
 
     viu
 
+    poppler-utils
+
     # Nix language
     nixd
     nixpkgs-fmt
