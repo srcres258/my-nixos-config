@@ -42,6 +42,8 @@
     tqsl
 
     freecad
+
+    calibre
   ]) ++ (with pkgs.nur.repos; [
     # srcres258.lceda-pro
   ]);
