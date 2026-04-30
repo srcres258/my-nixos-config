@@ -19,7 +19,7 @@
   };
 
   # Keep close to upstream-supported kernel stack.
-  boot.kernelPackages = pkgs.linuxKernel.kernels.linux_6_18;
+  boot.kernelPackages = pkgs.linuxKernel.packages.linux_6_18;
 
   # Common storage/filesystem support for SBC scenarios.
   boot.supportedFilesystems = [
