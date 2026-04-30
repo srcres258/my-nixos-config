@@ -19,7 +19,7 @@
   };
 
   # Keep close to upstream-supported kernel stack.
-  boot.kernelPackages = lib.mkDefault pkgs.linuxPackages_latest;
+  boot.kernelPackages = pkgs.linuxKernel.kernels.linux_6_18;
 
   # Common storage/filesystem support for SBC scenarios.
   boot.supportedFilesystems = [
@@ -28,7 +28,7 @@
     "f2fs"
     "vfat"
   ];
-  
+
   # Add kernel modules needed during stage-1 (NVMe + device-mapper path).
   boot.initrd.availableKernelModules = [ "nvme" "nvme_core" "pci" "xhci_pci" "dm_mod" "btrfs" ];
   boot.initrd.kernelModules = [ "nvme" "dm_mod" "btrfs" ];
