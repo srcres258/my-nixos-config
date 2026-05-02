@@ -41,12 +41,16 @@ in
     };
   };
 
-  xdg.configFile."opencode/oh-my-opencode.jsonc".source =
-    json.generate "oh-my-opencode.jsonc" {
-      agents = let
-        ds = "deepseek/deepseek-v4-pro";
-      in {
+  xdg.configFile."opencode/oh-my-openagent.jsonc".source =
+    json.generate "oh-my-openagent.jsonc" (let
+      ds = "deepseek/deepseek-v4-pro";
+    in {
+      agents = {
         sisyphus = {
+          model = ds;
+          reasoningEffort = "high";
+        };
+        sisyphus-junior = {
           model = ds;
           reasoningEffort = "high";
         };
@@ -69,8 +73,40 @@ in
           model = ds;
           reasoningEffort = "high";
         };
+
+        oracle = {
+          model = ds;
+          variant = "max";
+        };
+        librarian = {
+          model = ds;
+          variant = "max";
+        };
+        explore = {
+          model = ds;
+          variant = "max";
+        };
+        mulitmodal-looker = {
+          model = ds;
+          variant = "max";
+        };
       };
-    };
+      categories = let
+        ds-max = {
+          model = ds;
+          variant = "max";
+        };
+      in {
+        visual-engineering = ds-max;
+        ultrabrain = ds-max;
+        deep = ds-max;
+        artistry = ds-max;
+        quick = ds-max;
+        unspecified-low = ds-max;
+        unspecified-high = ds-max;
+        writing = ds-max;
+      };
+    });
 
   home.packages = with pkgs; [
     bun
