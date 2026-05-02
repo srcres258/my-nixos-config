@@ -44,7 +44,7 @@ in
   xdg.configFile."opencode/oh-my-opencode.jsonc".source =
     json.generate "oh-my-opencode.jsonc" {
       agents = let
-        ds = "deepseek/deepseek-v4-flash";
+        ds = "deepseek/deepseek-v4-pro";
       in {
         sisyphus = {
           model = ds;
