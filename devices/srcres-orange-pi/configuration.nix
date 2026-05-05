@@ -7,33 +7,35 @@ let
     hash = "sha256-QVpuJrCssBf4fwycq7oN0Oi9OxpQUqrSTQuHk5UE9+U=";
   };
 
-  aic8800d80 = config.boot.kernelPackages.callPackage (
-    { stdenv, kernel }:
-    stdenv.mkDerivation {
-      pname = "aic8800d80";
-      version = "unstable-2026-04-13";
-      src = aic8800d80Src;
+  aic8800d80 = config.boot.kernelPackages.callPackage
+    (
+      { stdenv, kernel }:
+      stdenv.mkDerivation {
+        pname = "aic8800d80";
+        version = "unstable-2026-04-13";
+        src = aic8800d80Src;
 
-      nativeBuildInputs = kernel.moduleBuildDependencies;
+        nativeBuildInputs = kernel.moduleBuildDependencies;
 
-      buildPhase = ''
-        runHook preBuild
-        make -C drivers/aic8800 \
-          KVER=${kernel.modDirVersion} \
-          KDIR=${kernel.dev}/lib/modules/${kernel.modDirVersion}/build
-        runHook postBuild
-      '';
+        buildPhase = ''
+          runHook preBuild
+          make -C drivers/aic8800 \
+            KVER=${kernel.modDirVersion} \
+            KDIR=${kernel.dev}/lib/modules/${kernel.modDirVersion}/build
+          runHook postBuild
+        '';
 
-      installPhase = ''
-        runHook preInstall
-        modDir=$out/lib/modules/${kernel.modDirVersion}/kernel/drivers/net/wireless/aic8800
-        mkdir -p "$modDir"
-        install -m 644 drivers/aic8800/aic_load_fw/aic_load_fw.ko "$modDir"/
-        install -m 644 drivers/aic8800/aic8800_fdrv/aic8800_fdrv.ko "$modDir"/
-        runHook postInstall
-      '';
-    }
-  ) { };
+        installPhase = ''
+          runHook preInstall
+          modDir=$out/lib/modules/${kernel.modDirVersion}/kernel/drivers/net/wireless/aic8800
+          mkdir -p "$modDir"
+          install -m 644 drivers/aic8800/aic_load_fw/aic_load_fw.ko "$modDir"/
+          install -m 644 drivers/aic8800/aic8800_fdrv/aic8800_fdrv.ko "$modDir"/
+          runHook postInstall
+        '';
+      }
+    )
+    { };
 
   aic8800d80Firmware = pkgs.stdenvNoCC.mkDerivation {
     pname = "aic8800d80-firmware";
@@ -106,7 +108,7 @@ in
   # Keep default initrd modules enabled to avoid missing core block/udev helpers
   # during early boot discovery on RK3588.
   boot.initrd.includeDefaultModules = lib.mkForce true;
-  boot.initrd.kernelModules = lib.mkForce [ "phy_rockchip_naneng_combphy" "pcie_rockchip_host" "pci" "nvme_core" "nvme" "crc32c_cryptoapi" "dm_mod" "btrfs" ];
+  boot.initrd.kernelModules = lib.mkForce [ "phy_rockchip_naneng_combphy" "pcie_rockchip_host" "pci" "nvme_core" "nvme" "crc32c_cryptoapi" "dm_mod" "btrfs" "panthor" ];
   boot.kernelModules = [
     "pcie_rockchip_host"
     "nvme"
@@ -114,6 +116,7 @@ in
     "tun"
     "aic_load_fw"
     "aic8800_fdrv"
+    "panthor"
   ];
   # AICSemi driver reads firmware via aic_load_fw module parameter aic_fw_path.
   # On NixOS firmware lives under /run/current-system/firmware.

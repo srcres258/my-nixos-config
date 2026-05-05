@@ -18,8 +18,14 @@
     };
   };
 
-  # Keep close to upstream-supported kernel stack.
-  boot.kernelPackages = pkgs.linuxKernel.packages.linux_6_18;
+  # Mainline kernel with panthor GPU driver enabled for Mali-G610 (RK3588).
+  # CONFIG_DRM_PANTHOR may not be explicitly set in nixpkgs common-config;
+  # override here to ensure it is compiled as a module.
+  boot.kernelPackages = pkgs.linuxPackagesFor (pkgs.linux_6_18.override {
+    structuredExtraConfig = with lib.kernel; {
+      DRM_PANTHOR = module;
+    };
+  });
 
   # Common storage/filesystem support for SBC scenarios.
   boot.supportedFilesystems = [
