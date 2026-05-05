@@ -44,6 +44,7 @@ in
   xdg.configFile."opencode/oh-my-openagent.jsonc".source =
     json.generate "oh-my-openagent.jsonc" (let
       ds = "deepseek/deepseek-v4-pro";
+      qwen = "alibaba-cn/qwen3.6-plus";
     in {
       agents = {
         sisyphus = {
@@ -87,7 +88,7 @@ in
           variant = "max";
         };
         mulitmodal-looker = {
-          model = ds;
+          model = qwen;
           variant = "max";
         };
       };
