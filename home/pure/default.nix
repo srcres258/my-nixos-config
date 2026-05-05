@@ -206,6 +206,7 @@ in
     srcres258.jyyslide-util
     srcres258.adif-manage
     srcres258.bibox
+    srcres258.sootty
   ]) ++ [ javaPkg scalaPkg ];
   home.sessionVariables = {
     EDITOR = "nvim";
