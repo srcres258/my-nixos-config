@@ -41,6 +41,12 @@ in
               m = vscode-ext.vscode-marketplace;
             in
             with m; [
+              # Icons
+              vscode-icons-team.vscode-icons
+
+              # Theme
+              sdras.night-owl
+
               # Core UI / workflow
               ms-ceintl.vscode-language-pack-zh-hans
               asvetliakov.vscode-neovim
