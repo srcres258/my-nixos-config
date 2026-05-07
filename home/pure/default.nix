@@ -131,8 +131,6 @@ in
 
     poppler-utils
 
-    papis
-
     # Nix language
     nixd
     nixpkgs-fmt
