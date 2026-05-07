@@ -5,8 +5,7 @@
 
 {
   imports =
-    [
-      (modulesPath + "/installer/scan/not-detected.nix")
+    [ (modulesPath + "/installer/scan/not-detected.nix")
     ];
 
   boot.initrd.availableKernelModules = [ "xhci_pci" "ahci" "nvme" "usb_storage" "usbhid" "sd_mod" ];
@@ -15,42 +14,31 @@
   boot.extraModulePackages = [ ];
 
   fileSystems."/" =
-    {
-      device = "/dev/disk/by-uuid/da62df5b-a937-48aa-ad11-07c9b3f4ffb2";
+    { device = "/dev/disk/by-uuid/edfd6569-cb26-4f60-8bf6-ff3267a0b689";
       fsType = "btrfs";
-      options = [ "compress=zstd" "subvol=root" ];
+      options = [ "subvol=root" ];
     };
 
   fileSystems."/nix" =
-    {
-      device = "/dev/disk/by-uuid/da62df5b-a937-48aa-ad11-07c9b3f4ffb2";
+    { device = "/dev/disk/by-uuid/edfd6569-cb26-4f60-8bf6-ff3267a0b689";
       fsType = "btrfs";
-      options = [ "compress=zstd" "subvol=nix" "noatime" ];
+      options = [ "subvol=nix" ];
     };
 
   fileSystems."/boot" =
-    {
-      device = "/dev/disk/by-uuid/E1D0-1B37";
+    { device = "/dev/disk/by-uuid/7712-300E";
       fsType = "vfat";
       options = [ "fmask=0022" "dmask=0022" ];
     };
 
   fileSystems."/home" =
-    {
-      device = "/dev/disk/by-uuid/b1ac6baf-41f6-4462-9e45-6e1c7486f0e3";
+    { device = "/dev/disk/by-uuid/b1ac6baf-41f6-4462-9e45-6e1c7486f0e3";
       fsType = "ext4";
     };
 
   swapDevices =
-    [{ device = "/dev/disk/by-uuid/9dda6f71-5a0a-4e9a-be48-898eeda65ceb"; }];
-
-  # Enables DHCP on each ethernet and wireless interface. In case of scripted networking
-  # (the default) this is the recommended approach. When using systemd-networkd it's
-  # still possible to use this option, but it's recommended to use it in conjunction
-  # with explicit per-interface declarations with `networking.interfaces.<interface>.useDHCP`.
-  networking.useDHCP = lib.mkDefault true;
-  # networking.interfaces.enp5s0.useDHCP = lib.mkDefault true;
-  # networking.interfaces.wlo1.useDHCP = lib.mkDefault true;
+    [ { device = "/dev/disk/by-uuid/9f58432f-50e5-4be6-b40f-45fbb3094db8"; }
+    ];
 
   nixpkgs.hostPlatform = lib.mkDefault "x86_64-linux";
   hardware.cpu.intel.updateMicrocode = lib.mkDefault config.hardware.enableRedistributableFirmware;
