@@ -18,9 +18,6 @@ in {
 
     drawio
 
-    # JetBrains IDEs
-    jetbrains.idea
-
     feishu
 
     tor-browser
