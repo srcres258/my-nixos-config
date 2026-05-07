@@ -230,8 +230,6 @@
 
   programs.nh.enable = true;
 
-  programs.wireshark.enable = true;
-
   # List services that you want to enable:
 
   # Enable the OpenSSH daemon.
