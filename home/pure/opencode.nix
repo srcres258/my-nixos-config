@@ -87,7 +87,7 @@ in
           model = ds;
           variant = "max";
         };
-        mulitmodal-looker = {
+        multimodal-looker = {
           model = qwen;
           variant = "max";
         };
