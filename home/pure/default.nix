@@ -133,6 +133,8 @@ in
 
     jmtpfs
 
+    inxi
+
     # Nix language
     nixd
     nixpkgs-fmt
