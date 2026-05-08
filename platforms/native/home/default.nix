@@ -45,6 +45,11 @@ in {
     solc
     python312Packages.pyevmasm
 
+    # Screenshot tools
+    grim
+    slurp
+    satty
+
     # Scala language
     scala-cli
     sbt
