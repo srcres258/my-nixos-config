@@ -131,6 +131,8 @@ in
 
     poppler-utils
 
+    jmtpfs
+
     # Nix language
     nixd
     nixpkgs-fmt
