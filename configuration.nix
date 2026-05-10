@@ -334,5 +334,14 @@
 
   # Enable man pages.
   documentation.man.enable = true;
+
+  # Vulnerability fix: in preventing of the Dirty Frag
+  # kernel vulnerability.
+  boot.blacklistedKernelModules = [ "esp4" "esp6" "rxrpc" ];
+  boot.extraModprobeConfig = ''
+    install esp4 /run/current-system/sw/bin/false
+    install esp6 /run/current-system/sw/bin/false
+    install rxrpc /run/current-system/sw/bin/false
+  '';
 }
 
