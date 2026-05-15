@@ -209,6 +209,7 @@ in
     srcres258.adif-manage
     srcres258.bibox
     srcres258.sootty
+    srcres258.deepseek-tui
   ]) ++ [ javaPkg scalaPkg ];
   home.sessionVariables = {
     EDITOR = "nvim";
