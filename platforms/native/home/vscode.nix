@@ -73,6 +73,7 @@ in
               ms-vscode.cmake-tools
               ms-vscode.cpptools-extension-pack
               hars.cppsnippets
+              zixuanwang.linkerscript
 
               # Makefile
               ms-vscode.makefile-tools
