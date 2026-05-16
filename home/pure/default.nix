@@ -210,6 +210,7 @@ in
     srcres258.bibox
     srcres258.sootty
     srcres258.deepseek-tui
+    srcres258.waveql
   ]) ++ [ javaPkg scalaPkg ];
   home.sessionVariables = {
     EDITOR = "nvim";
