@@ -339,9 +339,10 @@
   # kernel vulnerability.
   boot.blacklistedKernelModules = [ "esp4" "esp6" "rxrpc" ];
   boot.extraModprobeConfig = ''
-    install esp4 /run/current-system/sw/bin/false
-    install esp6 /run/current-system/sw/bin/false
-    install rxrpc /run/current-system/sw/bin/false
+    install esp4 ${pkgs.coreutils}/bin/false
+    install esp6 ${pkgs.coreutils}/bin/false
+    install rxrpc ${pkgs.coreutils}/bin/false
   '';
+  boot.kernel.sysctl."kernel.yama.ptrace_scope" = 2;
 }
 
