@@ -135,6 +135,8 @@ in
 
     inxi
 
+    tldr
+
     # Nix language
     nixd
     nixpkgs-fmt
