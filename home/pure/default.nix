@@ -137,6 +137,8 @@ in
 
     tldr
 
+    ncdu
+
     # Nix language
     nixd
     nixpkgs-fmt
