@@ -44,6 +44,8 @@
     freecad
 
     calibre
+
+    xclip
   ]) ++ (with pkgs.nur.repos; [
     # srcres258.lceda-pro
   ]);
