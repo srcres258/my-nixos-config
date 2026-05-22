@@ -139,6 +139,8 @@ in
 
     ncdu
 
+    mesa-demos
+
     # Nix language
     nixd
     nixpkgs-fmt
