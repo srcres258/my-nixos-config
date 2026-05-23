@@ -217,6 +217,7 @@ in
     srcres258.sootty
     srcres258.deepseek-tui
     srcres258.waveql
+    srcres258.pywellen-mcp
   ]) ++ [ javaPkg scalaPkg ];
   home.sessionVariables = {
     EDITOR = "nvim";
