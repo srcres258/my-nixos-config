@@ -48,6 +48,9 @@ in
       skills = {
         paths = [ "~/.agents/skills" ];
       };
+      plugin = [
+        "oh-my-openagent@latest"
+      ];
     };
 
   xdg.configFile."opencode/oh-my-openagent.jsonc".source =
