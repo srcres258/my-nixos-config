@@ -33,13 +33,22 @@ in
   programs.opencode = {
     enable = true;
     package = fhsWrapper;
-    settings = {
-      # Note: "$schema": "https://opencode.ai/config.json" is automatically added.
+    # Note: There are some issues around `settings` option.
+    # The generated path is ~/.config/opencode/config.json
+    # Rather than ~/.config/opencode/opencode.json.
+    # So specify the config file manually as mentioned beneath.
+  };
+
+  xdg.configFile."opencode/opencode.json".source =
+    json.generate "opencode.json" {
+      "$schema" = "https://opencode.ai/config.json";
       permission = {
         "*" = "ask";
       };
+      skills = {
+        paths = [ "~/.agents/skills" ];
+      };
     };
-  };
 
   xdg.configFile."opencode/oh-my-openagent.jsonc".source =
     json.generate "oh-my-openagent.jsonc" (let
