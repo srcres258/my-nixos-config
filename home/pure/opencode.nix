@@ -51,6 +51,13 @@ in
       plugin = [
         "oh-my-openagent@latest"
       ];
+      mcp = {
+        pywellen = {
+          type = "local";
+          command = [ "pywellen-mcp" ];
+          enabled = true;
+        };
+      };
     };
 
   xdg.configFile."opencode/oh-my-openagent.jsonc".source =
