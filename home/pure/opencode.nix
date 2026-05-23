@@ -43,7 +43,23 @@ in
     json.generate "opencode.json" {
       "$schema" = "https://opencode.ai/config.json";
       permission = {
-        "*" = "ask";
+        read = "allow";
+        edit = "ask";
+        glob = "allow";
+        grep = "allow";
+        bash = {
+          "*" = "ask";
+          "ls *" = "allow";
+          "cat *" = "allow";
+          "grep *" = "allow";
+        };
+        task = "allow";
+        skill = "allow";
+        lsp = "allow";
+        webfetch = "allow";
+        websearch = "allow";
+        external_directory = "ask";
+        doom_loop = "ask";
       };
       skills = {
         paths = [ "~/.agents/skills" ];
