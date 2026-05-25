@@ -191,7 +191,6 @@ in
     "rootwait"
     "rootdelay=60"
     "rootfstype=btrfs"
-    "console=tty0"
     "earlycon"
   ];
 
