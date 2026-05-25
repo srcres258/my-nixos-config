@@ -11,6 +11,9 @@ configuration.nix                         # Shared base NixOS module
 home/default.nix                          # Home Manager entry (imports ./pure + ./system)
 home/options.nix                          # Custom my.* option declarations
 home/pure/                                # Portable home modules (CLI-only, works on WSL)
+home/pure/texlive/                        #   sub-group: TeX Live module
+home/pure/yazi/                           #   sub-group: Yazi file manager (Nix + Lua)
+home/pure/opencode.nix                    #   OpenCode agent config (via Home Manager)
 home/system/                              # System-dependent home modules (GUI, Wayland)
 home/develop.nix                          # Standalone dev-only home profile
 devices/<host>/configuration.nix          # Per-host system config
@@ -26,10 +29,13 @@ Primary: **Nix**. Secondary: **Lua** (`home/pure/init.lua`,
 No `.cursorrules`, `.cursor/rules/`, or `.github/copilot-instructions.md`.
 If added later, treat as higher priority.
 
+`.vscode/` is in `.gitignore` — VS Code workspace settings are not committed.
+`result` and `result-*` (Nix build symlinks) are also git-ignored.
+
 ## 2) Build / Lint / Test Commands
 
-Run all commands from repo root. No task runner or test framework —
-use the smallest flake build as a "single test".
+Run all commands from repo root. No CI/CD, no task runner, no test framework —
+use the smallest flake build as a "single test". All validation is local-only.
 
 | Action | Command |
 |--------|---------|
@@ -90,12 +96,19 @@ flake.nix factories
 ```
 
 Secrets via `builtins.getEnv` at flake boundary only, never hardcoded.
+`srcres-password` is only passed to `mkNixOSConfig` (not home configs).
+
+`allowUnfree = true` is set in `mkPkgs` — all package resolution assumes unfree allowed.
+
+`pkgs-unstable` is available as a module argument in **both** system (`specialArgs`)
+and home-manager (`extraSpecialArgs`) modules.
 
 ## 4) Code Style Guidelines
 
 ### Nix Syntax
 
-- **4-space indentation** throughout. 2-space inside `let ... in`.
+- **4-space indentation** throughout. 2-space inside `let ... in` in `flake.nix`;
+  4-space inside `let ... in` within modules.
 - **Function arguments**: comma-first, one per line, `...` at end:
   `{ config, pkgs, lib, ... }:`
 - **`let ... in`** for computed locals.
@@ -121,7 +134,15 @@ Secrets via `builtins.getEnv` at flake boundary only, never hardcoded.
 - Conditional: `++ lib.optionals (!pkgs.stdenv.hostPlatform.isAarch64) [ ... ]`.
 - NUR: `with nur.repos; [ srcres258.X ]`.
 - Unstable: `with pkgs-unstable; [ ... ]`.
-- Pinned: `inputs.<name>.legacyPackages.${system}.<pkg>`.
+- Pinned: `inputs.<name>.legacyPackages.${system}.<pkg>` for legacy/pinned
+  packages (e.g. `go-ethereum-legacy-nixpkgs`, `mill-legacy-nixpkgs`).
+
+### Override Patterns
+
+- Use `lib.mkDefault` for overridable defaults in platform/base modules.
+- Use `lib.mkForce` to override auto-generated `hardware-configuration.nix`
+  values or platform defaults (e.g. kernel modules, fileSystems).
+- Use `lib.mkAfter` to append to list-type options (e.g. kernel boot params).
 
 ### Custom Options
 
@@ -144,6 +165,13 @@ Secrets via `builtins.getEnv` at flake boundary only, never hardcoded.
 - Never suppress errors with `null` unless using `lib.mkDefault`.
 - Keep `hardware-configuration.nix` auto-generated; do not hand-edit.
 - Keep embedded shell snippets idempotent.
+- Comments in Chinese (e.g. platform configs) are acceptable; there is no language restriction.
+
+### OpenCode Config
+
+This repo configures OpenCode itself via `home/pure/opencode.nix` — agent settings,
+permission rules, and MCP servers are managed through Home Manager.
+When modifying OpenCode behavior, edit the Nix module, not `~/.config/opencode/`.
 
 ## 5) Validation Strategy
 
