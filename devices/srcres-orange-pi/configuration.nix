@@ -194,14 +194,6 @@ in
     "earlycon"
   ];
 
-  # The NVMe index can change across boots on RK3588. Prefer UUID-based root
-  # lookup and recreate by-uuid symlinks in stage-1 if udev is late.
-  fileSystems."/".device = lib.mkForce "/dev/disk/by-uuid/1aab64c8-3fe8-46f4-8aff-124f2ea7868d";
-  fileSystems."/home".device = lib.mkForce "/dev/disk/by-uuid/1aab64c8-3fe8-46f4-8aff-124f2ea7868d";
-  fileSystems."/nix".device = lib.mkForce "/dev/disk/by-uuid/1aab64c8-3fe8-46f4-8aff-124f2ea7868d";
-  fileSystems."/boot".device = lib.mkForce "/dev/disk/by-uuid/3A12-AB1C";
-  swapDevices = lib.mkForce [{ device = "/dev/disk/by-uuid/b439618d-cd52-4bc9-8509-c327a3c026aa"; }];
-
   networking = {
     hostName = "srcres-orange-pi";
 
