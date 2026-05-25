@@ -18,14 +18,10 @@
     };
   };
 
-  # Linux kernel with panthor GPU driver enabled for Mali-G610 (RK3588).
-  # CONFIG_DRM_PANTHOR may not be explicitly set in nixpkgs common-config;
-  # override here to ensure it is compiled as a module.
-  boot.kernelPackages = pkgs.linuxPackagesFor (pkgs.linux_latest.override {
-    structuredExtraConfig = with lib.kernel; {
-      DRM_PANTHOR = module;
-    };
-  });
+  # Linux kernel for RK3588. DRM_PANTHOR is already enabled as a module
+  # in the upstream arm64 defconfig; no custom override needed.
+  # Use linuxPackages_latest for optimal nixpkgs binary cache hits.
+  boot.kernelPackages = pkgs.linuxPackages_latest;
 
   # Common storage/filesystem support for SBC scenarios.
   boot.supportedFilesystems = [
