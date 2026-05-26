@@ -59,9 +59,9 @@
           tooltip-format = "RAM used: {used} / {total} ({percentage}%)";
         };
         disk = {
-          format = "{percentage}% Disk";
+          format = "{percentage_used}% Disk";
           tooltip = true;
-          tooltip-format = "Disk used: {used} / {total} ({percentage}%)";
+          tooltip-format = "Disk used: {used} / {total} ({percentage_used}%)";
         };
         temperature = {
           format = "{temperatureC}°C {icon}";
