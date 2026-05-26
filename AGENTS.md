@@ -6,21 +6,30 @@ safe, consistent, and verifiable.
 ## 1) Repository Layout
 
 ```
-flake.nix                                 # Flake entry
-configuration.nix                         # Shared base NixOS module
+flake.nix                                 # Flake entry + factory functions
+flake.lock                                # Pinned input versions
+configuration.nix                         # Shared base NixOS module (flat, no imports)
 home/default.nix                          # Home Manager entry (imports ./pure + ./system)
 home/options.nix                          # Custom my.* option declarations
+home/develop.nix                          # Standalone dev-only home profile (imports ./pure)
 home/pure/                                # Portable home modules (CLI-only, works on WSL)
+home/pure/default.nix                     #   Pure module entry — imports sub-modules
 home/pure/texlive/                        #   sub-group: TeX Live module
 home/pure/yazi/                           #   sub-group: Yazi file manager (Nix + Lua)
 home/pure/opencode.nix                    #   OpenCode agent config (via Home Manager)
 home/system/                              # System-dependent home modules (GUI, Wayland)
-home/develop.nix                          # Standalone dev-only home profile
+home/system/default.nix                   #   System module entry — imports sub-modules
+home/system/waybar.nix                    #   Waybar config (sub-module example)
 devices/<host>/configuration.nix          # Per-host system config
 devices/<host>/home/default.nix           # Per-host home overlay
-devices/<host>/hardware-configuration.nix # Hardware scan (auto-generated)
+devices/<host>/hardware-configuration.nix # Hardware scan (auto-generated; WSL is exception)
 platforms/native/                         # Native (physical machine) platform modules
+platforms/native/configuration.nix        #   Platform system module
+platforms/native/home/                    #   Platform home module
+platforms/native/home/vscode.nix          #   VS Code desktop integration
 platforms/orangepi/                       # Orange Pi platform modules
+platforms/orangepi/configuration.nix      #   Platform system module
+platforms/orangepi/home/                  #   Platform home module
 ```
 
 Primary: **Nix**. Secondary: **Lua** (`home/pure/init.lua`,
@@ -78,30 +87,47 @@ Flake package: `nix build .#packages.x86_64-linux.srcres`
 |---------|--------|-------------|---------|
 | `mkNixOSConfig` | `nixosSystem` | `inputs`, `system`, `pkgs-unstable`, `srcres-password` | `[ ./configuration.nix ] ++ extraModules` |
 | `mkHomeConfig` | `homeManagerConfiguration` | `inputs`, `system`, `pkgs-unstable` | `[ ./home ] ++ extraModules` |
-| `mkPureHomeConfig` | `homeManagerConfiguration` | `inputs`, `system`, `pkgs-unstable` | `extraModules` only (WSL) |
+| `mkPureHomeConfig` | `homeManagerConfiguration` | `inputs`, `system`, `pkgs-unstable` | `extraModules` only |
 
-### Module Hierarchy
+### Module Composition
 
 ```
-flake.nix factories
- ├── configuration.nix          (shared base system)
- │    ├── platforms/<platform>/configuration.nix
- │    └── devices/<host>/configuration.nix → hardware-configuration.nix
- └── home/                      (full home: mkHomeConfig)
-      ├── pure/                 (portable: also used by mkPureHomeConfig)
-      │    ├── options.nix      (custom my.* options)
-      │    └── *.nix
-      └── system/               (GUI / platform-dependent)
-           └── *.nix
+mkNixOSConfig:
+  modules = [ ./configuration.nix ] ++ extraModules
+    │
+    ├── configuration.nix         ← flat base module (no imports)
+    ├── platforms/<platform>/configuration.nix
+    └── devices/<host>/configuration.nix → hardware-configuration.nix
+
+mkHomeConfig:
+  modules = [ ./home ] ++ extraModules
+    │
+    └── home/default.nix
+          ├── home/pure/default.nix          ← imports: options.nix, leaf modules, texlive/, yazi/
+          ├── home/system/default.nix        ← imports: waybar.nix, other GUI modules
+          ├── platforms/<platform>/home      ← imports: vscode.nix, config.kdl
+          └── devices/<host>/home
+
+mkPureHomeConfig (WSL only):
+  modules = [ ./home/pure ] ++ extraModules  ← no ./home, no ./system
+    │
+    └── home/pure/default.nix
+          └── devices/srcres-wsl/home
 ```
 
-Secrets via `builtins.getEnv` at flake boundary only, never hardcoded.
-`srcres-password` is only passed to `mkNixOSConfig` (not home configs).
+`configuration.nix` is a flat module with **no imports**. Platform and device
+modules are injected via `extraModules` in each factory call. `devices/srcres-wsl/`
+has no `hardware-configuration.nix` — the WSL platform module
+(`nixos-wsl.nixosModules.default`) replaces it.
+
+`srcres-password` is only passed to `mkNixOSConfig` (not home configs). Secret
+injection uses `builtins.getEnv` at the flake boundary only, never hardcoded.
 
 `allowUnfree = true` is set in `mkPkgs` — all package resolution assumes unfree allowed.
 
 `pkgs-unstable` is available as a module argument in **both** system (`specialArgs`)
-and home-manager (`extraSpecialArgs`) modules.
+and home-manager (`extraSpecialArgs`) modules. The `system` arg (from `specialArgs`)
+is referenced via `${system}` in platform home modules for pinned legacy packages.
 
 ## 4) Code Style Guidelines
 
@@ -121,9 +147,13 @@ and home-manager (`extraSpecialArgs`) modules.
 
 - One `.nix` file per program/concern (`git.nix`, `waybar.nix`).
   Group sub-concerns in directories with `default.nix`.
+- The shared `configuration.nix` is intentionally monolithic — it holds base
+  system config all hosts share. New concerns should be extracted to separate
+  modules over time.
 - Minimal modules: `{ ... }: { ... }` when no args needed.
 - Declare `pkgs`/`config`/`inputs` in function signature when used.
-- `home.stateVersion` set **per-device** only, never globally.
+- `home.stateVersion` set **per-device** only, never in shared modules.
+  Exception: the dev-only profile (`develop.nix`) sets it inline in `flake.nix`.
 - `home.username` and `home.homeDirectory` in `home/pure/default.nix`.
 - Use `lib.mkDefault` for overridable defaults.
 
@@ -160,7 +190,8 @@ and home-manager (`extraSpecialArgs`) modules.
 
 ### Formatting & Safety
 
-- `nixpkgs-fmt` output is authoritative for Nix.
+- `nixpkgs-fmt` output is authoritative for Nix. No formatter config files
+  exist — the tool's defaults are the convention.
 - Rely on eval/build failures, not opaque fallbacks.
 - Never suppress errors with `null` unless using `lib.mkDefault`.
 - Keep `hardware-configuration.nix` auto-generated; do not hand-edit.
