@@ -98,7 +98,6 @@
 
   # mpvpaper is host/platform-specific and is wired from platform home modules.
 
-
   i18n.inputMethod = {
     enable = true;
     type = "fcitx5";
@@ -111,7 +110,16 @@
         fcitx5-pinyin-moegirl
         fcitx5-pinyin-zhwiki
       ];
+      waylandFrontend = true;
     };
+  };
+  
+  home.sessionVariables = {
+    # env vars for fcitx5 input method
+    GTK_IM_MODULE = "fcitx";
+    QT_IM_MODULE = "fcitx";
+    XMODIFIERS = "@im=fcitx";
+    SDL_IM_MODULE = "fcitx";
   };
 }
 

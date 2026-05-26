@@ -318,6 +318,9 @@
 
   # Enable i2c hardware.
   hardware.i2c.enable = true;
+  
+  # Wayland WM 没有 Display Manager 时确保 XDG autostart 生效
+  services.xserver.desktopManager.runXdgAutostartIfNone = true;
 
   # Remove nix-channel related tools & configs, we use flakes instead.
   nix.channel.enable = false;
