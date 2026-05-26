@@ -42,7 +42,7 @@
         };
         clock = {
           timezone = "Asia/Shanghai";
-          format = "{:%Y,%m,%d  %H:%M}";
+          format = "{:%Y,%m,%d  %H:%M:%S}";
           tooltip-format = "{calendar}";
           calendar = {
             mode = "month";
@@ -54,14 +54,14 @@
           tooltip-format = "Usage: {usage}%\nCores: {cores}";
         };
         memory = {
-          format = "{}% Mem";
+          format = "{percentage}% Mem";
           tooltip = true;
           tooltip-format = "RAM used: {used} / {total} ({percentage}%)";
         };
         disk = {
-          format = "{}% Free Disk";
+          format = "{percentage}% Disk";
           tooltip = true;
-          tooltip-format = "Disk available: {free} / {total} ({percentage_free}%)";
+          tooltip-format = "Disk used: {used} / {total} ({percentage}%)";
         };
         temperature = {
           format = "{temperatureC}°C {icon}";
