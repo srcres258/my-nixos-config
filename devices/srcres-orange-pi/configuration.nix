@@ -125,7 +125,9 @@ in
   '';
   boot.extraModulePackages = [ aic8800d80 ];
   boot.initrd.postDeviceCommands = ''
-    rootUuid="19a9dee8-6206-4c66-a33f-c86dca7d545c"
+    rootUuid="${
+      lib.removePrefix "/dev/disk/by-uuid/" config.fileSystems."/".device
+    }"
 
     for _ in $(seq 1 45); do
       if [ -e /sys/bus/pci/rescan ]; then
@@ -187,7 +189,9 @@ in
     fi
   '';
   boot.kernelParams = lib.mkAfter [
-    "root=UUID=19a9dee8-6206-4c66-a33f-c86dca7d545c"
+    "root=UUID=${
+      lib.removePrefix "/dev/disk/by-uuid/" config.fileSystems."/".device
+    }"
     "rootwait"
     "rootdelay=60"
     "rootfstype=btrfs"
