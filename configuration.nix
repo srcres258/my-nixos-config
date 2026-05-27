@@ -330,6 +330,10 @@
     "https://mirrors.ustc.edu.cn/nix-channels/store"
   ];
 
+  # Cachix: yazi
+  nix.settings.extra-substituters = [ "https://yazi.cachix.org" ];
+  nix.settings.extra-trusted-public-keys = [ "yazi.cachix.org-1:Dcdz63NZKfvUCbDGngQDAZq6kOroIrFoyO064uvLh8k=" ];
+
   nix.settings.trusted-users = [
     "root"
     "srcres"
