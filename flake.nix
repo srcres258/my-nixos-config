@@ -33,6 +33,8 @@
 
     foundry.url = "github:shazow/foundry.nix/stable";
 
+    yazi.url = "github:sxyazi/yazi";
+
     # my-nur = {
     #     url = "github:srcres258/nur-packages";
     #     inputs.nixpkgs.follows = "nixpkgs";
@@ -52,6 +54,7 @@
     , minegrub-theme
     , vscode-extensions
     , foundry
+    , yazi
     , # my-nur,
       ...
     }@inputs:
