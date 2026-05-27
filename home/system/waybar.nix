@@ -47,6 +47,7 @@
           calendar = {
             mode = "month";
           };
+          interval = 1;
         };
         cpu = {
           format = "{usage}% CPU";
