@@ -5,6 +5,7 @@
 }: {
   imports = [
     ./waybar.nix
+    ./qutebrowser
   ];
 
   home.packages = (with pkgs; [
