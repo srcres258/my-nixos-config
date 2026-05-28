@@ -113,8 +113,6 @@ in
     # Fonts
     lxgw-wenkai
 
-    shell-gpt
-
     dmidecode
 
     img2pdf
