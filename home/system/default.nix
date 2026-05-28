@@ -114,7 +114,7 @@
       waylandFrontend = true;
     };
   };
-  
+
   home.sessionVariables = {
     # env vars for fcitx5 input method
     GTK_IM_MODULE = "fcitx";
@@ -122,5 +122,7 @@
     XMODIFIERS = "@im=fcitx";
     SDL_IM_MODULE = "fcitx";
   };
+
+  services.cliphist.enable = true;
 }
 
