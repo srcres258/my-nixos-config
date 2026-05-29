@@ -9,8 +9,9 @@ vim.api.nvim_set_hl(0, 'Pmenu', { bg = 'none' })
 -- 开启十字光标高亮
 vim.opt.cursorline = true
 vim.opt.cursorcolumn = true
-vim.cmd.highlight("CursorLine   guibg=NONE")
-vim.cmd.highlight("CursorColumn guibg=NONE")
+vim.opt.termguicolors = true
+vim.cmd.highlight("CursorLine   guibg=#3a3a3a ctermbg=237")
+vim.cmd.highlight("CursorColumn guibg=#3a3a3a ctermbg=237")
 
 require('lsp-zero').extend_lspconfig({
     sign_text = true,

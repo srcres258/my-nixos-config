@@ -82,6 +82,7 @@
       background = "#000000";
       background_tint = 0.05;
       background_opacity = 0.8;
+      transparent_background_colors = "#3a3a3a@0.5";
       dim_preserved = "yes";
     };
 
