@@ -235,7 +235,7 @@ binds {
 // https://yalter.github.io/niri/Configuration:-Layout
 layout {
     // Set gaps around windows in logical pixels.
-    gaps 16
+    gaps 8
 
     background-color "transparent"
 
