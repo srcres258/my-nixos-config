@@ -6,6 +6,12 @@ vim.api.nvim_set_hl(0, 'NormalFloat', { bg = 'none' })
 vim.api.nvim_set_hl(0, 'FloatBorder', { bg = 'none' })
 vim.api.nvim_set_hl(0, 'Pmenu', { bg = 'none' })
 
+-- 开启十字光标高亮
+vim.opt.cursorline = true
+vim.opt.cursorcolumn = true
+vim.cmd.highlight("CursorLine   guibg=NONE")
+vim.cmd.highlight("CursorColumn guibg=NONE")
+
 require('lsp-zero').extend_lspconfig({
     sign_text = true,
     lsp_skip_setup = { },

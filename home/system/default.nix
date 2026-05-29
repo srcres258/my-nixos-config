@@ -64,7 +64,6 @@
       bold_italic_font = "auto";
       font_size = 15;
 
-      background_opacity = 0.8;
       dynamic_background_opacity = "yes";
 
       allow_remote_control = "yes";
@@ -78,6 +77,12 @@
       cursor_trail_decay = "0.1 0.4";
       cursor_trail_start_threshold = 5;
       cursor_trail_color = "none";
+
+      # Background
+      background = "#000000";
+      background_tint = 0.05;
+      background_opacity = 0.8;
+      dim_preserved = "yes";
     };
 
     mouseBindings = {
