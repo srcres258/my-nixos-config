@@ -11,8 +11,6 @@ in {
   ];
 
   home.packages = with pkgs; [
-    wpsoffice-cn
-
     discord
     wechat
 
