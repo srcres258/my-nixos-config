@@ -287,7 +287,7 @@ in {
             ms-vscode.vscode-typescript-next
             leizongmin.node-module-intellisense
             rvest.vs-code-prettier-eslint
-            ms-vscode.js-debug
+            # ms-vscode.js-debug  -- built-in; removed: nix-vscode-extensions can't resolve it
             dsznajder.es7-react-js-snippets
             msjsdiag.vscode-react-native
             ecmel.vscode-html-css

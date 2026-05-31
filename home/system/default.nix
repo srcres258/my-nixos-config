@@ -15,7 +15,7 @@
     kdePackages.okular
     kdePackages.kwallet
     kdePackages.gwenview
-    kwalletcli
+    # kwalletcli -- removed from nixpkgs (Plasma 5 EOL); kdePackages.kwallet provides kwallet-query
 
     piliplus
     mission-center
@@ -39,7 +39,7 @@
 
     nomacs
 
-    cqrlog
+    # cqrlog -- removed from nixpkgs (unmaintained, gtk2)
     tqsl
 
     freecad
@@ -102,6 +102,7 @@
   programs.firefox = {
     enable = true;
     languagePacks = [ "zh-CN" ];
+    configPath = "${config.xdg.configHome}/mozilla/firefox";
   };
 
   # mpvpaper is host/platform-specific and is wired from platform home modules.

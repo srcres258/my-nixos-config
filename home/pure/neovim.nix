@@ -102,7 +102,7 @@
 
       typst-vim
     ];
-    extraLuaConfig = ''
+    initLua = ''
       if not vim.g.vscode then
         require('nvim-treesitter.configs').setup {
           ensure_installed = {},
@@ -156,8 +156,11 @@
       coursier
       jdk17
 
-      nodePackages.typescript
-      nodePackages.typescript-language-server
+      # nodePackages removed from nixpkgs; packages moved to top level
+      typescript
+      typescript-language-server
     ];
+    withRuby = false;
+    withPython3 = false;
   };
 }

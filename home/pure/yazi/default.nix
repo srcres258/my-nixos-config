@@ -5,8 +5,8 @@
   programs.yazi = {
     enable = true;
     package = inputs.yazi.packages.${pkgs.system}.default.override {
-		  _7zz = pkgs._7zz-rar;  # Support for RAR extraction
-	  };
+      _7zz = pkgs._7zz-rar;  # Support for RAR extraction
+    };
 
     plugins = with pkgs.yaziPlugins; {
       # UI / 外观增强
@@ -194,6 +194,8 @@
     };
 
     initLua = ./init.lua;
+
+    shellWrapperName = "yy";
   };
 }
 
