@@ -1,6 +1,11 @@
 { pkgs
 , ...
 }: {
+  home.packages = with pkgs; [
+    mpv
+    mpvpaper
+  ];
+
   my.python.packageGenerator = (ps: with ps; [
     # torchWithRocm
     # (torchvision.override { torch = ps.torchWithRocm; })
