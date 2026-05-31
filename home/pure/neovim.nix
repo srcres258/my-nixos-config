@@ -41,7 +41,6 @@
       nvim-treesitter
       nvim-treesitter-textobjects
       nvim-treesitter-context
-      playground
 
       nvim-lspconfig
       lsp-zero-nvim
