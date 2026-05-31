@@ -206,8 +206,6 @@
     package = pkgs.jetbrains.jdk; # Use Jetbrains' JDK by default.
   };
 
-  programs.adb.enable = true;
-
   programs.tmux.enable = true;
 
   programs.ccache.enable = true;
@@ -318,7 +316,7 @@
 
   # Enable i2c hardware.
   hardware.i2c.enable = true;
-  
+
   # Wayland WM 没有 Display Manager 时确保 XDG autostart 生效
   services.xserver.desktopManager.runXdgAutostartIfNone = true;
 
