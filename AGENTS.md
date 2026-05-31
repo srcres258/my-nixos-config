@@ -20,6 +20,8 @@ home/pure/opencode.nix                    #   OpenCode agent config (via Home Ma
 home/system/                              # System-dependent home modules (GUI, Wayland)
 home/system/default.nix                   #   System module entry — imports sub-modules
 home/system/waybar.nix                    #   Waybar config (sub-module example)
+home/system/qutebrowser/                  #   sub-group: qutebrowser config
+platforms/config.kdl                      # Shared Niri compositor config (KDL format)
 devices/<host>/configuration.nix          # Per-host system config
 devices/<host>/home/default.nix           # Per-host home overlay
 devices/<host>/hardware-configuration.nix # Hardware scan (auto-generated; WSL is exception)
@@ -33,7 +35,7 @@ platforms/orangepi/home/                  #   Platform home module
 ```
 
 Primary: **Nix**. Secondary: **Lua** (`home/pure/init.lua`,
-`home/pure/yazi/init.lua`), shell snippets, KDL (`platforms/*/home/config.kdl`).
+`home/pure/yazi/init.lua`), shell snippets, KDL (`platforms/config.kdl`).
 
 No `.cursorrules`, `.cursor/rules/`, or `.github/copilot-instructions.md`.
 If added later, treat as higher priority.
@@ -104,8 +106,8 @@ mkHomeConfig:
     │
     └── home/default.nix
           ├── home/pure/default.nix          ← imports: options.nix, leaf modules, texlive/, yazi/
-          ├── home/system/default.nix        ← imports: waybar.nix, other GUI modules
-          ├── platforms/<platform>/home      ← imports: vscode.nix, config.kdl
+          ├── home/system/default.nix        ← imports: waybar.nix, qutebrowser/
+          ├── platforms/<platform>/home      ← imports: vscode.nix, references config.kdl
           └── devices/<host>/home
 
 mkPureHomeConfig (WSL only):
@@ -122,6 +124,9 @@ has no `hardware-configuration.nix` — the WSL platform module
 
 `srcres-password` is only passed to `mkNixOSConfig` (not home configs). Secret
 injection uses `builtins.getEnv` at the flake boundary only, never hardcoded.
+
+`nixpkgs` tracks `nixos-26.05`, `nixpkgs-unstable` tracks `nixos-unstable`.
+Home Manager follows `release-26.05`.
 
 `allowUnfree = true` is set in `mkPkgs` — all package resolution assumes unfree allowed.
 
