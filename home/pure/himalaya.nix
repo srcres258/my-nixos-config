@@ -7,7 +7,7 @@ in
 {
   # 全局启用 Himalaya（安装二进制 + 基本设置）
   programs.himalaya = {
-    enable = true;
+    enable = false;
     package = pkgs.himalaya.override {
       withFeatures = [ "oauth2" "keyring" ];
     };
