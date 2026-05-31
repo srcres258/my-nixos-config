@@ -121,8 +121,7 @@
   ] ++ lib.optionals (!pkgs.stdenv.hostPlatform.isAarch64) [
     amdgpu_top
   ] ++ [
-
-    python312
+    python313
 
     bluez-experimental
 
