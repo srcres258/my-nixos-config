@@ -104,7 +104,7 @@
     ];
     initLua = ''
       if not vim.g.vscode then
-        require('nvim-treesitter.configs').setup {
+        require('nvim-treesitter.config').setup {
           ensure_installed = {},
           parser_install_dir = "${treesitter-parsers}",
           highlight = { enable = true },
