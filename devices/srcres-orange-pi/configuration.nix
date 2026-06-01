@@ -191,7 +191,7 @@ in
   # (which fails due to shell/binary resolution in early initrd), add
   # a drop-in to the mount unit so systemd auto-creates the mount
   # point via DirectoryMode before binding.
-  boot.initrd.systemd.units."sysroot-run.mount" = {
+  boot.initrd.systemd.units."sysroot-run.mount" = lib.mkForce {
     overrideStrategy = "asDropin";
     text = ''
       [Mount]
