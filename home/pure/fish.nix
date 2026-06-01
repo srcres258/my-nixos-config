@@ -13,7 +13,7 @@
       set fish_cursor_visual      block
       
       # ===== 语法高亮配色 =====
-      set -U fish_color_command      brblue          # 命令名 + sudo/precommand (粗体蓝)
+      set -U fish_color_command       brblue          # 命令名 + sudo/precommand (粗体蓝)
       set -U fish_color_keyword       brcyan --bold   # if/for/while/function 关键字
       set -U fish_color_param         brwhite         # 普通参数 (白)
       set -U fish_color_option        bryellow        # -flag / --option (黄)
