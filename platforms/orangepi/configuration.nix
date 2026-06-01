@@ -61,7 +61,7 @@
   security.rtkit.enable = true;
 
   # Orange Pi 上 man-cache 生成会显著拉长/卡住构建，关闭缓存生成以提升构建稳定性。
-  documentation.man.generateCaches = false;
+  documentation.man.cache.enable = false;
 
   # USB 无线网卡在 SBC 上常见，优先使用 iwd 并关闭省电避免断流/掉速。
   networking.networkmanager.wifi = {
