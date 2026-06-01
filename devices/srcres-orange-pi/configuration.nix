@@ -187,26 +187,22 @@ in
   };
 
   # The systemd initrd bind-mounts /run → /sysroot/run, but the
-  # bind mount target must exist. On a fresh BTRFS root subvolume
-  # the directory may be absent, causing the mount to fail and the
-  # initrd to drop into emergency mode.
-  boot.initrd.systemd.services.ensure-sysroot-run = {
-    description = "Ensure /sysroot/run exists before bind mount";
-    wantedBy = [ "initrd-fs.target" ];
-    after = [ "sysroot.mount" ];
-    before = [ "sysroot-run.mount" ];
-    unitConfig = {
-      DefaultDependencies = false;
-      RequiresMountsFor = "/sysroot";
-    };
-    serviceConfig = {
-      Type = "oneshot";
-      RemainAfterExit = true;
-      ExecStart = "${pkgs.coreutils}/bin/mkdir -p /sysroot/run";
-    };
+  # bind mount target must exist. Instead of a separate mkdir service
+  # (which fails due to shell/binary resolution in early initrd), add
+  # a drop-in to the mount unit so systemd auto-creates the mount
+  # point via DirectoryMode before binding.
+  boot.initrd.systemd.units."sysroot-run.mount" = {
+    overrideStrategy = "asDropin";
+    text = ''
+      [Mount]
+      DirectoryMode=0755
+    '';
   };
 
   boot.kernelParams = lib.mkAfter [
+    # Explicit rw to ensure BTRFS root is mounted read-write in the
+    # initrd, avoiding mkdir/mount failures from a read-only sysroot.
+    "rw"
     "root=UUID=${
       lib.removePrefix "/dev/disk/by-uuid/" config.fileSystems."/".device
     }"
