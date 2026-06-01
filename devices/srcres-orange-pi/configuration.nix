@@ -201,10 +201,9 @@ in
     };
     serviceConfig = {
       Type = "oneshot";
+      RemainAfterExit = true;
+      ExecStart = "${pkgs.coreutils}/bin/mkdir -p /sysroot/run";
     };
-    script = ''
-      mkdir -p /sysroot/run
-    '';
   };
 
   boot.kernelParams = lib.mkAfter [
