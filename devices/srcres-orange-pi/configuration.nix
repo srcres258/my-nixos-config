@@ -124,70 +124,67 @@ in
     options aic_load_fw aic_fw_path=/run/current-system/firmware
   '';
   boot.extraModulePackages = [ aic8800d80 ];
-  boot.initrd.postDeviceCommands = ''
-    rootUuid="${
-      lib.removePrefix "/dev/disk/by-uuid/" config.fileSystems."/".device
-    }"
+  boot.initrd.systemd.extraBin = {
+    blkid = "${pkgs.util-linux}/bin/blkid";
+  };
 
-    for _ in $(seq 1 45); do
-      if [ -e /sys/bus/pci/rescan ]; then
-        echo 1 > /sys/bus/pci/rescan
-      fi
+  boot.initrd.systemd.services.nvme-rescan = {
+    description = "Rescan PCIe bus and wait for NVMe root device";
+    wantedBy = [ "initrd-root-device.target" ];
+    before = [
+      "initrd-root-device.target"
+      "shutdown.target"
+    ];
+    after = [
+      "systemd-modules-load.service"
+      "systemd-udev-trigger.service"
+    ];
+    unitConfig = {
+      DefaultDependencies = false;
+    };
+    serviceConfig = {
+      Type = "oneshot";
+      RemainAfterExit = true;
+    };
+    script = ''
+      rootUuid="${
+        lib.removePrefix "/dev/disk/by-uuid/" config.fileSystems."/".device
+      }"
 
-      modprobe phy_rockchip_naneng_combphy >/dev/null 2>&1 || true
-      modprobe pcie_rockchip_host >/dev/null 2>&1 || true
-      modprobe pci >/dev/null 2>&1 || true
-      modprobe nvme_core >/dev/null 2>&1 || true
-      modprobe nvme >/dev/null 2>&1 || true
-      modprobe dm_mod >/dev/null 2>&1 || true
-      modprobe btrfs >/dev/null 2>&1 || true
-      modprobe mmc_block >/dev/null 2>&1 || true
-      modprobe sd_mod >/dev/null 2>&1 || true
-      modprobe usb_storage >/dev/null 2>&1 || true
+      for _ in $(seq 1 45); do
+        if [ -e /sys/bus/pci/rescan ]; then
+          echo 1 > /sys/bus/pci/rescan
+        fi
 
-      if command -v udevadm >/dev/null 2>&1; then
         udevadm trigger --subsystem-match=pci --action=add || true
         udevadm trigger --subsystem-match=nvme --action=add || true
         udevadm trigger --subsystem-match=block --action=add || true
         udevadm settle --timeout=3 || true
-      fi
 
-      # Ensure by-uuid links are materialized from current udev state first.
-      mkdir -p /dev/disk/by-uuid
-      if [ -d /run/udev/data ] && command -v sed >/dev/null 2>&1; then
-        for meta in /run/udev/data/b*; do
-          [ -f "$meta" ] || continue
-          devname="$(sed -n 's/^N://p' "$meta" | head -n 1)"
-          uuid="$(sed -n 's/^E:ID_FS_UUID=//p' "$meta" | head -n 1)"
-          if [ -n "$devname" ] && [ -n "$uuid" ] && [ -b "/dev/$devname" ]; then
-            ln -sf "/dev/$devname" "/dev/disk/by-uuid/$uuid"
-          fi
-        done
-      fi
+        if [ -e "/dev/disk/by-uuid/$rootUuid" ]; then
+          break
+        fi
 
-      # Fallback probe with blkid if udev metadata is incomplete.
-      if command -v blkid >/dev/null 2>&1; then
+        # Fallback: recreate by-uuid symlinks from blkid if udev metadata is incomplete.
         for dev in /dev/nvme*n* /dev/mmcblk*p* /dev/sd*; do
           if [ -b "$dev" ]; then
             uuid="$(blkid -s UUID -o value "$dev" 2>/dev/null || true)"
-            if [ -n "$uuid" ]; then
+            if [ "$uuid" = "$rootUuid" ]; then
+              mkdir -p /dev/disk/by-uuid
               ln -sf "$dev" "/dev/disk/by-uuid/$uuid"
+              break 2
             fi
           fi
         done
+
+        sleep 1
+      done
+
+      if [ ! -e "/dev/disk/by-uuid/$rootUuid" ]; then
+        echo "[initrd] root UUID still missing: $rootUuid"
       fi
-
-      if [ -e "/dev/disk/by-uuid/$rootUuid" ]; then
-        break
-      fi
-
-      sleep 1
-    done
-
-    if [ ! -e "/dev/disk/by-uuid/$rootUuid" ]; then
-      echo "[initrd] root UUID still missing: $rootUuid"
-    fi
-  '';
+    '';
+  };
   boot.kernelParams = lib.mkAfter [
     "root=UUID=${
       lib.removePrefix "/dev/disk/by-uuid/" config.fileSystems."/".device
