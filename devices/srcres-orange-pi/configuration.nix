@@ -187,22 +187,31 @@ in
   };
 
   # The systemd initrd bind-mounts /run → /sysroot/run, but the
-  # bind mount target must exist. Instead of a separate mkdir service
-  # (which fails due to shell/binary resolution in early initrd), add
-  # a drop-in to the mount unit so systemd auto-creates the mount
-  # point via DirectoryMode before binding.
-  boot.initrd.systemd.units."sysroot-run.mount" = lib.mkForce {
-    overrideStrategy = "asDropin";
-    text = ''
-      [Mount]
-      DirectoryMode=0755
-    '';
+  # bind mount target must exist. On a fresh BTRFS root subvolume
+  # /sysroot/run may be absent, causing the mount to fail.
+  #
+  # Create /sysroot/run before the bind mount using /bin/mkdir
+  # (coreutils is in initrdBin so /bin/mkdir is always available).
+  # The Nix store path (${pkgs.coreutils}/bin/mkdir) is avoided
+  # because cross-evaluation (x86_64 → aarch64) may resolve it
+  # differently than what's actually in the initrd.
+  boot.initrd.systemd.services.ensure-sysroot-run = {
+    description = "Ensure /sysroot/run exists before bind mount";
+    wantedBy = [ "sysroot-run.mount" ];
+    before = [ "sysroot-run.mount" ];
+    after = [ "sysroot.mount" ];
+    unitConfig = {
+      DefaultDependencies = false;
+      RequiresMountsFor = "/sysroot";
+    };
+    serviceConfig = {
+      Type = "oneshot";
+      RemainAfterExit = true;
+      ExecStart = "/bin/mkdir -p /sysroot/run";
+    };
   };
 
   boot.kernelParams = lib.mkAfter [
-    # Explicit rw to ensure BTRFS root is mounted read-write in the
-    # initrd, avoiding mkdir/mount failures from a read-only sysroot.
-    "rw"
     "root=UUID=${
       lib.removePrefix "/dev/disk/by-uuid/" config.fileSystems."/".device
     }"
