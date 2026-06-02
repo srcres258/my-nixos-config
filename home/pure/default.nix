@@ -70,9 +70,6 @@ in
     write-good
     ncdu
     hyperfine
-    fd
-
-    eza
 
     nodejs_24
     electron
@@ -334,5 +331,9 @@ in
       ];
     };
   };
+
+  programs.fd.enable = true;
+
+  programs.eza.enable = true;
 }
 
