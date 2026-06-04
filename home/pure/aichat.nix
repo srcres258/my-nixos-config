@@ -11,7 +11,6 @@
           type = "openai-compatible";
           name = "deepseek";
           api_base = "https://api.deepseek.com/v1";
-          api_key = "\${DEEPSEEK_API_KEY}";
           models = map (name: {
             inherit name;
             max_input_tokens = 1048576;
