@@ -44,18 +44,6 @@
     ocl-icd
   ];
 
-  # Enable deepcool display
-  services.hardware.deepcool-digital-linux = {
-    enable = true;
-    extraArgs = [
-      "--mode"
-      "cpu_temp"
-      "--update"
-      "500"
-      "--alarm"
-    ];
-  };
-
   hardware.amdgpu.opencl.enable = true;
 
   # v2raya for VPN
