@@ -113,9 +113,9 @@ mkHomeConfig:
           └── devices/<host>/home
 
 mkPureHomeConfig (WSL only):
-  modules = [ ./home/pure ] ++ extraModules  ← no ./home, no ./system
+  modules = extraModules  ← no ./home baked in; caller passes ./home/pure
     │
-    └── home/pure/default.nix
+    └── home/pure/default.nix        ← passed via extraModules
           └── devices/srcres-wsl/home
 ```
 
@@ -135,6 +135,32 @@ Home Manager follows `release-26.05`.
 `pkgs-unstable` is available as a module argument in **both** system (`specialArgs`)
 and home-manager (`extraSpecialArgs`) modules. The `system` arg (from `specialArgs`)
 is referenced via `${system}` in platform home modules for pinned legacy packages.
+
+Note: the top-level `let system = "x86_64-linux";` in `flake.nix` is only used for
+`packages.x86_64-linux.srcres` and the `pkgs`/`pkgs-unstable` helpers. Each NixOS
+and home config overrides `system` per-host as needed (e.g., `srcres-orange-pi`
+uses `"aarch64-linux"`).
+
+### Flake Inputs — Why They Exist
+
+| Input | Purpose |
+|-------|---------|
+| `nixpkgs` | Main package set (`nixos-26.05`) |
+| `nixpkgs-unstable` | Bleeding-edge packages (`nixos-unstable`) |
+| `mill-legacy-nixpkgs` | Pinned nixpkgs for `mill` (Scala build tool) |
+| `go-ethereum-legacy-nixpkgs` | Pinned nixpkgs for `go-ethereum` (Ethereum client) |
+| `vscode-legacy-nixpkgs` | Pinned nixpkgs for `vscode.fhs` wrapper |
+| `nur` | Nix User Repository overlay |
+| `home-manager` | Home Manager (`release-26.05`) |
+| `nixos-wsl` | WSL platform module |
+| `minegrub-theme` | GRUB Minecraft theme |
+| `vscode-extensions` | `nix-vscode-extensions` overlay |
+| `foundry` | Foundry Ethereum dev tools (overlay → `foundry-bin`) |
+| `yazi` | Yazi file manager built from source (overridden in `home/pure/yazi/`) |
+
+The three legacy-nixpkgs inputs pin specific nixpkgs revisions for packages that
+are broken or unavailable in the current nixpkgs. `yazi` is built from the
+upstream repo rather than nixpkgs to get the latest version with plugin support.
 
 ## 4) Code Style Guidelines
 
@@ -222,6 +248,15 @@ remoteUrl = "https://github.com/${username}/nur-packages/archive/main.tar.gz";
 This means **the first build requires network access**. An offline build will
 fail on this tarball fetch. This is separate from the NUR overlay
 (`nur.overlays.default`) used in the system-level `mkPkgs`.
+
+### nix flake update — Touches Legacy Pins
+
+`nix flake update` updates **all** flake inputs, including the three
+legacy-nixpkgs pins (`mill-legacy-nixpkgs`, `go-ethereum-legacy-nixpkgs`,
+`vscode-legacy-nixpkgs`). These are pinned to specific revisions because newer
+nixpkgs broke those packages. Updating them blindly will likely break builds.
+Prefer `nix flake lock --update-input <specific-input>` to update only what's
+needed.
 
 ### Secret Injection
 
@@ -312,9 +347,9 @@ and the Lua file.
 | Host | System | Platform | stateVersion |
 |------|--------|----------|-------------|
 | srcres-desktop | x86_64-linux | native | 25.05 |
-| srcres-laptop | x86_64-linux | native | 25.05 |
+| srcres-laptop | x86_64-linux | native | 25.11 (sys) / 25.05 (home) |
 | srcres-wsl | x86_64-linux | nixos-wsl | 25.11 (sys) / 25.05 (home) |
-| srcres-desktop-x99 | x86_64-linux | native | 25.05 |
+| srcres-desktop-x99 | x86_64-linux | native | 25.11 (sys) / 25.05 (home) |
 | srcres-orange-pi | aarch64-linux | orangepi | 25.11 |
 
 ## 6) Validation Strategy
