@@ -189,6 +189,7 @@ in
       sphinx
       z3-solver
       distlib
+      touying
     ]) ++ (config.my.python.packageGenerator ps))))
     yapf
     hatch
