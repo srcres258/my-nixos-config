@@ -74,6 +74,13 @@ in
           enabled = true;
         };
       };
+      provider = {
+        micuapi = {
+          options = {
+            baseURL = "https://www.micuapi.ai/v1";
+          };
+        };
+      };
     };
 
   xdg.configFile."opencode/oh-my-openagent.jsonc".source =
