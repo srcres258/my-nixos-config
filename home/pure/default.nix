@@ -22,6 +22,7 @@ in
     ./opencode.nix
     ./neovim.nix
     ./gh.nix
+    ./codex.nix
 
     ./texlive
     ./yazi
