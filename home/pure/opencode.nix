@@ -74,19 +74,26 @@ in
           enabled = true;
         };
       };
-      provider = {
+      provider = let
+        codex = {
+          name = "GPT-5.3 Codex";
+          limit = {
+            context = 400000;
+            output = 128000;
+          };
+        };
+      in {
         micuapi = {
           options = {
             baseURL = "https://www.micuapi.ai/v1";
           };
           models = {
-            "gpt-5.3-codex" = {
-              name = "GPT-5.3 Codex";
-              limit = {
-                context = 400000;
-                output = 128000;
-              };
-            };
+            "gpt-5.3-codex" = codex;
+          };
+        };
+        openai = {
+          models = {
+            "gpt-5.3-codex" = codex;
           };
         };
       };
