@@ -209,6 +209,8 @@ in
 
     # Zig language
     zig
+    zls
+    lldb
   ] ++ (with nur.repos; [
     srcres258.ag
     srcres258.jyyslide-util
