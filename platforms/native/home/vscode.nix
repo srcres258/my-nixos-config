@@ -236,6 +236,9 @@ in {
             # TOML
             tamasfe.even-better-toml
 
+            # CodeLLDB
+            vadimcn.vscode-lldb
+
             # C / C++
             ms-vscode.cpptools
             ms-vscode.cmake-tools
