@@ -88,12 +88,13 @@ in
             baseURL = "https://www.micuapi.ai/v1";
           };
           models = {
-            "gpt-5.3-codex" = codex;
-          };
-        };
-        openai = {
-          models = {
-            "gpt-5.3-codex" = codex;
+            "gpt-5.4-mini" = {
+              name = "GPT-5.4 Mini";
+              limit = {
+                context = 400000;
+                output = 128000;
+              };
+            };
           };
         };
       };
