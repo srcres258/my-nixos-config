@@ -323,8 +323,8 @@
   nix.channel.enable = false;
 
   nix.settings.substituters = [
-    "https://mirror.sjtu.edu.cn/nix-channels/store"
     "https://mirrors.ustc.edu.cn/nix-channels/store"
+    "https://mirror.sjtu.edu.cn/nix-channels/store"
   ];
 
   # Cachix: yazi
