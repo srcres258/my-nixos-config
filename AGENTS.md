@@ -35,7 +35,10 @@ platforms/orangepi/home/                  #   Platform home module
 ```
 
 Primary: **Nix**. Secondary: **Lua** (`home/pure/init.lua`,
-`home/pure/yazi/init.lua`), shell snippets, KDL (`platforms/config.kdl`).
+`home/pure/yazi/init.lua`), shell snippets, KDL (`platforms/config.kdl`),
+Python (`home/system/qutebrowser/config.py`), TOML (`devices/srcres-desktop/home/zpaper.toml`).
+No standalone `.sh`/`.bash` files — all shell is embedded inline in Nix modules
+or KDL `spawn-sh` commands.
 
 No `.cursorrules`, `.cursor/rules/`, or `.github/copilot-instructions.md`.
 If added later, treat as higher priority.
@@ -157,10 +160,17 @@ uses `"aarch64-linux"`).
 | `vscode-extensions` | `nix-vscode-extensions` overlay |
 | `foundry` | Foundry Ethereum dev tools (overlay → `foundry-bin`) |
 | `yazi` | Yazi file manager built from source (overridden in `home/pure/yazi/`) |
+| `zpaper` | Dynamic wallpaper daemon (replaces mpvpaper on srcres-desktop) |
 
 The three legacy-nixpkgs inputs pin specific nixpkgs revisions for packages that
 are broken or unavailable in the current nixpkgs. `yazi` is built from the
 upstream repo rather than nixpkgs to get the latest version with plugin support.
+
+`zpaper` is the only input using `git+https://` (Codeberg) and the only active
+input that does **not** follow this flake's nixpkgs — it has its own `nixpkgs`
+pin to `nixos-unstable`. `foundry` provides an overlay (`foundry.overlay`) consumed
+in `mkPkgs`. `minegrub-theme` is consumed as a NixOS module
+(`inputs.minegrub-theme.nixosModules.default`).
 
 ## 4) Code Style Guidelines
 
@@ -291,6 +301,9 @@ for the WSL host. WSL uses `mkPureHomeConfig` (pure-only, no GUI modules).
 `devices/srcres-wsl/` has no `hardware-configuration.nix` — the nixos-wsl
 module replaces it.
 
+WSL sets `time.timeZone = "Asia/Shanghai"` at the device level (not inherited
+from any base module). WSL home config is the most minimal — only `stateVersion`.
+
 ### stateVersion — Don't Touch
 
 `home.stateVersion` is set **per-device** in `devices/<host>/home/default.nix`.
@@ -298,6 +311,11 @@ module replaces it.
 never be changed except when provisioning a brand-new machine. Current values
 vary between "25.05" and "25.11" — newer NixOS releases should not cause you
 to upgrade these.
+
+Orange Pi is the only host where `home.stateVersion = "25.11"` (all others
+use "25.05"). Orange Pi also explicitly sets `home.username` and
+`home.homeDirectory` in its device home config, overriding
+`home/pure/default.nix` values.
 
 ### hardware-configuration.nix
 
@@ -320,10 +338,15 @@ home configs. Default: `ps: [ ]`.
 ### Custom Systemd User Services
 
 Device home configs define `systemd.user.services` for wallpaper management:
-- `mpvpaper` service on desktop/desktop-x99 (video wallpaper via mpv)
+- `zpaper` service on srcres-desktop (dynamic wallpaper, replaces mpvpaper —
+  `programs.mpvpaper.enable` is force-disabled via `lib.mkForce false`)
+- `mpvpaper` service on srcres-desktop-x99 (video wallpaper via mpv, with
+  vaapi hardware decoding options)
 - `swaybg` service on orange-pi (static wallpaper, lighter for SBC)
 
 These are NOT in shared modules — each device wires its own.
+`platforms/native/home/default.nix` enables `programs.mpvpaper` by default,
+but individual devices can override or replace it.
 
 ### VS Code Activation Hook
 
