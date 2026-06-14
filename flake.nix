@@ -35,6 +35,8 @@
 
     yazi.url = "github:sxyazi/yazi";
 
+    zpaper.url = "git+https://codeberg.org/srcres258/zpaper.git";
+
     # my-nur = {
     #     url = "github:srcres258/nur-packages";
     #     inputs.nixpkgs.follows = "nixpkgs";
@@ -55,6 +57,7 @@
     , vscode-extensions
     , foundry
     , yazi
+    , zpaper
     , # my-nur,
       ...
     }@inputs:

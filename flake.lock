@@ -260,6 +260,22 @@
         "type": "github"
       }
     },
+    "nixpkgs_5": {
+      "locked": {
+        "lastModified": 1781074563,
+        "narHash": "sha256-md8WlXOlfnIeHeOScMTTHFyf2d6iaTwPl2apR5EQ3P4=",
+        "owner": "NixOS",
+        "repo": "nixpkgs",
+        "rev": "9ae611a455b90cf061d8f332b977e387bda8e1ca",
+        "type": "github"
+      },
+      "original": {
+        "owner": "NixOS",
+        "ref": "nixos-unstable",
+        "repo": "nixpkgs",
+        "type": "github"
+      }
+    },
     "nur": {
       "inputs": {
         "flake-parts": "flake-parts",
@@ -294,7 +310,8 @@
         "nur": "nur",
         "vscode-extensions": "vscode-extensions",
         "vscode-legacy-nixpkgs": "vscode-legacy-nixpkgs",
-        "yazi": "yazi"
+        "yazi": "yazi",
+        "zpaper": "zpaper"
       }
     },
     "rust-overlay": {
@@ -387,6 +404,24 @@
         "owner": "sxyazi",
         "repo": "yazi",
         "type": "github"
+      }
+    },
+    "zpaper": {
+      "inputs": {
+        "nixpkgs": "nixpkgs_5"
+      },
+      "locked": {
+        "lastModified": 1781407461,
+        "narHash": "sha256-FIJZlMKJjJI5kLL3gXhEDKac87A9Lg4knCyd5U7eyu4=",
+        "ref": "refs/heads/master",
+        "rev": "ccbcbae19624f52590de79b6978d412b3e95a6b7",
+        "revCount": 7,
+        "type": "git",
+        "url": "https://codeberg.org/srcres258/zpaper.git"
+      },
+      "original": {
+        "type": "git",
+        "url": "https://codeberg.org/srcres258/zpaper.git"
       }
     }
   },

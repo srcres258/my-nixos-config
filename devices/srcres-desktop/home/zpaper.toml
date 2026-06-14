@@ -1,0 +1,7 @@
+wallpaper_path = "~/wallpaper.mp4"
+wallpaper_backend = "auto"
+mode = "fill"
+layer = "background"
+loop = true
+audio = false
+
