@@ -168,6 +168,10 @@
     # CMake Tools – suppress configure-on-open prompt
     "cmake.configureOnOpen" = false;
     "cmake.ignoreCMakeListsMissing" = true;
+
+    # Zig Language Server
+    "zig.zls.enabled" = true;
+    "zig.zls.path" = "/home/srcres/.nix-profile/bin/zls";
   };
 
   # JSON for the writable settings file (baseline, merged with user changes on activation)
