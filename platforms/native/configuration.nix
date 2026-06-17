@@ -1,13 +1,8 @@
-{ inputs
-, config
+{ config
 , lib
 , pkgs
-, srcres-password
 , ...
 }: {
-  imports = [
-    inputs.minegrub-theme.nixosModules.default
-  ];
 
   boot.loader = {
     grub = {
@@ -135,4 +130,3 @@
     '';
   };
 }
-
