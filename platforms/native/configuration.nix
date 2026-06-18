@@ -64,6 +64,11 @@
     };
   };
 
+  programs.river-classic = {
+    enable = true;
+    package = pkgs.river;
+  };
+
   console.packages = with pkgs; [
     terminus_font
   ];

@@ -8,6 +8,7 @@
 in {
   imports = [
     ./vscode.nix
+    ./river.nix
   ];
 
   home.packages = with pkgs; [
