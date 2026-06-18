@@ -7,8 +7,6 @@ let
   zpaper = inputs.zpaper.packages.${system}.default;
 in
 {
-  programs.mpvpaper.enable = lib.mkForce false;
-
   my.python.packageGenerator = (ps: with ps; [
     # torchWithRocm
     # (torchvision.override { torch = ps.torchWithRocm; })

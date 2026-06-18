@@ -64,10 +64,6 @@ in {
 
   xdg.configFile."niri/config.kdl".source = ../../config.kdl;
 
-  programs.mpvpaper = {
-    enable = true;
-  };
-
   home.sessionVariables = {
     JAVA_HOME = "${javaPkg}";
     COURSIER_CACHE = "${config.xdg.cacheHome}/coursier";
