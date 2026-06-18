@@ -5,43 +5,12 @@
 { inputs
 , pkgs
 , ...
-}:
-let
-  minegrubTheme = pkgs.stdenvNoCC.mkDerivation {
-    pname = "minegrub-theme";
-    version = "3.1.0";
-    src = inputs.minegrub-theme;
-
-    nativeBuildInputs = with pkgs; [
-      fastfetch
-      (python3.withPackages (p: [ p.pillow ]))
-    ];
-
-    patchPhase = ''
-      sed -i '$d' minegrub/update_theme.py
-
-      top_value=$((170 + (4 - 2) * 72))
-      sed -i '/^+ image {/,/^}$/s/top = 40%+[0-9]\+/top = 40%+'"$top_value"'/' minegrub/theme.txt
-    '';
-
-    buildPhase = ''
-      python minegrub/update_theme.py "background_options/1.8  - [Classic Minecraft].png" "100% Flakes!"
-    '';
-
-    installPhase = ''
-      cd minegrub
-      mkdir -p $out/grub/themes/minegrub
-      cp *.png *.pf2 theme.txt $out/grub/themes/minegrub
-    '';
-  };
-in {
+}: {
   imports = [
     # Include the results of the hardware scan.
     ./hardware-configuration.nix
   ];
 
-  boot.loader.grub.theme = "${minegrubTheme}/grub/themes/minegrub";
-  boot.loader.grub.splashImage = "${minegrubTheme}/grub/themes/minegrub/background.png";
   boot.initrd.kernelModules = [ "amdgpu" ];
   services.xserver.videoDrivers = [ "amdgpu" ];
   hardware.graphics = {

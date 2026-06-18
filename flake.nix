@@ -24,8 +24,6 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
-    minegrub-theme.url = "github:Lxtharia/minegrub-theme";
-
     vscode-extensions = {
       url = "github:nix-community/nix-vscode-extensions";
       inputs.nixpkgs.follows = "nixpkgs";
@@ -53,7 +51,6 @@
     , nur
     , home-manager
     , nixos-wsl
-    , minegrub-theme
     , vscode-extensions
     , foundry
     , yazi

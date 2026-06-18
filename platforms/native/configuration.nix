@@ -3,15 +3,8 @@
 , pkgs
 , ...
 }: {
-
   boot.loader = {
-    grub = {
-      enable = true;
-      device = "nodev";
-      efiSupport = true;
-      useOSProber = true;
-      configurationLimit = 10;
-    };
+    systemd-boot.enable = true;
     efi = {
       canTouchEfiVariables = true;
       efiSysMountPoint = "/boot";
