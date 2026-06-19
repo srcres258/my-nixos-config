@@ -42,7 +42,7 @@
         };
         clock = {
           timezone = "Asia/Shanghai";
-          format = "{:%Y,%m,%d  %H:%M:%S}";
+          format = "{:%Y-%m-%d  %H:%M:%S}";
           tooltip-format = "{calendar}";
           calendar = {
             mode = "month";
