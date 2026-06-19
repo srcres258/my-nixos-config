@@ -1,0 +1,94 @@
+* {
+    border: none;
+    border-radius: 0;
+    font-family: "Cascadia Mono";
+    font-size: 15px;
+    min-height: 0;
+}
+
+window#waybar {
+    background: rgba(43, 48, 59, 0.5);
+    color: white;
+}
+
+tooltip {
+    background: rgba(43, 48, 59, 0.95);
+    border: 1px solid rgba(100, 114, 125, 0.5);
+}
+
+tooltip label {
+    color: white;
+}
+
+.modules-left,
+.modules-center,
+.modules-right {
+    margin: 0;
+}
+
+#custom-archicon,
+#clock,
+#cpu,
+#memory,
+#disk,
+#temperature,
+#keyboard-state,
+#idle_inhibitor,
+#pulseaudio,
+#network,
+#language,
+#tray,
+#taskbar,
+#pulseaudio-slider {
+    padding: 0 10px;
+    margin: 0;
+    background: rgba(39, 44, 54, 0.95);
+    color: white;
+}
+
+#workspaces {
+    padding: 0 4px;
+    margin: 0;
+    background: rgba(39, 44, 54, 0.95);
+}
+
+#workspaces button {
+    padding: 0 8px;
+    margin: 0;
+    border: none;
+    border-radius: 0;
+    background: transparent;
+    color: white;
+    box-shadow: none;
+    text-shadow: none;
+    transition: none;
+}
+
+#workspaces button.active,
+#workspaces button.focused {
+    background: rgba(100, 114, 125, 0.5);
+    color: white;
+}
+
+#workspaces button:hover {
+    background: rgba(100, 114, 125, 0.25);
+}
+
+#tray > .passive,
+#tray > .active,
+#tray > .needs-attention {
+    background: transparent;
+    color: white;
+}
+
+#pulseaudio.muted {
+    color: #ff6b6b;
+}
+
+#idle_inhibitor.activated {
+    color: #f9e2af;
+}
+
+#network.disconnected {
+    color: #f38ba8;
+}

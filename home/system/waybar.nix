@@ -1,4 +1,4 @@
-{ ... }: {
+{ lib, ... }: {
   programs.waybar = {
     enable = true;
     settings = {
@@ -158,6 +158,6 @@
         };
       };
     };
+    style = lib.readFile ./waybar.css;
   };
-
 }
