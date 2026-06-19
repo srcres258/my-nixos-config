@@ -1,0 +1,138 @@
+#!/usr/bin/sh
+# @author nate zhou
+# @since 2025,2026
+# general file previewer for LF & FZF
+# `~/.local/bin/fzf-scope` is a modified version of my `lf/scope`
+
+## save a cache file for faster preview
+[ -d "$HOME/.cache/lf" ] || mkdir "$HOME/.cache/lf"
+
+show_img(){
+    if [ -n "$FZF_LEVEL" ] || [ -n "$NVIM" ] || [ -n "$DVTM" ]; then
+        catimg -t -w 80 "$1" # use catimg when running with `fzf` & `lf.vim`
+    elif [ "$XDG_SESSION_TYPE" != "tty" ] && [ "$TERM" = "foot" ]; then
+        /usr/bin/chafa -f sixel\
+                       -s "$2x$3" \
+                       --animate off \
+                       --polite on \
+                       -t 1 \
+                       --bg '#111111' \
+                       "$1"
+    else
+        # catimg is faster than chafa for ANSI
+        catimg -t -w "$(($2 * 2))" "$1"
+    fi
+}
+
+
+case "$(file -Lb --mime-type -- "$1")" in
+    image/*xcf|image/heic|image/x-xpixmap)
+        # create a cache for every file, if 2 files have the same
+        # size+name+last_modified_date, it has the same hash
+        # xxhsum is faster than cryptographic hash algorithm like md5sum/shasum
+        CACHE="$HOME/.cache/lf/$(stat --printf '%s%n%Y' "$(readlink -f "$1")" \
+                               | xxh3sum | cut -d' ' -f1)"
+        [ -f "${CACHE}.jpg" ] || convert "$1" -flatten \
+                                              -quality 50 "${CACHE}.jpg"
+        show_img "${CACHE}.jpg" "$2" "$3"
+        ;;
+    image/*)
+        show_img "$1" "$2" "$3"
+        ;;
+    video/*)
+        CACHE="$HOME/.cache/lf/$(stat --printf '%s%n%Y' "$(readlink -f "$1")" \
+                               | xxh3sum | cut -d' ' -f1)"
+        [ -f "${CACHE}.jpg" ] \
+            || /usr/bin/ffmpegthumbnailer -i "$1" -s 480 -q 5 -o "${CACHE}.jpg"
+        show_img "${CACHE}.jpg" "$2" "$3"
+        ;;
+    audio/*)
+        mid3v2 -l "$1"
+        ;;
+    font/ttf)
+        CACHE="$HOME/.cache/lf/$(stat --printf '%s%n%Y' "$(readlink -f "$1")" \
+                               | xxh3sum | cut -d' ' -f1)"
+        [ -f "${CACHE}.jpg" ] \
+            || /usr/bin/convert -background none -fill white "$1" "${CACHE}.jpg"
+        show_img "${CACHE}.jpg" "$2" "$3"
+        ;;
+    application/epub+zip)
+        CACHE="$HOME/.cache/lf/$(stat --printf '%s%n%Y' "$(readlink -f "$1")" \
+                               | xxh3sum | cut -d' ' -f1)"
+        [ -f "${CACHE}.png" ] \
+            || /usr/bin/gnome-epub-thumbnailer "$1" "$CACHE".png
+        show_img "$CACHE".png "$2" "$3"
+        ;;
+    application/pdf)
+        CACHE="$HOME/.cache/lf/$(stat --printf '%s%n%Y' "$(readlink -f "$1")" \
+                               | xxh3sum | cut -d' ' -f1)"
+        # `pdftoppm` already adds `.jpg` extension, don't duplicate
+        [ -f "${CACHE}.jpg" ] \
+            || /usr/bin/pdftoppm -f 1 -l 1 -singlefile -jpeg "$1" "$CACHE"
+        show_img "$CACHE".jpg "$2" "$3"
+        ;;
+    application/zip|application/vnd.android.package-archive)
+        zipinfo "$1" | "$PAGER"
+        ;;
+    application/gzip)
+        case "$1" in
+            *tar.gz)
+                tar vvtf "$1" | "$PAGER"
+                ;;
+            *)
+                zless "$1" | "$PAGER"
+            ;;
+        esac
+        ;;
+    application/x-7z-compressed)
+        7z l -ba "$1" | grep -oP '\S+$' | "$PAGER"
+        ;;
+    application/*tar|application/*zip*|application/zstd|application/*xz)
+        tar vvtf "$1" | "$PAGER"
+        ;;
+    application/vnd.rar)
+        unrar-free -t "$1" | tail +8 | "$PAGER"
+        ;;
+    application/x-bittorrent)
+        /usr/bin/transmission-show "$1" | "$PAGER"
+        ;;
+    application/x-iso*)
+        # `iso-info` command from `libcdio`
+        iso-info --no-header "$1" | tail +2 | "$PAGER"
+        ;;
+    application/*opendocument*)
+        odt2txt "$1";
+        ;;
+    application/octet-stream)
+        file -b "$1"
+        ;;
+    message/rfc822)
+        "$PAGER" "$1"
+        ;;
+    text/troff)
+        man -l "$1"
+        ;;
+    text/html)
+        case "$1" in
+            *svg)
+                show_img "$1" "$2" "$3"
+                ;;
+            *)
+                firejail --net=none w3m "$1"
+                ;;
+        esac
+        ;;
+    text/*|application/pgp-signature|application/pgp-keys|application/javascript|application/json|application/mbox)
+        case "$1" in
+            *svg)
+                show_img "$1" "$2" "$3"
+                ;;
+            *)
+                bat "$1"
+                ;;
+        esac
+        ;;
+    inode/directory)
+        command du -aLhd1 "$1" 2> /dev/null | sort -rh
+        ;;
+esac

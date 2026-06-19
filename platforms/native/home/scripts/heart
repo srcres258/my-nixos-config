@@ -1,0 +1,45 @@
+#!/usr/bin/sh
+# @author nate zhou
+# @since 2024,2025,2026
+# heart - search and edit dotfiles tracked by git in a dynamic menu
+# It's called heart because all my dotfiles are in ~/doc/heart managed by stow.
+
+HEART="${HOME}/doc/heart"
+menu_prompt="$(basename $0)"
+
+if [ "$TERM" = "dvtm-256color" ] ; then
+    term=""
+    EDITOR="command vim"
+elif [ "$XDG_SESSION_TYPE" = "wayland" ]; then
+    term="footclient"
+    menu="${HOME}/.local/bin/wmenu-color"
+elif [ -n "$XAUTHORITY" ]; then
+    term="st"
+    menu="dmenu"
+else
+    term=""
+    EDITOR="command vim"
+fi
+
+list_tracked_files() {
+    git --git-dir="$HEART"/.git --work-tree="$HEART" \
+        ls-tree -r HEAD --name-only \
+        | grep -ve .png$ \
+               -ve .local/share/lockscreen$ \
+               -ve ^LICENSE$ \
+               -ve .md$ \
+               -ve .list$ \
+        | sort
+}
+
+menu() {
+    if [ -n "$menu" ]; then
+        $menu -p "heart" -i -l 6
+    else
+        fzf --prompt "$menu_prompt"
+    fi
+}
+
+selected_file="$(list_tracked_files | menu)"
+
+[ -n "$selected_file" ] && $term $EDITOR "$selected_file"

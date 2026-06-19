@@ -1,0 +1,33 @@
+#!/usr/bin/sh
+# @author nate zhou
+# @since 2026
+# mag - toggling magnifier for Wayland and X
+
+set_tools() {
+    screenshot="${XDG_RUNTIME_DIR}/mag.png"
+    if [ "$XDG_SESSION_TYPE" = "wayland" ]; then
+        shooter="grim -l 0 $screenshot"
+        viewer="swayimg -F --class=Magnifier $screenshot"
+    elif [ -n "$XAUTHORITY" ]; then
+        shooter="maim -m 1 -u $screenshot"
+        viewer="nsxiv -f --no-bar --name Magnifier $screenshot"
+    fi
+}
+
+magnify() {
+    $shooter && $viewer
+}
+
+toggle() {
+    pgrep -f "$viewer" && pkill -f "$viewer" || magnify
+}
+
+cleanup() {
+    rm -f "$screenshot"
+}
+
+set_tools
+
+trap cleanup EXIT TERM INT HUP
+
+toggle

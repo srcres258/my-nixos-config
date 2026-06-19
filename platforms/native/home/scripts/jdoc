@@ -1,0 +1,35 @@
+#!/usr/bin/sh
+# @author nate zhou
+# @since 2025,2026
+# search openjdk-doc package's files in wmenu/dmenu and open in BROWSER
+
+DOC_PATH_SHARE="/usr/share/doc/java-openjdk"
+DOC_PATH_LOCAL="$HOME/doc/java-openjdk/"
+
+
+if [ -d "$DOC_PATH_SHARE" ]; then
+    DOC_PATH="$DOC_PATH_SHARE"
+else
+    DOC_PATH="$DOC_PATH_LOCAL"
+fi
+
+if [ "$XDG_SESSION_TYPE" = "wayland" ]; then
+    menu="${HOME}/.local/bin/wmenu-color"
+elif [ -n "$XAUTHORITY" ]; then
+    menu="dmenu"
+fi
+
+if [ "$XDG_SESSION_TYPE" != "tty" ]; then
+    selected_page="$(find "$DOC_PATH" -type f \
+        | $menu -l 6 -i -p "$(basename "$0")")"
+    # don't do anything if exiting wmenu without any input
+    [ -n "$selected_page" ] && $BROWSER file://"$selected_page"
+else
+    selected_page="$(find "$DOC_PATH" -type f \
+        | fzf --preview 'scope {}' \
+              --bind=ctrl-j:preview-down,ctrl-k:preview-up \
+              --reverse)"
+    # don't do anything if exiting wmenu without any input
+    [ -n "$selected_page" ] && w3m file://"$selected_page"
+fi
+

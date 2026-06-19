@@ -69,7 +69,7 @@
                 .{ "passthrough", "Passthrough" },
                 .{ "floating", "Floating" },
                 .{ "wmenu", "[w]iki [h]eart [b]ooks bl[u]e [s]peaker [e]moji [j]doc" },
-                .{ "dunst", "clip-w[i]pe [l]supdates [w]ttr d[c]al ls[m]us" },
+                .{ "dunst", "clip-w[i]pe [w]ttr d[c]al ls[m]us" },
                 .{ "wlrctl", "[hjkl]cursors [,]left [.]right [m]iddle ^[hjkl]arrows" },
             },
 
@@ -812,23 +812,6 @@
             },
             .{
                 .mode = "dunst",
-                .keysym = "l",
-                .modifiers = .{},
-                .event = .{
-                    .click = .{
-                        .pressed = .{
-                            .group = .{
-                                .actions = .{
-                                    .{ .spawn_shell = .{ .cmd = "${HOME}/.local/bin/lsupdates" } },
-                                    .{ .switch_mode = .{ .mode = "default" } },
-                                },
-                            },
-                        },
-                    },
-                },
-            },
-            .{
-                .mode = "dunst",
                 .keysym = "w",
                 .modifiers = .{},
                 .event = .{
@@ -1524,6 +1507,28 @@
                 },
             },
             .{
+                .keysym = "Tab",
+                .modifiers = .{ .mod1 = true },
+                .event = .{
+                    .click = .{
+                        .pressed = .{
+                            .focus_iter = .{ .direction = .forward },
+                        },
+                    },
+                },
+            },
+            .{
+                .keysym = "Tab",
+                .modifiers = .{ .mod1 = true, .shift = true },
+                .event = .{
+                    .click = .{
+                        .pressed = .{
+                            .focus_iter = .{ .direction = .reverse },
+                        },
+                    },
+                },
+            },
+            .{
                 .keysym = "backslash",
                 .modifiers = .{ .mod4 = true },
                 .event = .{
@@ -1720,7 +1725,7 @@
             },
             .{
                 .keysym = "d",
-                .modifiers = .{ .mod4 = true },
+                .modifiers = .{ .mod4 = true, .ctrl = true },
                 .event = .{
                     .click = .{
                         .pressed = .{
@@ -1786,13 +1791,67 @@
                     },
                 },
             },
+            // niri-like entry points
+            .{
+                .keysym = "a",
+                .modifiers = .{ .mod4 = true },
+                .event = .{
+                    .click = .{
+                        .pressed = .{
+                            .spawn_shell = .{ .cmd = "wofi --show drun" },
+                        },
+                    },
+                },
+            },
+            .{
+                .keysym = "d",
+                .modifiers = .{ .mod4 = true },
+                .event = .{
+                    .click = .{
+                        .pressed = .{
+                            .spawn = .{ .argv = .{ "dolphin" } },
+                        },
+                    },
+                },
+            },
+            .{
+                .keysym = "l",
+                .modifiers = .{ .mod4 = true },
+                .event = .{
+                    .click = .{
+                        .pressed = .{
+                            .spawn_shell = .{ .cmd = "waylock -init-color 0x000000 -input-color 0x005577 -fail-color 0xcc3333" },
+                        },
+                    },
+                },
+            },
+            .{
+                .keysym = "q",
+                .modifiers = .{ .mod4 = true },
+                .event = .{
+                    .click = .{
+                        .pressed = .close,
+                    },
+                },
+            },
+            .{
+                .keysym = "x",
+                .modifiers = .{ .mod4 = true },
+                .event = .{
+                    .click = .{
+                        .pressed = .{
+                            .spawn = .{ .argv = .{ "qutebrowser" } },
+                        },
+                    },
+                },
+            },
             .{
                 .keysym = "Return",
                 .modifiers = .{ .mod4 = true },
                 .event = .{
                     .click = .{
                         .pressed = .{
-                            .spawn = .{ .argv = .{ "footclient" } },
+                            .spawn = .{ .argv = .{ "kitty" } },
                         },
                     },
                 },
@@ -1815,17 +1874,6 @@
                     .click = .{
                         .pressed = .{
                             .spawn_shell = .{ .cmd = "footclient sh -c 'sleep 0.03 && lf'" },
-                        },
-                    },
-                },
-            },
-            .{
-                .keysym = "q",
-                .modifiers = .{ .mod4 = true },
-                .event = .{
-                    .click = .{
-                        .pressed = .{
-                            .spawn = .{ .argv = .{ "qutebrowser" } },
                         },
                     },
                 },
@@ -2094,7 +2142,7 @@
             },
             .{
                 .keysym = "a",
-                .modifiers = .{ .mod4 = true },
+                .modifiers = .{ .mod4 = true, .mod1 = true },
                 .event = .{
                     .click = .{
                         .pressed = .{
@@ -2287,4 +2335,3 @@
         //
     },
 }
-

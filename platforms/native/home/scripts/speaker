@@ -1,0 +1,77 @@
+#!/usr/bin/sh
+# @author nate zhou
+# @since 2025,2026
+# @depends pipewire-pulse wmenu dmenu(xorg) fzf
+# speaker uses a dynamic menu or fzf to:
+#   1. select the pipewire default sink
+#   2. toggle mpd output device
+# This script use pactl instead of wpctl, because device name listed in pactl
+# is much easier to pipe to a dynamic menu than `wpctl status`
+
+DAMBLOCKS="${XDG_RUNTIME_DIR}/damblocks.pid"
+
+if [ "$XDG_SESSION_TYPE" = "wayland" ]; then
+    menu="${HOME}/.local/bin/wmenu-color"
+elif [ -n "$XAUTHORITY" ]; then
+    menu="dmenu"
+fi
+
+usage() {
+    cat <<_EOF_
+USAGE
+        $(basename "$0") [OPTION]
+        Without any options, select the pipewire default sink
+OPTIONS
+        -h,--help       print this help info
+        -m--mpd         toggle a mpd output
+_EOF_
+    exit 0
+}
+
+notify() {
+    [ "$XDG_SESSION_TYPE" != "tty" ] \
+        && notify-send -u low -r 1259 "$(basename "$0")" "$device"
+}
+
+chooser() {
+    if [ "$XDG_SESSION_TYPE" != "tty" ]; then
+        $speaker_command | awk '{print $2}' \
+                               | $menu -p 'speaker' -l 3
+    else
+        $speaker_command | awk '{print $2}' \
+                               | command fzf --prompt 'speaker '
+    fi
+}
+
+refreshVolume() {
+    kill -36 "$(cat "$DAMBLOCKS")"
+}
+
+
+setPipewire() {
+    speaker_command="pactl list short sinks"
+
+    device="$(chooser)"
+    [ -z "$device" ] && exit 0
+
+    pactl set-default-sink "$device" && refreshVolume && notify
+}
+
+setMPD() {
+    speaker_command="mpc outputs"
+
+    device="$(chooser)"
+    [ -z "$device" ] && exit 0
+
+    mpc toggleoutput "$device" && notify
+}
+
+[ -z "$1" ] && setPipewire
+
+while [ -n "$1" ]; do
+    case "$1" in
+        -m|--mpd) setMPD ;;
+        *) usage ;;
+    esac
+    shift
+done

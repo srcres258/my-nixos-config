@@ -1,0 +1,15 @@
+#!/usr/bin/sh
+# @author nate zhou
+# @since 2025,2026
+# wmenu with colorscheme to be invoked by other scripts
+
+. $HOME/.local/bin/colors.sh
+
+wmenu -i \
+      -f "SourceCodePro medium 13" \
+      -N "$colorbg" \
+      -S "$color14" \
+      -s "$colorfg" \
+      -M "$color14" \
+      -m "$colorfg" \
+      "$@"

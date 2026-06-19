@@ -1,0 +1,23 @@
+#!/usr/bin/sh
+# @author nate zhou
+# @since 2024,2025,2026
+# open books with zathura with dynamic menu
+
+SEARCH_PATH="$HOME/doc/books"
+
+if [ "$XDG_SESSION_TYPE" = "wayland" ]; then
+    menu=${HOME}/.local/bin/wmenu-color
+elif [ -n "$XAUTHORITY" ]; then
+    menu=dmenu
+fi
+
+
+selected_file="$(\
+    find "$SEARCH_PATH" -type f \
+    | grep -e .epub$ -e .pdf$  \
+    | $menu -p "$(basename $0)" -i -l 6\
+    )"
+
+viewer="zathura"
+
+[ -n "$selected_file" ] && $viewer "$selected_file"
