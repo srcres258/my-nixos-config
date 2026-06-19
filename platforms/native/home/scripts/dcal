@@ -1,4 +1,4 @@
-#!/usr/bin/sh
+#!/usr/bin/env sh
 # @author nate zhou
 # @since 2024,2025
 # A calendar via XDG notification with today's date highlighted in Pango

@@ -1,4 +1,4 @@
-#!/usr/bin/sh
+#!/usr/bin/env sh
 # @author nate zhou
 # @since 2024,2025,2026
 # search arch-wiki-docs package's files in wmenu and open in browser
@@ -33,4 +33,3 @@ else
     # don't do anything if exiting wmenu without any input
     [ -n "$selected_page" ] && w3m file://"$selected_page"
 fi
-

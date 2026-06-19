@@ -1,0 +1,11 @@
+#!/usr/bin/env sh
+# @author srcres258, adapted from unixchad/damblocks-mpdd
+# @since 2026
+
+pkill -f 'mpc idle'
+
+while :; do
+    mpc idle >/dev/null \
+        && kill -45 "$(cat ${XDG_RUNTIME_DIR}/damblocks.pid)" \
+        || break
+done

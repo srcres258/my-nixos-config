@@ -1,0 +1,243 @@
+#!/usr/bin/env sh
+# @author srcres258, adapted from unixchad/damblocks
+# @since 2026
+# kwm status bar daemon (NixOS-friendly subset)
+
+case "$1" in
+    --fifo)
+        mode="fifo"
+        ;;
+    --xsetroot)
+        mode="xsetroot"
+        ;;
+    *)
+        mode="stdin"
+        ;;
+esac
+
+DAMBLOCKS_FIFO="${XDG_RUNTIME_DIR}/damblocks.fifo"
+[ ! -p "$DAMBLOCKS_FIFO" ] && (rm -f "$DAMBLOCKS_FIFO"; mkfifo "$DAMBLOCKS_FIFO")
+
+printf '%s' "$$" > "${XDG_RUNTIME_DIR}/damblocks.pid"
+
+update_time() {
+    time="$(date '+%b-%d %a %H:%M:%S')"
+}
+
+update_battery() {
+    local POWER="/sys/class/power_supply"
+    ls ${POWER}/BAT? >/dev/null 2>&1 || {
+        battery=""
+        return
+    }
+
+    local icon=""
+    local status="$(cat "$POWER"/BAT?/status)"
+    local level="$(cat "$POWER"/BAT?/capacity)"
+
+    case "$status" in
+        Discharging)
+            case "$level" in
+                [0-5]) icon="󰂎" ;;
+                [6-9]) icon="󰁺" ;;
+                1[0-9]) icon="󰁻" ;;
+                2[0-9]) icon="󰁼" ;;
+                3[0-9]) icon="󰁽" ;;
+                4[0-9]) icon="󰁽" ;;
+                5[0-9]) icon="󰁾" ;;
+                6[0-9]) icon="󰁿" ;;
+                7[0-9]) icon="󰂀" ;;
+                8[0-9]) icon="󰂁" ;;
+                9[0-9]) icon="󰂂" ;;
+                100) icon="󰁹" ;;
+            esac
+            level="${level}%"
+            ;;
+        Not\ charging|Full)
+            icon=""
+            level="${level}%"
+            ;;
+        Charging)
+            icon=""
+            level="${level}%"
+            ;;
+    esac
+
+    battery="${icon}${level}"
+}
+
+update_brightness() {
+    local level="$(cat "${XDG_CACHE_HOME}/brightness.level" 2>/dev/null)"
+    local icon=""
+    case $level in
+        [0-9]) icon="󱩎" ;;
+        1[0-9]) icon="󱩏" ;;
+        2[0-9]) icon="󱩐" ;;
+        3[0-9]) icon="󱩐" ;;
+        4[0-9]) icon="󱩑" ;;
+        5[0-9]) icon="󱩒" ;;
+        6[0-9]) icon="󱩓" ;;
+        7[0-9]) icon="󱩔" ;;
+        8[0-9]) icon="󱩕" ;;
+        9[0-9]) icon="󱩖" ;;
+        100) icon="󰛨" ;;
+    esac
+    [ -z "$level" ] || level="${level}%"
+    brightness="${icon}${level}"
+}
+
+update_volume() {
+    local level="$(cat "${XDG_CACHE_HOME}/audio-@DEFAULT_AUDIO_SINK@.level" 2>/dev/null)"
+    local muted="$(cat "${XDG_CACHE_HOME}/audio-@DEFAULT_AUDIO_SINK@.muted" 2>/dev/null)"
+    local icon=""
+    [ -z "$muted" ] || icon=""
+    [ -z "$level" ] || level="${level}%"
+    volume="${icon}${level}"
+}
+
+update_microphone() {
+    local level="$(cat "${XDG_CACHE_HOME}/audio-@DEFAULT_AUDIO_SOURCE@.level" 2>/dev/null)"
+    local muted="$(cat "${XDG_CACHE_HOME}/audio-@DEFAULT_AUDIO_SOURCE@.muted" 2>/dev/null)"
+    local icon=""
+    [ -z "$muted" ] || icon=""
+    [ -z "$level" ] || level="${level}%"
+    microphone="${icon}${level}"
+}
+
+update_cpu() {
+    set -- $(awk '/^cpu / {print $2, $3, $4, $5, $6, $7, $8, $9}' /proc/stat)
+    local user=$1 nice=$2 system=$3 idle=$4 iowait=$5 irq=$6 softirq=$7 steal=$8
+    local total=$((user + nice + system + idle + iowait + irq + softirq + steal))
+
+    if [ -n "$cpu_prev_total" ] && [ "$total" -gt "$cpu_prev_total" ]; then
+        local total_diff=$((total - cpu_prev_total))
+        local idle_diff=$((idle - cpu_prev_idle))
+        local usage=$(( (100 * (total_diff - idle_diff) + total_diff / 2) / total_diff ))
+        cpu=" ${usage}%"
+    else
+        cpu=""
+    fi
+
+    cpu_prev_total=$total
+    cpu_prev_idle=$idle
+}
+
+update_memory() {
+    local total="$(awk '/^MemTotal:/ {print $2}' /proc/meminfo)"
+    local available="$(awk '/^MemAvailable:/ {print $2}' /proc/meminfo)"
+    if [ -n "$total" ] && [ -n "$available" ] && [ "$total" -gt 0 ]; then
+        local usage=$(( (100 * (total - available) + total / 2) / total ))
+        memory=" ${usage}%"
+    else
+        memory=""
+    fi
+}
+
+update_disk() {
+    local root_usage="$(df -P / 2>/dev/null | awk 'NR==2 {print $5}')"
+    local home_usage="$(df -P "$HOME" 2>/dev/null | awk 'NR==2 {print $5}')"
+    root=" ${root_usage:-?}"
+    home=" ${home_usage:-?}"
+}
+
+update_uptime() {
+    local result="$(uptime -p | sed 's/up //; s/ week\(s\)\?/w/; s/ day\(s\)\?/d/; s/ hour\(s\)\?/h/; s/[0-9]* minute.*//; s/ $//; s/ / /; s/[^0-9a-z]//g')"
+    [ -n "$result" ] && uptime_text=" ${result}" || uptime_text=" ≤1h"
+}
+
+update_wifi() {
+    local status="$(cat /sys/class/net/w*/operstate 2>/dev/null)"
+    local level="$(awk '/^ *w/ {print int($3 * 100 / 70)"%"}' /proc/net/wireless 2>/dev/null)"
+    [ "$status" = "up" ] && wifi="󰖩 ${level}" || wifi="󰖪"
+}
+
+update_ethernet() {
+    local status="$(cat /sys/class/net/e*/operstate 2>/dev/null)"
+    [ "$status" = "up" ] && ethernet="󰛳" || ethernet="󰲛"
+}
+
+update_bluetooth() {
+    if pgrep -x 'bluetoothd' >/dev/null; then
+        bluetooth="󰂯"
+    else
+        bluetooth="󰂲"
+    fi
+}
+
+update_mpd() {
+    command -v mpc >/dev/null 2>&1 || {
+        mpd="󰝛"
+        return
+    }
+
+    local icon="󰝚"
+    if [ "$(mpc status '%state%')" != "playing" ]; then
+        icon="󰝛"
+    fi
+
+    local title="$(mpc current -f "[%title%]" | cut -c1-24 | sed 's/[[:space:],.{[-]*$//; s/[&]//g')"
+    [ -n "$title" ] || title=""
+    mpd="${icon}${title}"
+}
+
+display() {
+    local space=" "
+    local delimiter_home="["
+    local delimiter_end="]"
+    local separator="]["
+    local line="${delimiter_home}${mpd}${separator}${battery}${space}${bluetooth}${separator}${wifi}${space}${ethernet}${separator}${brightness}${space}${microphone}${space}${volume}${separator}${cpu}${space}${memory}${space}${root}${space}${home}${space}${uptime_text}${separator}${time}${delimiter_end}"
+
+    case "$mode" in
+        fifo)
+            printf '%s' "$line" > "$DAMBLOCKS_FIFO"
+            ;;
+        xsetroot)
+            xsetroot -name "$line" >/dev/null 2>&1
+            ;;
+        stdin)
+            printf '%s\n' "$line"
+            ;;
+    esac
+}
+
+trap 'update_volume; display' RTMIN+2
+trap 'update_microphone; display' RTMIN+3
+trap 'update_brightness; display' RTMIN+4
+trap 'update_mpd; display' RTMIN+11
+
+update_time
+update_battery
+update_brightness
+update_volume
+update_microphone
+update_cpu
+update_memory
+update_disk
+update_uptime
+update_wifi
+update_ethernet
+update_bluetooth
+update_mpd
+display
+
+sec=0
+while :; do
+    sleep 1
+    sec=$((sec + 1))
+
+    update_time
+    [ $((sec % 5)) -eq 0 ] && update_battery
+    [ $((sec % 5)) -eq 0 ] && update_brightness
+    [ $((sec % 5)) -eq 0 ] && update_volume
+    [ $((sec % 5)) -eq 0 ] && update_microphone
+    [ $((sec % 5)) -eq 0 ] && update_cpu
+    [ $((sec % 5)) -eq 0 ] && update_memory
+    [ $((sec % 60)) -eq 0 ] && update_disk
+    [ $((sec % 60)) -eq 0 ] && update_uptime
+    [ $((sec % 10)) -eq 0 ] && update_wifi
+    [ $((sec % 10)) -eq 0 ] && update_ethernet
+    [ $((sec % 10)) -eq 0 ] && update_bluetooth
+    [ $((sec % 5)) -eq 0 ] && update_mpd
+
+    display
+done

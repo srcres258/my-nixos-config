@@ -2,31 +2,34 @@
 
 let
   localBinScripts = [
-      "audio"
-      "bright"
-      "wiki"
-      "heart"
-      "books"
-      "blue"
-      "speaker"
-      "emoji"
-      "jdoc"
-      "wttr"
-      "dcal"
-      "lsmus"
-      "clip"
-      "exiland"
-      "hibe"
-      "wmenu-run-color"
-      "mag"
-      "shoot"
-      "address"
-      "wsk"
-      "colors.sh"
-      "wmenu-color"
-      "scope"
-    ];
-in {
+    "audio"
+    "bright"
+    "wiki"
+    "heart"
+    "books"
+    "blue"
+    "speaker"
+    "emoji"
+    "jdoc"
+    "wttr"
+    "dcal"
+    "lsmus"
+    "clip"
+    "damblocks"
+    "damblocks-mpdd"
+    "exiland"
+    "hibe"
+    "wmenu-run-color"
+    "mag"
+    "shoot"
+    "address"
+    "wsk"
+    "colors.sh"
+    "wmenu-color"
+    "scope"
+  ];
+in
+{
   home.packages = with pkgs; [
     # niri-style entrypoints
     kitty
@@ -85,8 +88,13 @@ in {
 
   xdg.configFile."kwm/config.zon".source = ./config.zon;
 
-  home.file = builtins.listToAttrs (map (name: {
-    name = ".local/bin/${name}";
-    value.source = ./scripts/${name};
-  }) localBinScripts);
+  home.file = builtins.listToAttrs (map
+    (name: {
+      name = ".local/bin/${name}";
+      value = {
+        source = ./scripts/${name};
+        executable = true;
+      };
+    })
+    localBinScripts);
 }

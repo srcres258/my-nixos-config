@@ -1,4 +1,4 @@
-#!/usr/bin/sh
+#!/usr/bin/env sh
 # @author nate zhou
 # @since 2024,2025,2026
 # heart - search and edit dotfiles tracked by git in a dynamic menu

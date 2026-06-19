@@ -1,4 +1,4 @@
-#!/usr/bin/sh
+#!/usr/bin/env sh
 # exiland - exit wayland compositors
 # @author nate zhou
 # @sincd 2025,2026
