@@ -376,16 +376,16 @@
         "nixpkgs": "nixpkgs_4"
       },
       "locked": {
-        "lastModified": 1781619199,
-        "narHash": "sha256-3jDa7MHIGGXnuj/aSbzUwt2kebdXdVhk4hyBgz2D7fw=",
-        "ref": "refs/tags/v0.1.1",
-        "rev": "4f3b702fb5a3cd1a322363d40f6d2ebe01230a7a",
-        "revCount": 9,
+        "lastModified": 1781926378,
+        "narHash": "sha256-Zj+OTktmA+pw4NfFFOsfiFFmr5uWrIhCakaP0t8Iehg=",
+        "ref": "refs/tags/v0.1.2",
+        "rev": "3803e4ebd77291d6637b5d141865aa673d212eb3",
+        "revCount": 11,
         "type": "git",
         "url": "https://codeberg.org/srcres258/zpaper.git"
       },
       "original": {
-        "ref": "refs/tags/v0.1.1",
+        "ref": "refs/tags/v0.1.2",
         "type": "git",
         "url": "https://codeberg.org/srcres258/zpaper.git"
       }
