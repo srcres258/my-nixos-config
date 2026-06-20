@@ -136,6 +136,8 @@ in
     ncdu
 
     mesa-demos
+    rocmPackages.rocm-smi
+    radeontop
 
     # Nix language
     nixd
