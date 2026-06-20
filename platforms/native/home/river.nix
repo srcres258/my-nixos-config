@@ -41,6 +41,7 @@ in
     qutebrowser
     wlrctl
     wtype
+    ydotool
 
     # unixchad / kwm script deps
     foot
@@ -98,6 +99,21 @@ in
 
       ${pkgs.nur.repos.srcres258.kwm}/bin/kwm &
     '';
+  };
+
+  systemd.user.services.ydotoold = {
+    Unit = {
+      Description = "ydotool daemon";
+    };
+
+    Service = {
+      ExecStart = "${pkgs.ydotool}/bin/ydotoold --socket-path=%t/.ydotool_socket --socket-perm=0600";
+      Restart = "on-failure";
+    };
+
+    Install = {
+      WantedBy = [ "default.target" ];
+    };
   };
 
   xdg.configFile."kwm/config.zon".source = ./config.zon;

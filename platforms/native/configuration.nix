@@ -25,6 +25,7 @@
     "cdc_acm"
     "usbserial"
     "ch341"
+    "uinput"
   ];
   boot.extraModprobeConfig = ''
     options v4l2loopback devices=1
@@ -126,6 +127,8 @@
       ACTION=="add", SUBSYSTEM=="usb", \
           ATTRS{idVendor}=="0e8d", ATTRS{idProduct}=="2870", \
           RUN+="${pkgs.usb-modeswitch}/bin/usb_modeswitch -v 0e8d -p 2870 -K -W"
+
+      KERNEL=="uinput", GROUP="input", MODE="0660"
     '';
   };
 }

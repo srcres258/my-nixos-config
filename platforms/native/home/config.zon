@@ -1082,6 +1082,54 @@
             },
             .{
                 .mode = "wlrctl",
+                .keysym = "y",
+                .modifiers = .{},
+                .event = .{
+                    .click = .{
+                        .pressed = .{
+                            .spawn_shell = .{ .cmd = "ydotool click 0x40" },
+                        },
+                    },
+                },
+            },
+            .{
+                .mode = "wlrctl",
+                .keysym = "u",
+                .modifiers = .{},
+                .event = .{
+                    .click = .{
+                        .pressed = .{
+                            .spawn_shell = .{ .cmd = "ydotool click 0x80" },
+                        },
+                    },
+                },
+            },
+            .{
+                .mode = "wlrctl",
+                .keysym = "i",
+                .modifiers = .{},
+                .event = .{
+                    .click = .{
+                        .pressed = .{
+                            .spawn_shell = .{ .cmd = "ydotool click 0x41" },
+                        },
+                    },
+                },
+            },
+            .{
+                .mode = "wlrctl",
+                .keysym = "o",
+                .modifiers = .{},
+                .event = .{
+                    .click = .{
+                        .pressed = .{
+                            .spawn_shell = .{ .cmd = "ydotool click 0x81" },
+                        },
+                    },
+                },
+            },
+            .{
+                .mode = "wlrctl",
                 .keysym = "n",
                 .modifiers = .{},
                 .event = .{
