@@ -2,8 +2,7 @@
 # your system. Help is available in the configuration.nix(5) man page, on
 # https://search.nixos.org/options and in the NixOS manual (`nixos-help`).
 
-{ inputs
-, pkgs
+{ pkgs
 , ...
 }: {
   imports = [
@@ -13,10 +12,12 @@
 
   boot.loader.systemd-boot = {
     edk2-uefi-shell.enable = true;
-    windows."windows" = {
-      title = "Windows";
-      efiDeviceHandle = "HD0d4";
-    };
+    extraEntries."windows.conf" = ''
+      title Windows
+      efi /efi/edk2-uefi-shell/shell.efi
+      options -nointerrupt -nomap -noversion HD1e:\EFI\Microsoft\Boot\Bootmgfw.efi
+      sort-key o_windows
+    '';
   };
   boot.initrd.kernelModules = [ "amdgpu" ];
   services.xserver.videoDrivers = [ "amdgpu" ];
