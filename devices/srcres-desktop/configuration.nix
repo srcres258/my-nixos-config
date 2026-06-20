@@ -11,6 +11,13 @@
     ./hardware-configuration.nix
   ];
 
+  boot.loader.systemd-boot = {
+    edk2-uefi-shell.enable = true;
+    windows."windows" = {
+      title = "Windows";
+      efiDeviceHandle = "HD0d4";
+    };
+  };
   boot.initrd.kernelModules = [ "amdgpu" ];
   services.xserver.videoDrivers = [ "amdgpu" ];
   hardware.graphics = {
