@@ -39,6 +39,8 @@ in
     wofi
     kdePackages.dolphin
     qutebrowser
+    wlrctl
+    wtype
 
     # unixchad / kwm script deps
     foot
