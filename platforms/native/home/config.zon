@@ -10,8 +10,6 @@
     .working_directory = .home,
 
     .startup_cmds = .{
-        .{ "/home/srcres/.local/bin/damblocks", "--fifo" },
-        .{ "/home/srcres/.local/bin/damblocks-mpdd" },
     },
 
     // null

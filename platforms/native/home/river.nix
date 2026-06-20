@@ -1,4 +1,7 @@
-{ pkgs, ... }:
+{ pkgs
+, config
+, ...
+}:
 
 let
   localBinScripts = [
@@ -82,6 +85,15 @@ in
     };
 
     extraConfig = ''
+      ${config.home.homeDirectory}/.local/bin/damblocks --fifo &
+      ${config.home.homeDirectory}/.local/bin/damblocks-mpdd &
+
+      i=0
+      while [ "$i" -lt 50 ] && [ ! -p "''${XDG_RUNTIME_DIR}/damblocks.fifo" ]; do
+        i=$((i + 1))
+        sleep 0.1
+      done
+
       ${pkgs.nur.repos.srcres258.kwm}/bin/kwm &
     '';
   };

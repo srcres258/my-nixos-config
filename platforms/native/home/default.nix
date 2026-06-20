@@ -1,5 +1,4 @@
 { pkgs
-, lib
 , config
 , inputs
 , ...
@@ -8,6 +7,7 @@
 in {
   imports = [
     ./vscode.nix
+    ./niri.nix
     ./river.nix
   ];
 
@@ -62,8 +62,6 @@ in {
     # Verilog / SystemVerilog language
     verible
   ];
-
-  xdg.configFile."niri/config.kdl".source = ../../config.kdl;
 
   home.sessionVariables = {
     JAVA_HOME = "${javaPkg}";

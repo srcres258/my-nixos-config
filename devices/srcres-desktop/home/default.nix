@@ -1,5 +1,4 @@
-{ lib
-, inputs
+{ inputs
 , system
 , ...
 }:
@@ -22,8 +21,8 @@ in
     {
       Unit = {
         Description = "zpaper dynamic wallpaper";
-        After = [ "niri.service" ];
-        BindsTo = [ "niri.service" ];
+        After = [ "graphical-session.target" ];
+        PartOf = [ "graphical-session.target" ];
       };
 
       Service = {

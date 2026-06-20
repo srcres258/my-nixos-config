@@ -106,6 +106,7 @@
   };
 
   security.pam.services.greetd.kwallet.enable = true;
+  security.pam.services.waylock = { };
 
   # Docker
   virtualisation.docker = {

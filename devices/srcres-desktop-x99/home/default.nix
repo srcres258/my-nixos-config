@@ -25,8 +25,8 @@
     {
       Unit = {
         Description = "mpvpaper dynamic wallpaper";
-        After = [ "niri.service" ];
-        BindsTo = [ "niri.service" ];
+        After = [ "graphical-session.target" ];
+        PartOf = [ "graphical-session.target" ];
       };
 
       Service = {
@@ -46,4 +46,3 @@
   # for a completely new machine or a new user.
   home.stateVersion = "25.05";
 }
-
