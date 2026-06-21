@@ -33,7 +33,7 @@
 
     yazi.url = "github:sxyazi/yazi";
 
-    zpaper.url = "git+https://codeberg.org/srcres258/zpaper.git?ref=refs/tags/v0.1.2";
+    zpaper.url = "git+https://codeberg.org/srcres258/zpaper.git?ref=refs/tags/v0.1.3";
 
     # my-nur = {
     #     url = "github:srcres258/nur-packages";
