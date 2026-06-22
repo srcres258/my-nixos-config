@@ -27,6 +27,10 @@ in
 
       Service = {
         Type = "simple";
+        Environment = [
+          "LIBVA_DRIVER_NAME=iHD"
+          "MESA_VK_DEVICE_SELECT=8086:a780!"
+        ];
         ExecStart = "${zpaper}/bin/zpaper --config ${zpaperConfig}";
         Restart = "on-failure";
         RestartSec = 2;
