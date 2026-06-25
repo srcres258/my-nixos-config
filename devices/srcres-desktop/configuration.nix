@@ -49,6 +49,18 @@
 
   services.logrotate.checkConfig = false;
 
+  # Enable deepcool display
+  services.hardware.deepcool-digital-linux = {
+    enable = true;
+    extraArgs = [
+      "--mode"
+      "cpu_temp"
+      "--update"
+      "500"
+      "--alarm"
+    ];
+  };
+
   # This option defines the first version of NixOS you have installed on this particular machine,
   # and is used to maintain compatibility with application data (e.g. databases) created on older NixOS versions.
   #
