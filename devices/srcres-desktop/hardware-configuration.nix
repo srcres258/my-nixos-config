@@ -36,6 +36,12 @@
       fsType = "ext4";
     };
 
+  fileSystems."/var/lib/vm" =
+    { device = "/dev/disk/by-uuid/521619f4-e81e-4ddd-9e32-075102497033";
+      fsType = "btrfs";
+      options = [ "subvol=root" ];
+    };
+
   swapDevices =
     [ { device = "/dev/disk/by-uuid/9f58432f-50e5-4be6-b40f-45fbb3094db8"; }
     ];
