@@ -1,0 +1,21 @@
+#!/usr/bin/env sh
+# @author srcres258
+# @since 2026
+# @depends ydotool
+# numlock-on - ensure Num Lock is enabled when river starts
+
+set -eu
+
+if command -v systemctl >/dev/null 2>&1; then
+    systemctl --user start ydotoold.service >/dev/null 2>&1 || true
+fi
+
+socket="${XDG_RUNTIME_DIR}/.ydotool_socket"
+i=0
+while [ "$i" -lt 50 ] && [ ! -S "$socket" ]; do
+    i=$((i + 1))
+    sleep 0.1
+done
+
+# KEY_NUMLOCK = 69
+ydotool key 69:1 69:0

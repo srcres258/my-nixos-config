@@ -30,6 +30,7 @@ let
     "colors.sh"
     "wmenu-color"
     "scope"
+    "numlock-on"
   ];
 in
 {
@@ -88,6 +89,8 @@ in
     };
 
     extraConfig = ''
+      ${config.home.homeDirectory}/.local/bin/numlock-on &
+
       ${config.home.homeDirectory}/.local/bin/damblocks --fifo &
       ${config.home.homeDirectory}/.local/bin/damblocks-mpdd &
 
