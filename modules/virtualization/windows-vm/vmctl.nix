@@ -12,7 +12,6 @@ pkgs.writeShellApplication {
     pkgs.coreutils
     pkgs.freerdp
     pkgs.virt-viewer
-    pkgs.virtinst
     pkgs.gnugrep
     pkgs.kmod
     pkgs.libvirt
@@ -22,5 +21,7 @@ pkgs.writeShellApplication {
     pkgs.util-linux
   ];
 
-  text = lib.replaceStrings [ "@CONFIG_FILE@" ] [ lib.escapeShellArg configFile ] shellScript;
+  text = ''
+    CONFIG_FILE=${lib.escapeShellArg configFile}
+  '' + shellScript;
 }

@@ -178,7 +178,10 @@ let
           <rng model='virtio'>
             <backend model='random'>/dev/urandom</backend>
           </rng>
-          ${mkNetworkXml { inherit networkMode bridgeName; }}
+            ${mkNetworkXml {
+              mode = networkMode;
+              inherit bridgeName;
+            }}
           ${graphicsXml}
           ${videoXml}
           ${lib.optionalString (tpmStateDir != null) (mkTpmXml tpmStateDir)}

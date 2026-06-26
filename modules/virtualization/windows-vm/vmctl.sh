@@ -1,6 +1,6 @@
     set -euo pipefail
 
-    source @CONFIG_FILE@
+    source "$CONFIG_FILE"
 
     readonly VMCTL_LOCK_FILE="${WINDOWS_VM_STORAGE_ROOT}/vmctl.lock"
 

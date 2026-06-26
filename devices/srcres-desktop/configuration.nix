@@ -49,6 +49,28 @@
 
   services.logrotate.checkConfig = false;
 
+  # Windows VM framework: this is a NixOS-system-level module, so keep it here
+  # rather than under Home Manager. The ISO paths below are just defaults; you
+  # can still override them per `vmctl install` command.
+  my.virtualization.windowsVm = {
+    enable = true;
+    user = "srcres";
+
+    diskPath = "/var/lib/libvirt/images/windows-main.qcow2";
+    diskSizeGiB = 32;
+    isoDirectory = "/var/lib/libvirt/iso";
+
+    windowsIsoFile = "Windows11.iso";
+    virtioIsoFile = "virtio-win.iso";
+
+    network.mode = "nat";
+    rdp.defaultTarget = "192.168.122.10";
+
+    profiles.rdp.enable = true;
+    profiles.virtio.enable = false;
+    profiles.vfio.enable = false;
+  };
+
   # Enable deepcool display
   services.hardware.deepcool-digital-linux = {
     enable = true;

@@ -58,6 +58,19 @@ let
         })
       ];
 
+      installMediaXmlTemplate = lib.concatStringsSep "\n" [
+        (templates.mkCdromXml {
+          path = "__WINDOWS_ISO__";
+          targetDev = "sda";
+          bootOrder = 1;
+        })
+        (templates.mkCdromXml {
+          path = "__VIRTIO_ISO__";
+          targetDev = "sdb";
+          bootOrder = 2;
+        })
+      ];
+
       installXml = pkgs.writeText "${installDomain}.xml" (
         templates.mkDomainXml {
           name = installDomain;
@@ -76,9 +89,28 @@ let
           bootFromCdrom = true;
         }
       );
+
+      installXmlTemplate = pkgs.writeText "${installDomain}.template.xml" (
+        templates.mkDomainXml {
+          name = installDomain;
+          memoryMiB = cfg.memoryMiB;
+          vcpus = cfg.vcpus;
+          diskPath = cfg.diskPath;
+          networkMode = cfg.network.mode;
+          bridgeName = cfg.network.bridgeName;
+          graphicsXml = templates.mkSpiceGraphicsXml cfg.spice.port;
+          videoXml = installVideoXml;
+          tpmStateDir = tpmStateDir;
+          nvramPath = nvramPath;
+          guestAgentChannelPath = guestAgentPath;
+          installMediaXml = installMediaXmlTemplate;
+          extraDevicesXml = installExtraDevicesXml;
+          bootFromCdrom = true;
+        }
+      );
     in
     {
-      inherit enabled baseDomain installDomain baseXml installXml;
+      inherit enabled baseDomain installDomain baseXml installXml installXmlTemplate;
     };
 
   profileArtifacts = {
