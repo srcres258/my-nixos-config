@@ -1,5 +1,6 @@
 { pkgs
 , config
+, lib
 , ...
 }:
 
@@ -89,7 +90,7 @@ in
     };
 
     extraConfig = ''
-      ${config.home.homeDirectory}/.local/bin/numlock-on &
+      PATH="${lib.makeBinPath [ pkgs.ydotool ]}:$PATH" ${config.home.homeDirectory}/.local/bin/numlock-on &
 
       ${config.home.homeDirectory}/.local/bin/damblocks --fifo &
       ${config.home.homeDirectory}/.local/bin/damblocks-mpdd &
