@@ -8,6 +8,13 @@ in
 pkgs.writeShellApplication {
   name = "vmctl";
 
+  excludeShellChecks = [
+    "SC1090"
+    "SC1091"
+    "SC2016"
+    "SC2154"
+  ];
+
   runtimeInputs = [
     pkgs.coreutils
     pkgs.freerdp
