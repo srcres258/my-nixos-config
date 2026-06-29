@@ -17,5 +17,9 @@ while [ "$i" -lt 50 ] && [ ! -S "$socket" ]; do
     sleep 0.1
 done
 
+if [ ! -S "$socket" ]; then
+    exit 0
+fi
+
 # KEY_NUMLOCK = 69
 ydotool key 69:1 69:0
