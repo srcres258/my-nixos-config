@@ -68,4 +68,6 @@ in {
     COURSIER_CACHE = "${config.xdg.cacheHome}/coursier";
     SBT_OPTS = "-Dsbt.ivy.home=${config.xdg.cacheHome}/ivy2 -Dsbt.global.base=${config.xdg.configHome}/sbt -Dsbt.coursier.home=${config.xdg.cacheHome}/coursier";
   };
+
+  programs.bluetuith.enable = true;
 }
