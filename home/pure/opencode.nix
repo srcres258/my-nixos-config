@@ -104,6 +104,7 @@ in
     json.generate "oh-my-openagent.jsonc" (let
       ds = "deepseek/deepseek-v4-pro";
       qwen = "alibaba-cn/qwen3.6-plus";
+      gpt = "openai/gpt-5.4-mini";
     in {
       agents = {
         sisyphus = {
@@ -115,18 +116,18 @@ in
           reasoningEffort = "high";
         };
         hephaestus = {
-          model = ds;
+          model = gpt;
         };
         prometheus = {
-          model = ds;
+          model = gpt;
         };
         atlas = {
-          model = ds;
+          model = gpt;
           variant = "max";
         };
 
         metis = {
-          model = ds;
+          model = gpt;
           variant = "max";
         };
         momus = {
