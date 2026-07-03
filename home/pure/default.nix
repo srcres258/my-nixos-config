@@ -197,15 +197,6 @@ in
     yapf
     hatch
 
-    # Haskell language
-    (haskellPackages.ghcWithPackages (ps: with ps; [
-      data-memocombinators
-      mtl
-    ]))
-    cabal-install
-    haskell-language-server
-    stack
-
     # Lean language
     elan
 

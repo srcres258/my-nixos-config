@@ -159,8 +159,6 @@
     };
     # Scala Metals – server version auto-write
     "metals.serverVersion" = "";
-    # Haskell – first-run manageHLS prompt + Global write
-    "haskell.manageHLS" = "GHCup";
     # Python envs – activation-time workspace writes
     "python-envs.defaultEnvManager" = "ms-python.python:system";
     "python-envs.defaultPackageManager" = "ms-python.python:pip";
@@ -261,11 +259,6 @@ in {
 
             # Nix
             jnoortheen.nix-ide
-
-            # Haskell
-            haskell.haskell
-            justusadam.language-haskell
-            hoovercj.haskell-linter
 
             # Python
             ms-python.python

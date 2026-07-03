@@ -27,7 +27,6 @@
         markdown
         latex
         make
-        haskell
         scala
         systemverilog
         sql
@@ -93,8 +92,6 @@
       blink-copilot
       codecompanion-nvim
       fidget-nvim
-
-      haskell-tools-nvim
 
       nvim-metals
 
