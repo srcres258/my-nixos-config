@@ -1850,17 +1850,6 @@
                     },
                 },
             },
-            .{
-                .keysym = "d",
-                .modifiers = .{ .mod4 = true },
-                .event = .{
-                    .click = .{
-                        .pressed = .{
-                            .spawn = .{ .argv = .{ "dolphin" } },
-                        },
-                    },
-                },
-            },
             //.{
             //    .keysym = "l",
             //    .modifiers = .{ .mod4 = true },
@@ -2276,7 +2265,7 @@
                 },
             },
             .{
-                .keysym = "f",
+                .keysym = "d",
                 .modifiers = .{ .mod4 = true },
                 .event = .{
                     .click = .{
