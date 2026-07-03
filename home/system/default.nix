@@ -42,8 +42,6 @@
     # cqrlog -- removed from nixpkgs (unmaintained, gtk2)
     tqsl
 
-    freecad
-
     calibre
 
     xclip
