@@ -126,12 +126,9 @@
     bluez-experimental
 
     gcc
-    llvmPackages.llvm.dev
-    llvmPackages.clang
     gnumake
     ccache
     ddcutil
-    cmakeMinimal
 
     # Java
     jetbrains.jdk
@@ -323,6 +320,7 @@
   nix.channel.enable = false;
 
   nix.settings.substituters = [
+    "https://mirror.sjtu.edu.cn/nix-channels/store"
     "https://mirrors.ustc.edu.cn/nix-channels/store"
   ];
 
