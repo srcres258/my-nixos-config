@@ -1861,17 +1861,17 @@
                     },
                 },
             },
-            .{
-                .keysym = "l",
-                .modifiers = .{ .mod4 = true },
-                .event = .{
-                    .click = .{
-                        .pressed = .{
-                            .spawn_shell = .{ .cmd = "waylock -init-color 0x000000 -input-color 0x005577 -fail-color 0xcc3333" },
-                        },
-                    },
-                },
-            },
+            //.{
+            //    .keysym = "l",
+            //    .modifiers = .{ .mod4 = true },
+            //    .event = .{
+            //        .click = .{
+            //            .pressed = .{
+            //                .spawn_shell = .{ .cmd = "waylock -init-color 0x000000 -input-color 0x005577 -fail-color 0xcc3333" },
+            //            },
+            //        },
+            //    },
+            //},
             .{
                 .keysym = "q",
                 .modifiers = .{ .mod4 = true },
