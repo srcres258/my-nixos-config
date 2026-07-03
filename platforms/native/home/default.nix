@@ -12,7 +12,6 @@ in {
   ];
 
   home.packages = with pkgs; [
-    discord
     wechat
 
     drawio
