@@ -77,6 +77,7 @@ in
     mpc
     zathura
     zathuraPkgs.zathura_pdf_mupdf
+    wl-kbptr
   ];
 
   wayland.windowManager.river = {
