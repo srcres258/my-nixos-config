@@ -2275,6 +2275,17 @@
                     },
                 },
             },
+            .{
+                .keysym = "f",
+                .modifiers = .{ .mod4 = true },
+                .event = .{
+                    .click = .{
+                        .pressed = .{
+                            .spawn_shell = .{ .cmd = "wl-kbptr -c ${HOME}/.config/wl-kbptr/config.toml" },
+                        },
+                    },
+                },
+            },
         },
 
         // list of pointer bindings

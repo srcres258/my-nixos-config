@@ -9,6 +9,8 @@ in {
     ./vscode.nix
     ./niri.nix
     ./river.nix
+
+    ./wl-kbptr
   ];
 
   home.packages = with pkgs; [
