@@ -34,6 +34,7 @@
     portablemc
 
     gtkwave
+    surfer
 
     networkmanagerapplet
 
