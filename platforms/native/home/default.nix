@@ -9,6 +9,7 @@ in {
     ./vscode.nix
     ./niri.nix
     ./river.nix
+    ./zen-editor.nix
 
     ./wl-kbptr
   ];
