@@ -3,9 +3,9 @@
 , pkgs
 , ...
 }: {
-  imports = [
-    ../../modules/virtualization/windows-vm/default.nix
-  ];
+  #imports = [
+  #  ../../modules/virtualization/windows-vm/default.nix
+  #];
 
   boot.loader = {
     systemd-boot.enable = true;
