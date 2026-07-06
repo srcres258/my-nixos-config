@@ -103,7 +103,7 @@ in
   xdg.configFile."opencode/oh-my-openagent.jsonc".source =
     json.generate "oh-my-openagent.jsonc" (let
       ds = "deepseek/deepseek-v4-pro";
-      qwen = "alibaba-cn/qwen3.6-plus";
+      #qwen = "alibaba-cn/qwen3.6-plus";
       gpt = "openai/gpt-5.4-mini";
     in {
       agents = {
@@ -148,7 +148,7 @@ in
           variant = "max";
         };
         multimodal-looker = {
-          model = qwen;
+          model = gpt;
           variant = "max";
         };
       };
