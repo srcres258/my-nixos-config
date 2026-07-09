@@ -289,6 +289,7 @@ in {
             msjsdiag.vscode-react-native
             ecmel.vscode-html-css
             bradlc.vscode-tailwindcss
+            jcbuisson.vue
 
             # CSS
             sysoev.language-stylus
