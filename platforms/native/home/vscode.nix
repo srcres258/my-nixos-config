@@ -290,6 +290,7 @@ in {
             ecmel.vscode-html-css
             bradlc.vscode-tailwindcss
             jcbuisson.vue
+            kangping.protobuf
 
             # CSS
             sysoev.language-stylus
