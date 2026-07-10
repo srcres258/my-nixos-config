@@ -48,7 +48,7 @@
     xclip
     wl-clipboard-rs
   ]) ++ (with pkgs.nur.repos; [
-    # srcres258.lceda-pro
+    srcres258.lceda-pro
   ]);
 
   programs.kitty = {
