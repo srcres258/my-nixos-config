@@ -151,6 +151,15 @@ in
           model = gpt;
           variant = "max";
         };
+
+        general = {
+          model = ds;
+          variant = "max";
+        };
+        build = {
+          model = ds;
+          variant = "max";
+        };
       };
       categories = let
         ds-max = {
