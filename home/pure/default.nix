@@ -210,7 +210,6 @@ in
     srcres258.bibox
     srcres258.sootty
     srcres258.waveql
-    srcres258.pywellen-mcp
   ]) ++ [ javaPkg scalaPkg ];
   home.sessionVariables = {
     EDITOR = "nvim";

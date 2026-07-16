@@ -18,12 +18,6 @@
           model_auto_compact_token_limit = 900000;
         };
       };
-
-      mcp_servers = {
-        pywellen = {
-          command = "pywellen-mcp";
-        };
-      };
     };
   };
 }

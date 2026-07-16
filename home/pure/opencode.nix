@@ -67,13 +67,6 @@ in
       plugin = [
         "oh-my-openagent@latest"
       ];
-      mcp = {
-        pywellen = {
-          type = "local";
-          command = [ "pywellen-mcp" ];
-          enabled = true;
-        };
-      };
       provider = let
         codex = {
           name = "GPT-5.3 Codex";
