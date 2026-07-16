@@ -205,12 +205,10 @@ in
     zls
     lldb
   ] ++ (with nur.repos; [
-    srcres258.ag
     srcres258.jyyslide-util
     srcres258.adif-manage
     srcres258.bibox
     srcres258.sootty
-    srcres258.deepseek-tui
     srcres258.waveql
     srcres258.pywellen-mcp
   ]) ++ [ javaPkg scalaPkg ];
