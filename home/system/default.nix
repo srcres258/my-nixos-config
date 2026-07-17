@@ -17,6 +17,8 @@
     kdePackages.gwenview
     # kwalletcli -- removed from nixpkgs (Plasma 5 EOL); kdePackages.kwallet provides kwallet-query
 
+    wayland-utils
+
     piliplus
     mission-center
 
