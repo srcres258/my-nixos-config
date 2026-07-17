@@ -174,7 +174,7 @@
     // .none
     // .on_focus_changed: warp cursor to the center of window focused
     // .on_output_changed: warp cursor to the center of output focused
-    .cursor_warp = .none,
+    .cursor_warp = .on_output_changed,
 
     // disable wrap around when iter focus or swap window in scroller layout
     .disable_wrap_around_for_scroller = false,
@@ -2379,6 +2379,22 @@
     //      layout: same as `layout` before but you only need to specify the values you want to change
     //      default_layout: same as `default_layout` before
     .output_rules = .{
-        //
+        .{
+            .edid_hash = .{
+                .str = "sha256:1c11ca1d9c76bfaeb97df6b2ddaf6226207dc0d9486368cdd1ad11c3398a852d",
+            },
+            .default_layout = .tile,
+        },
+        .{
+            .edid_hash = .{
+                .str = "sha256:64c325c52535149f3e7a4b586c2c945cca6148d1a3ba64322b2705c790229f56",
+            },
+            .default_layout = .tile,
+        },
+
+        // 最后一条：所有未识别的新显示器
+        .{
+            .default_layout = .tile,
+        },
     },
 }
