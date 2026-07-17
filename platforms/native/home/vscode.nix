@@ -250,8 +250,8 @@ in {
 
             # Scala
             scala-lang.scala
-            scala-lang.scala-snippets
-            scalameta.metals
+            #scala-lang.scala-snippets
+            #scalameta.metals
 
             # SystemVerilog / Verilog / VHDL
             mshr-h.veriloghdl
