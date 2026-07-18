@@ -52,6 +52,11 @@ in
           "ls *" = "allow";
           "cat *" = "allow";
           "grep *" = "allow";
+          "head *" = "allow";
+          "tail *" = "allow";
+          "wc *" = "allow";
+          "echo *" = "allow";
+          "sed *" = "allow";
         };
         task = "allow";
         skill = "allow";
