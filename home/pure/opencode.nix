@@ -57,6 +57,9 @@ in
           "wc *" = "allow";
           "echo *" = "allow";
           "sed *" = "allow";
+          "find *" = "allow";
+          "sort *" = "allow";
+          "awk *" = "allow";
         };
         task = "allow";
         skill = "allow";
