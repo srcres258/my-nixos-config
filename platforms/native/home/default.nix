@@ -30,10 +30,6 @@ in {
     verilator
     iverilog
 
-    pkgsCross.riscv64.stdenv.cc # Linux GNU
-    pkgsCross.riscv64-embedded.stdenv.cc # bare-metal ELF
-    pkgsCross.riscv32-embedded.stdenv.cc
-
     qemu
 
     whisper-cpp
