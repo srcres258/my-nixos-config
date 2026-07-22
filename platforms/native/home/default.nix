@@ -40,7 +40,7 @@ in {
     spek
     fcrackzip
 
-    jetbrains.idea
+    #jetbrains.idea
 
     # Ethereum
     inputs.go-ethereum-legacy-nixpkgs.legacyPackages.${system}.go-ethereum
