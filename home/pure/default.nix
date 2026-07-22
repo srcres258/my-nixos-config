@@ -193,7 +193,6 @@ in
       z3-solver
       distlib
       touying
-      opencv4Full
     ]) ++ (config.my.python.packageGenerator ps))))
     yapf
     hatch
