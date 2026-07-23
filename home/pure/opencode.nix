@@ -64,6 +64,7 @@ in
 
           "git status *" = "allow";
           "git diff *" = "allow";
+          "git log *" = "allow";
         };
         task = "allow";
         skill = "allow";
