@@ -60,6 +60,10 @@ in
           "find *" = "allow";
           "sort *" = "allow";
           "awk *" = "allow";
+          "file *" = "allow";
+
+          "git status *" = "allow";
+          "git diff *" = "allow";
         };
         task = "allow";
         skill = "allow";
