@@ -34,6 +34,11 @@
     defaultGateway = "172.16.0.1";
 
     firewall.enable = false;
+
+    # Disable WLAN device.
+    networkmanager.unmanaged = [
+      "interface-name:wlo1"
+    ];
   };
 
   environment.systemPackages = with pkgs; [
