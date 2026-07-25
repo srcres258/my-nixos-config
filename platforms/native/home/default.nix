@@ -10,6 +10,7 @@ in {
     ./niri.nix
     ./river.nix
     ./zen-editor.nix
+    ./libnfc.nix
 
     ./wl-kbptr
   ];
