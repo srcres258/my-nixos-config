@@ -78,7 +78,7 @@
 
   # Enable deepcool display
   services.hardware.deepcool-digital-linux = {
-    enable = true;
+    enable = false;
     extraArgs = [
       "--mode"
       "cpu_temp"
