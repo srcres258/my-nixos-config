@@ -17,6 +17,7 @@ in
         autocrlf = "input";
       };
       http.postbuffer = 1048576000;
+      credential.helper = "store";
     };
     signing.key = "88079CCB3D29D2C3";
   };
