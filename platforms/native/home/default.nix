@@ -3,7 +3,7 @@
 , inputs
 , ...
 }: let
-  javaPkg = pkgs.javaPackages.compiler.temurin-bin.jdk-21;
+  javaPkg = pkgs.javaPackages.compiler.temurin-bin.jdk-25;
 in {
   imports = [
     ./vscode.nix

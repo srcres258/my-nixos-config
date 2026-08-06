@@ -7,7 +7,7 @@
 let
   username = "srcres";
 
-  javaPkg = pkgs.javaPackages.compiler.temurin-bin.jdk-21;
+  javaPkg = pkgs.javaPackages.compiler.temurin-bin.jdk-25;
   scalaPkg = pkgs.scala_3;
 in
 {

@@ -6,7 +6,7 @@
 , ...
 }: let
   vscode-ext = pkgs.nix-vscode-extensions;
-  ltex-jdk = pkgs.javaPackages.compiler.temurin-bin.jdk-21;
+  ltex-jdk = pkgs.javaPackages.compiler.temurin-bin.jdk-25;
 
   toSameValAttrSet = keys: v: builtins.foldl' (acc: x: acc // { "${x}" = v; }) { } keys;
   toIgnoreAttrSet = keys: toSameValAttrSet keys "ignore";
