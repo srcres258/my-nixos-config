@@ -309,17 +309,17 @@
         //              the corrosponding action will only trigger once when key pressed or released
         //              the pressed action and released action could define at the same time
         .key = .{
-            .{
-                .keysym = "q",
-                .modifiers = .{ .mod4 = true, .shift = true },
-                .event = .{
-                    .click = .{
-                        .pressed = .{
-                            .spawn_shell = .{ .cmd = "killall river" },
-                        },
-                    },
-                },
-            },
+            //.{
+            //    .keysym = "q",
+            //    .modifiers = .{ .mod4 = true, .shift = true },
+            //    .event = .{
+            //        .click = .{
+            //            .pressed = .{
+            //                .spawn_shell = .{ .cmd = "killall river" },
+            //            },
+            //        },
+            //    },
+            //},
 
             .{
                 .keysym = "r",
