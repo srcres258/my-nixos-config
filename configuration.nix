@@ -130,10 +130,6 @@
     ccache
     ddcutil
 
-    # Java
-    jetbrains.jdk
-    javaPackages.compiler.temurin-bin.jdk-21
-
     libmtp
 
     dig
