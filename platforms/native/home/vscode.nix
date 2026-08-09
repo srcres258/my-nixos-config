@@ -323,6 +323,10 @@ in {
 
             # Blogging
             fantasy.vscode-hexo-utils
+
+            # CSV
+            repreng.csv
+            mechatroner.rainbow-csv
           ]
         ));
       };
