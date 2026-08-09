@@ -27,9 +27,6 @@ in {
     rkdeveloptool
 
     gtkwave
-    circt
-    verilator
-    iverilog
 
     qemu
 
