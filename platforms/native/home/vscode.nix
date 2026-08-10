@@ -327,6 +327,9 @@ in {
             # CSV
             repreng.csv
             mechatroner.rainbow-csv
+
+            # Kotlin
+            mathiasfrohlich.kotlin
           ]
         ));
       };
