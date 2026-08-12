@@ -32,7 +32,6 @@
     cmakeWithGui
 
     # Minecraft launchers
-    hmcl
     prismlauncher
     portablemc
 
