@@ -35,7 +35,7 @@ in {
     fcrackzip
 
     jetbrains.idea
-    jetbrains.clion
+    #jetbrains.clion
 
     # Ethereum
     inputs.go-ethereum-legacy-nixpkgs.legacyPackages.${system}.go-ethereum
