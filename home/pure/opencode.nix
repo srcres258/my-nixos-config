@@ -107,10 +107,12 @@ in
     in {
       agents = {
         sisyphus = {
-          model = minimax;
+          model = ds;
+          variant = "max";
         };
         sisyphus-junior = {
-          model = minimax;
+          model = ds;
+          variant = "max";
         };
         hephaestus = {
           model = gpt;
@@ -120,36 +122,39 @@ in
         };
         atlas = {
           model = gpt;
-          variant = "max";
         };
 
         metis = {
           model = gpt;
-          variant = "max";
         };
         momus = {
-          model = minimax;
+          model = ds;
+          variant = "max";
         };
 
         oracle = {
-          model = minimax;
+          model = ds;
+          variant = "max";
         };
         librarian = {
-          model = minimax;
+          model = ds;
+          variant = "max";
         };
         explore = {
-          model = minimax;
+          model = ds;
+          variant = "max";
         };
         multimodal-looker = {
-          model = gpt;
-          variant = "max";
+          model = minimax;
         };
 
         general = {
-          model = minimax;
+          model = ds;
+          variant = "max";
         };
         build = {
-          model = minimax;
+          model = ds;
+          variant = "max";
         };
       };
       categories = let
