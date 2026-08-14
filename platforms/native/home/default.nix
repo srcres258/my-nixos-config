@@ -37,6 +37,8 @@ in {
     jetbrains.idea
     #jetbrains.clion
 
+    libreoffice
+
     # Ethereum
     inputs.go-ethereum-legacy-nixpkgs.legacyPackages.${system}.go-ethereum
     foundry-bin
