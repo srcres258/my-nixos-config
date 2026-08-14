@@ -80,15 +80,7 @@ in
       plugin = [
         "oh-my-openagent@latest"
       ];
-      provider = let
-        codex = {
-          name = "GPT-5.3 Codex";
-          limit = {
-            context = 400000;
-            output = 128000;
-          };
-        };
-      in {
+      provider = {
         micuapi = {
           options = {
             baseURL = "https://www.micuapi.ai/v1";
@@ -111,15 +103,14 @@ in
       ds = "deepseek/deepseek-v4-pro";
       #qwen = "alibaba-cn/qwen3.6-plus";
       gpt = "openai/gpt-5.4-mini";
+      minimax = "minimax-cn/MiniMax-M3";
     in {
       agents = {
         sisyphus = {
-          model = ds;
-          reasoningEffort = "high";
+          model = minimax;
         };
         sisyphus-junior = {
-          model = ds;
-          reasoningEffort = "high";
+          model = minimax;
         };
         hephaestus = {
           model = gpt;
@@ -137,21 +128,17 @@ in
           variant = "max";
         };
         momus = {
-          model = ds;
-          reasoningEffort = "high";
+          model = minimax;
         };
 
         oracle = {
-          model = ds;
-          variant = "max";
+          model = minimax;
         };
         librarian = {
-          model = ds;
-          variant = "max";
+          model = minimax;
         };
         explore = {
-          model = ds;
-          variant = "max";
+          model = minimax;
         };
         multimodal-looker = {
           model = gpt;
@@ -159,18 +146,15 @@ in
         };
 
         general = {
-          model = ds;
-          variant = "max";
+          model = minimax;
         };
         build = {
-          model = ds;
-          variant = "max";
+          model = minimax;
         };
       };
       categories = let
         ds-max = {
           model = ds;
-          variant = "max";
         };
       in {
         visual-engineering = ds-max;
