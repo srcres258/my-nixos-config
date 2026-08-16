@@ -204,6 +204,11 @@ in
     zig
     zls
     lldb
+
+    # Rocq language
+    (coq.withPackages (ps: [
+      ps.stdlib
+    ]))
   ] ++ (with nur.repos; [
     srcres258.jyyslide-util
     srcres258.adif-manage

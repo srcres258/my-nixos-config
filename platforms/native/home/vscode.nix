@@ -7,6 +7,7 @@
 }: let
   vscode-ext = pkgs.nix-vscode-extensions;
   ltex-jdk = pkgs.javaPackages.compiler.temurin-bin.jdk-25;
+  vsrocq = pkgs.coqPackages.vsrocq-language-server;
 
   toSameValAttrSet = keys: v: builtins.foldl' (acc: x: acc // { "${x}" = v; }) { } keys;
   toIgnoreAttrSet = keys: toSameValAttrSet keys "ignore";
@@ -170,6 +171,9 @@
     # Zig Language Server
     "zig.zls.enabled" = true;
     "zig.zls.path" = "/home/srcres/.nix-profile/bin/zls";
+
+    # VsRocq
+    "vsrocq.path" = "${vsrocq}/bin/vsrocqtop";
   };
 
   # JSON for the writable settings file (baseline, merged with user changes on activation)
@@ -188,6 +192,7 @@ in {
     ltex-ls-plus
   ]) ++ [
     ltex-jdk
+    vsrocq
   ];
 
   programs.vscode = let
@@ -330,6 +335,9 @@ in {
 
             # Kotlin
             mathiasfrohlich.kotlin
+
+            # Rocq
+            rocq-prover.vsrocq
           ]
         ));
       };
