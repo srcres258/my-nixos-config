@@ -100,19 +100,16 @@ in
 
   xdg.configFile."opencode/oh-my-openagent.jsonc".source =
     json.generate "oh-my-openagent.jsonc" (let
-      ds = "deepseek/deepseek-v4-pro";
       #qwen = "alibaba-cn/qwen3.6-plus";
       gpt = "openai/gpt-5.4-mini";
       minimax = "minimax-cn/MiniMax-M3";
     in {
       agents = {
         sisyphus = {
-          model = ds;
-          variant = "max";
+          model = minimax;
         };
         sisyphus-junior = {
-          model = ds;
-          variant = "max";
+          model = minimax;
         };
         hephaestus = {
           model = gpt;
@@ -128,48 +125,42 @@ in
           model = gpt;
         };
         momus = {
-          model = ds;
-          variant = "max";
+          model = minimax;
         };
 
         oracle = {
-          model = ds;
-          variant = "max";
+          model = minimax;
         };
         librarian = {
-          model = ds;
-          variant = "max";
+          model = minimax;
         };
         explore = {
-          model = ds;
-          variant = "max";
+          model = minimax;
         };
         multimodal-looker = {
           model = minimax;
         };
 
         general = {
-          model = ds;
-          variant = "max";
+          model = minimax;
         };
         build = {
-          model = ds;
-          variant = "max";
+          model = minimax;
         };
       };
       categories = let
-        ds-max = {
-          model = ds;
+        minimax-model = {
+          model = minimax;
         };
       in {
-        visual-engineering = ds-max;
-        ultrabrain = ds-max;
-        deep = ds-max;
-        artistry = ds-max;
-        quick = ds-max;
-        unspecified-low = ds-max;
-        unspecified-high = ds-max;
-        writing = ds-max;
+        visual-engineering = minimax-model;
+        ultrabrain = minimax-model;
+        deep = minimax-model;
+        artistry = minimax-model;
+        quick = minimax-model;
+        unspecified-low = minimax-model;
+        unspecified-high = minimax-model;
+        writing = minimax-model;
       };
     });
 
