@@ -18,7 +18,6 @@ in
     ./newsboat.nix
     ./git.nix
     ./fish.nix
-    ./aichat.nix
     ./opencode.nix
     ./neovim.nix
     ./gh.nix
