@@ -2381,7 +2381,7 @@
     .output_rules = .{
         .{
             .edid_hash = .{
-                .str = "sha256:64c325c52535149f3e7a4b586c2c945cca6148d1a3ba64322b2705c790229f56",
+                .str = "sha256:fd897a92ee72f023b33abaa83bfad8065913aac747fcdf97b7103074b745943d",
             },
             .default_layout = .tile,
         },
