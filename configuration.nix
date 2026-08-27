@@ -86,6 +86,8 @@
     xz
     unzip
     p7zip
+
+    socat
   ] ++ lib.optionals (!pkgs.stdenv.hostPlatform.isAarch64) [
     rar
     unrar
