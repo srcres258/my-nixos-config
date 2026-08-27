@@ -268,34 +268,6 @@
 
   services.flatpak.enable = true;
 
-  # Ethereum private blockchain config.
-  # services.ethereum.geth.myprivate = {
-  #     enable = true;
-  #     openFirewall = true;
-  #     args = {
-  #         networkid = 114514;
-  #         nodiscover = true;
-  #         mine = true;
-  #         miner = {
-  #             threads = 1;
-  #             etherbase = "0xYourAccountAddress";
-  #         };
-  #         http = {
-  #             enable = true;
-  #             addr = "0.0.0.0";
-  #             port = 8545;
-  #             api = [ "eth" "net" "web3" "personal" "miner" ];
-  #         };
-  #         syncmode = "full";
-  #     };
-  #     extraArgs = [
-  #         "--datadir" "/var/lib/geth-myprivate"
-  #         "--unlock" "0xYourAccountAddress"
-  #         "--password" "/path/to/password.txt"
-  #         "--allow-insecure-unlock"
-  #     ];
-  # };
-
   # Define the responses to system key events.
   services.logind.settings.Login = {
     HandlePowerKey = "ignore";

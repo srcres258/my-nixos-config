@@ -277,9 +277,6 @@ in {
             ms-toolsai.vscode-jupyter-slideshow
             ms-toolsai.vscode-jupyter-cell-tags
 
-            # Solidity
-            nomicfoundation.hardhat-solidity
-
             # HTML
             sidthesloth.html5-boilerplate
             ecmel.vscode-html-css

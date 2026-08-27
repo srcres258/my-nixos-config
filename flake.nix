@@ -6,7 +6,6 @@
     nixpkgs-unstable.url = "github:NixOS/nixpkgs/nixos-unstable";
 
     mill-legacy-nixpkgs.url = "github:NixOS/nixpkgs/de1864217bfa9b5845f465e771e0ecb48b30e02d";
-    go-ethereum-legacy-nixpkgs.url = "github:NixOS/nixpkgs/0ffaecb6f04404db2c739beb167a5942993cfd87";
     vscode-legacy-nixpkgs.url = "github:NixOS/nixpkgs/ae67888ff7ef9dff69b3cf0cc0fbfbcd3a722abe";
 
     nur = {
@@ -29,8 +28,6 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
-    foundry.url = "github:shazow/foundry.nix/stable";
-
     yazi.url = "github:sxyazi/yazi";
 
     zpaper.url = "git+https://codeberg.org/srcres258/zpaper.git?ref=refs/tags/v0.1.4";
@@ -46,13 +43,11 @@
     , nixpkgs
     , nixpkgs-unstable
     , mill-legacy-nixpkgs
-    , go-ethereum-legacy-nixpkgs
     , vscode-legacy-nixpkgs
     , nur
     , home-manager
     , nixos-wsl
     , vscode-extensions
-    , foundry
     , yazi
     , zpaper
     , # my-nur,
@@ -69,7 +64,6 @@
         };
         overlays = [
           nur.overlays.default
-          foundry.overlay
         ];
       };
 

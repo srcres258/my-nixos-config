@@ -31,7 +31,6 @@
         systemverilog
         sql
         fish
-        solidity
       ];
     };
   in {
