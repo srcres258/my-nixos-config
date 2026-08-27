@@ -1,82 +1,5 @@
 { lib, pkgs, config, ... }:
-let
-  aic8800d80Src = pkgs.fetchFromGitHub {
-    owner = "shenmintao";
-    repo = "aic8800d80";
-    rev = "05710dff05dabce66ab3ee80f40484892c512b3c";
-    hash = "sha256-QVpuJrCssBf4fwycq7oN0Oi9OxpQUqrSTQuHk5UE9+U=";
-  };
 
-  aic8800d80 = config.boot.kernelPackages.callPackage
-    (
-      { stdenv, kernel }:
-      stdenv.mkDerivation {
-        pname = "aic8800d80";
-        version = "unstable-2026-04-13";
-        src = aic8800d80Src;
-
-        nativeBuildInputs = kernel.moduleBuildDependencies;
-
-        buildPhase = ''
-          runHook preBuild
-          make -C drivers/aic8800 \
-            KVER=${kernel.modDirVersion} \
-            KDIR=${kernel.dev}/lib/modules/${kernel.modDirVersion}/build
-          runHook postBuild
-        '';
-
-        installPhase = ''
-          runHook preInstall
-          modDir=$out/lib/modules/${kernel.modDirVersion}/kernel/drivers/net/wireless/aic8800
-          mkdir -p "$modDir"
-          install -m 644 drivers/aic8800/aic_load_fw/aic_load_fw.ko "$modDir"/
-          install -m 644 drivers/aic8800/aic8800_fdrv/aic8800_fdrv.ko "$modDir"/
-          runHook postInstall
-        '';
-      }
-    )
-    { };
-
-  aic8800d80Firmware = pkgs.stdenvNoCC.mkDerivation {
-    pname = "aic8800d80-firmware";
-    version = "unstable-2026-04-13";
-    src = aic8800d80Src;
-
-    installPhase = ''
-      runHook preInstall
-      mkdir -p $out/lib/firmware
-      cp -r fw/* $out/lib/firmware/
-
-      # Some AIC8800 USB variants probe as "AIC8800DC" while others use
-      # "AIC8800D80" firmware layout. Provide compatibility links so both
-      # probe paths resolve at runtime.
-      if [ -d $out/lib/firmware/aic8800D80 ] && [ ! -e $out/lib/firmware/aic8800DC ]; then
-        ln -s aic8800D80 $out/lib/firmware/aic8800DC
-      fi
-      if [ -d $out/lib/firmware/aic8800DC ] && [ ! -e $out/lib/firmware/aic8800D80 ]; then
-        ln -s aic8800DC $out/lib/firmware/aic8800D80
-      fi
-
-      if [ -e $out/lib/firmware/aic8800D80/fmacfw_patch_8800dc_u02.bin ] && [ ! -e $out/lib/firmware/aic8800DC/fmacfw_patch_8800dc_u02.bin ]; then
-        mkdir -p $out/lib/firmware/aic8800DC
-        ln -s ../aic8800D80/fmacfw_patch_8800dc_u02.bin $out/lib/firmware/aic8800DC/fmacfw_patch_8800dc_u02.bin
-      fi
-
-      mkdir -p $out/lib/udev/rules.d
-      cat > $out/lib/udev/rules.d/99-aic8800d80-mode-switch.rules <<'EOF'
-      ACTION=="add", SUBSYSTEM=="block", ENV{DEVTYPE}=="disk", KERNEL=="sd*", ATTRS{idVendor}=="a69c", ATTRS{idProduct}=="5721", RUN+="${pkgs.util-linux}/bin/eject /dev/%k"
-      ACTION=="add", SUBSYSTEM=="block", ENV{DEVTYPE}=="disk", KERNEL=="sd*", ATTRS{idVendor}=="a69c", ATTRS{idProduct}=="5723", RUN+="${pkgs.util-linux}/bin/eject /dev/%k"
-      ACTION=="add", SUBSYSTEM=="block", ENV{DEVTYPE}=="disk", KERNEL=="sd*", ATTRS{idVendor}=="a69c", ATTRS{idProduct}=="5724", RUN+="${pkgs.util-linux}/bin/eject /dev/%k"
-      ACTION=="add", SUBSYSTEM=="block", ENV{DEVTYPE}=="disk", KERNEL=="sd*", ATTRS{idVendor}=="a69c", ATTRS{idProduct}=="5725", RUN+="${pkgs.util-linux}/bin/eject /dev/%k"
-      ACTION=="add", SUBSYSTEM=="block", ENV{DEVTYPE}=="disk", KERNEL=="sd*", ATTRS{idVendor}=="a69c", ATTRS{idProduct}=="5726", RUN+="${pkgs.util-linux}/bin/eject /dev/%k"
-      ACTION=="add", SUBSYSTEM=="block", ENV{DEVTYPE}=="disk", KERNEL=="sd*", ATTRS{idVendor}=="a69c", ATTRS{idProduct}=="5727", RUN+="${pkgs.util-linux}/bin/eject /dev/%k"
-      ACTION=="add", SUBSYSTEM=="block", ENV{DEVTYPE}=="disk", KERNEL=="sd*", ATTRS{idVendor}=="a69c", ATTRS{idProduct}=="572a", RUN+="${pkgs.util-linux}/bin/eject /dev/%k"
-      ACTION=="add", SUBSYSTEM=="block", ENV{DEVTYPE}=="disk", KERNEL=="sd*", ATTRS{idVendor}=="a69c", ATTRS{idProduct}=="572c", RUN+="${pkgs.util-linux}/bin/eject /dev/%k"
-      EOF
-      runHook postInstall
-    '';
-  };
-in
 {
   imports = [
     ./hardware-configuration.nix
@@ -114,16 +37,8 @@ in
     "nvme"
     "nvme_core"
     "tun"
-    "aic_load_fw"
-    "aic8800_fdrv"
     "panthor"
   ];
-  # AICSemi driver reads firmware via aic_load_fw module parameter aic_fw_path.
-  # On NixOS firmware lives under /run/current-system/firmware.
-  boot.extraModprobeConfig = ''
-    options aic_load_fw aic_fw_path=/run/current-system/firmware
-  '';
-  boot.extraModulePackages = [ aic8800d80 ];
   boot.initrd.systemd.extraBin = {
     blkid = "${pkgs.util-linux}/bin/blkid";
   };
@@ -242,13 +157,6 @@ in
 
   # Keep ARM-specific graphics path explicit and minimal.
   hardware.graphics.enable = true;
-
-  # AIC8800D80 USB Wi-Fi driver (aic8800_fdrv + aic_load_fw) and firmware.
-  # This out-of-tree driver requests raw .bin/.txt filenames via request_firmware
-  # and does not resolve NixOS-compressed .zst firmware paths.
-  hardware.firmwareCompression = "none";
-  hardware.firmware = [ aic8800d80Firmware ];
-  services.udev.packages = [ aic8800d80Firmware ];
 
   # This option defines the first version of NixOS installed on this host.
   system.stateVersion = "25.11";
