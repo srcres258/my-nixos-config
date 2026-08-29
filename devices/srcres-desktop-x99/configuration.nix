@@ -12,6 +12,9 @@
     ];
 
   boot.initrd.kernelModules = [ "amdgpu" ];
+  boot.kernelParams = [
+    "mem=12G"
+  ];
   services.xserver.videoDrivers = [ "amdgpu" ];
   hardware.graphics = {
     enable = true;
