@@ -17,7 +17,7 @@
       canTouchEfiVariables = true;
       efiSysMountPoint = "/boot";
     };
-    timeout = 10;
+    timeout = 3;
   };
   boot.kernelPackages = pkgs.linuxKernel.packages.linux_zen;
 
