@@ -92,7 +92,6 @@
     rar
     unrar
   ] ++ [
-
     cowsay
     file
     which
