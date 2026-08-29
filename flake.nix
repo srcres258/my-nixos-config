@@ -126,7 +126,6 @@
           srcres-desktop-x99 = mkNixOSConfig {
             inherit system;
             extraModules = [
-              ./platforms/native/configuration.nix
               ./devices/srcres-desktop-x99/configuration.nix
             ];
           };
@@ -203,7 +202,6 @@
           "${username}@srcres-desktop-x99" = mkHomeConfig {
             inherit system;
             extraModules = [
-              ./platforms/native/home
               ./devices/srcres-desktop-x99/home
             ];
           };
