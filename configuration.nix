@@ -223,17 +223,6 @@
 
   # List services that you want to enable:
 
-  # Enable the OpenSSH daemon.
-  services.openssh = {
-    enable = true;
-    settings = {
-      X11Forwarding = true;
-      PermitRootLogin = "yes";
-      PasswordAuthentication = true;
-    };
-    openFirewall = true;
-  };
-
   fonts = {
     packages = with pkgs; [
       adwaita-fonts
