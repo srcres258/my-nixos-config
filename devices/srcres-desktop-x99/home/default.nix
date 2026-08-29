@@ -1,11 +1,6 @@
 { pkgs
 , ...
 }: {
-  home.packages = with pkgs; [
-    mpv
-    mpvpaper
-  ];
-
   my.python.packageGenerator = (ps: with ps; [
     # torchWithRocm
     # (torchvision.override { torch = ps.torchWithRocm; })
@@ -14,35 +9,8 @@
     torchvision
   ]);
 
-  systemd.user.services."mpvpaper" =
-    let
-      username = "srcres";
-      wallpaperSrc = builtins.toPath "/home/${username}/wallpaper.mp4";
-      mpvOptions = [
-        "loop=inf no-audio hwdec=vaapi vaapi-device=/dev/dri/renderD128"
-      ];
-    in
-    {
-      Unit = {
-        Description = "mpvpaper dynamic wallpaper";
-        After = [ "graphical-session.target" ];
-        PartOf = [ "graphical-session.target" ];
-      };
-
-      Service = {
-        Type = "simple";
-        ExecStart = "${pkgs.mpvpaper}/bin/mpvpaper -o '${builtins.concatStringsSep " " mpvOptions}' '*' ${wallpaperSrc}";
-        Restart = "on-failure";
-        RestartSec = 2;
-      };
-
-      Install = {
-        WantedBy = [ "graphical-session.target" ];
-      };
-    };
-
   # !IMPORTANT!
   # This option should NOT be changed, except for installation
   # for a completely new machine or a new user.
-  home.stateVersion = "25.05";
+  home.stateVersion = "26.05";
 }
