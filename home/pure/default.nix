@@ -173,6 +173,8 @@ in
 
     gdb
 
+    ffmpeg
+
     # Go language
     gopls
 
