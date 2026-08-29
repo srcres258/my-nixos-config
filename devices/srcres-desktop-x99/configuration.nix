@@ -11,6 +11,16 @@
       ./hardware-configuration.nix
     ];
 
+  boot.loader = {
+    systemd-boot.enable = true;
+    efi = {
+      canTouchEfiVariables = true;
+      efiSysMountPoint = "/boot";
+    };
+    timeout = 10;
+  };
+  boot.kernelPackages = pkgs.linuxKernel.packages.linux_zen;
+
   boot.initrd.kernelModules = [ "amdgpu" ];
   boot.kernelParams = [
     "mem=12G"
