@@ -104,7 +104,7 @@
         ${pkgs.ddns-go}/bin/ddns-go \
           -l 0.0.0.0:9876 \
           -f 300 \
-          -c /etc/ddns-go/config.yaml
+          -c /var/lib/ddns-go/config.yaml
       '';
 
       Restart = "on-failure";
