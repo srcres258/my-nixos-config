@@ -9,6 +9,8 @@
     [
       # Include the results of the hardware scan.
       ./hardware-configuration.nix
+
+      ./mc-server.nix
     ];
 
   boot.loader = {
