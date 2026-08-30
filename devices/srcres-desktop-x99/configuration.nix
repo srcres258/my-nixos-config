@@ -59,6 +59,36 @@
     openFirewall = true;
   };
 
+  # frp config
+  services.frp.instances.main = {
+    enable = true;
+    role = "client";
+
+    environmentFiles = [
+      "/etc/frp-token"
+    ];
+
+    settings = {
+      serverAddr = "my-server.srcres.top";
+      serverPort = 7000;
+
+      auth = {
+        method = "token";
+        token = "$FRP_TOKEN";
+      };
+
+      proxies = [
+        {
+          name = "mc-server";
+          type = "tcp";
+          localIP = "127.0.0.1";
+          localPort = 11455;
+          remotePort = 11451;
+        }
+      ];
+    };
+  };
+
   # This option defines the first version of NixOS you have installed on this particular machine,
   # and is used to maintain compatibility with application data (e.g. databases) created on older NixOS versions.
   #
