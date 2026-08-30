@@ -89,6 +89,29 @@
     };
   };
 
+  # DDNS config
+  systemd.services.ddns-go = {
+    description = "ddns-go Dynamic DNS Client";
+
+    wantedBy = [ "multi-user.target" ];
+    wants = [ "network-online.target" ];
+    after = [ "network-online.target" ];
+
+    serviceConfig = {
+      Type = "simple";
+
+      ExecStart = ''
+        ${pkgs.ddns-go}/bin/ddns-go \
+          -l 0.0.0.0:9876 \
+          -f 300 \
+          -c /etc/ddns-go/config.yaml
+      '';
+
+      Restart = "on-failure";
+      RestartSec = "10s";
+    };
+  };
+
   # This option defines the first version of NixOS you have installed on this particular machine,
   # and is used to maintain compatibility with application data (e.g. databases) created on older NixOS versions.
   #
