@@ -67,9 +67,6 @@
 
   services.alloy = {
     enable = true;
-
-    # NixOS module 默认就是 /etc/alloy；
-    # 明确写出来方便阅读。
     configPath = "/etc/alloy";
 
     extraFlags = [
@@ -78,10 +75,7 @@
   };
 
   environment.etc."alloy/config.alloy".text = ''
-    /*
-     * Discover local processes.
-     */
-
+    // Discover local processes.
     discovery.process "all" {
       refresh_interval = "30s"
 
@@ -95,20 +89,14 @@
       }
     }
 
-
-    /*
-     * Only keep Java processes.
-     *
-     * 如果机器上只有 ATM10 一个 Java 服务，
-     * 这样已经足够。
-     */
+    // Keep Java processes only.
     discovery.relabel "java" {
       targets = discovery.process.all.targets
 
       rule {
         action        = "keep"
         source_labels = ["__meta_process_exe"]
-        regex         = "/srv/minecraft"
+        regex         = ".*/java$"
       }
 
       rule {
@@ -118,47 +106,29 @@
       }
     }
 
-
-    /*
-     * Send profiling data to local Pyroscope.
-     */
-
+    // Send profiles to the local Pyroscope instance.
     pyroscope.write "local" {
       endpoint {
         url = "http://127.0.0.1:4040"
       }
 
       external_labels = {
-        "environment" = "home",
-        "application" = "minecraft",
+        environment = "home",
+        application = "minecraft",
       }
     }
 
-
-    /*
-     * Continuously profile the discovered JVM.
-     */
-
+    // Continuously profile the ATM10 JVM.
     pyroscope.java "atm10" {
       targets    = discovery.relabel.java.output
       forward_to = [pyroscope.write.local.receiver]
 
       profiling_config {
-        # 每 30 秒形成一个 profiling interval。
-        interval = "30s"
-
-        # CPU profiling
-        cpu = true
-
-        # async-profiler CPU sampling rate
+        interval    = "30s"
+        cpu         = true
         sample_rate = 100
-
-        # allocation profiling：
-        # 每分配约 512 KiB 进行一次采样。
-        alloc = "512k"
-
-        # 锁竞争采样阈值。
-        lock = "10ms"
+        alloc       = "512k"
+        lock        = "10ms"
       }
     }
   '';
