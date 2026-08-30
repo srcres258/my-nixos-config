@@ -74,7 +74,7 @@
 
       auth = {
         method = "token";
-        token = "$FRP_TOKEN";
+        token = "{{ .Envs.FRP_TOKEN }}";
       };
 
       proxies = [
