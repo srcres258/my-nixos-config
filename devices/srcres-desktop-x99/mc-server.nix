@@ -1,7 +1,7 @@
 { config, pkgs, lib, ... }:
 
 let
-  enableMonitoring = false;
+  enableMonitoring = true;
 in {
   ############################################################
   # Prometheus
