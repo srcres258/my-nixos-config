@@ -1,12 +1,14 @@
 { config, pkgs, lib, ... }:
 
-{
+let
+  enableMonitoring = false;
+in {
   ############################################################
   # Prometheus
   ############################################################
 
   services.prometheus = {
-    enable = true;
+    enable = enableMonitoring;
 
     # 只允许本机访问 Prometheus Web API。
     listenAddress = "127.0.0.1";
@@ -47,7 +49,7 @@
   ############################################################
 
   services.pyroscope = {
-    enable = true;
+    enable = enableMonitoring;
 
     # 只允许本机 Alloy / Grafana 访问。
     openFirewall = false;
@@ -66,7 +68,7 @@
   ############################################################
 
   services.alloy = {
-    enable = true;
+    enable = enableMonitoring;
     configPath = "/etc/alloy";
 
     extraFlags = [
@@ -157,7 +159,7 @@
   ############################################################
 
   services.grafana = {
-    enable = true;
+    enable = enableMonitoring;
 
     # 如果只希望通过 SSH tunnel / nginx 访问：
     #   http_addr = "127.0.0.1";
@@ -188,7 +190,7 @@
     ##########################################################
 
     provision = {
-      enable = true;
+      enable = enableMonitoring;
 
       datasources.settings = {
         apiVersion = 1;
