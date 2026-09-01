@@ -25,10 +25,6 @@
     enable = true;
   };
 
-  # v2raya for VPN
-  services.v2raya.enable = true;
-  networking.nftables.enable = true;
-
   # Disable firewall
   networking.firewall.enable = false;
 

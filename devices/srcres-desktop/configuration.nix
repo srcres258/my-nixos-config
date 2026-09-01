@@ -49,9 +49,6 @@
 
   hardware.amdgpu.opencl.enable = true;
 
-  # v2raya for VPN
-  services.v2raya.enable = true;
-
   services.logrotate.checkConfig = false;
 
   # This option defines the first version of NixOS you have installed on this particular machine,
