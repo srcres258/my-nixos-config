@@ -83,6 +83,14 @@
           localPort = 11455;
           remotePort = 11452;
         }
+
+        {
+          name = "ssh";
+          type = "tcp";
+          localIP = "127.0.0.1";
+          localPort = 22;
+          remotePort = 10023;
+        }
       ];
     };
   };
