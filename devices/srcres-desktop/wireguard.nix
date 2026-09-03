@@ -1,4 +1,4 @@
-{ pkgs, ... }: {
+{ pkgs, lib, ... }: {
   environment.systemPackages = with pkgs; [
     wireguard-tools
   ];
@@ -40,5 +40,6 @@
       }
     ];
   };
+  systemd.services.wg-quick-wg0.wantedBy = lib.mkForce [ ];
 }
 
