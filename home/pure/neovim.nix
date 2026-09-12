@@ -87,8 +87,8 @@
 
       lazy-nvim
 
-      copilot-lua
-      blink-copilot
+      #copilot-lua
+      #blink-copilot
       codecompanion-nvim
       fidget-nvim
 

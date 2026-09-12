@@ -65,7 +65,8 @@ blink.setup({
                 node:type()) then
                 return { "buffer" }
             else
-                return { "lazydev", "copilot", "lsp", "path", "snippets", "buffer" }
+                --return { "lazydev", "copilot", "lsp", "path", "snippets", "buffer" }
+                return { "lazydev", "lsp", "path", "snippets", "buffer" }
             end
         end,
 
@@ -76,16 +77,16 @@ blink.setup({
                 -- make lazydev completions top priority (see `:h blink.cmp`)
                 score_offset = 95
             },
-            copilot = {
-                name = "copilot",
-                module = "blink-copilot",
-                score_offset = 100,
-                async = true,
-                opts = {
-                    kind_icon = "",
-                    kind_hl = "DevIconCopilot",
-                }
-            },
+            --copilot = {
+            --    name = "copilot",
+            --    module = "blink-copilot",
+            --    score_offset = 100,
+            --    async = true,
+            --    opts = {
+            --        kind_icon = "",
+            --        kind_hl = "DevIconCopilot",
+            --    }
+            --},
             path = {
                 score_offset = 95,
                 opts = {
@@ -261,8 +262,8 @@ require('codecompanion').setup({
         }
     },
     strategies = {
-        chat = { adapter = "copilot" },
-        inline = { adapter = "copilot" }
+        --chat = { adapter = "copilot" },
+        --inline = { adapter = "copilot" }
     },
     opts = {
         language = "English"
@@ -808,14 +809,14 @@ vim.opt.fillchars = {
     vim.keymap.set("n", "zX", "<NOP>", { desc = "Disabled" })
 end)()
 
-require('copilot').setup({
-    suggestion = { enabled = false },
-    panel = { enabled = false },
-    filetypes = {
-        markdown = true,
-        help = true
-    }
-})
+--require('copilot').setup({
+--    suggestion = { enabled = false },
+--    panel = { enabled = false },
+--    filetypes = {
+--        markdown = true,
+--        help = true
+--    }
+--})
 
 require('mini.diff').setup({})
 
