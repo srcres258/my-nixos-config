@@ -14,7 +14,6 @@ in
   imports = [
     ../options.nix
 
-    ./himalaya.nix
     ./newsboat.nix
     ./git.nix
     ./fish.nix
