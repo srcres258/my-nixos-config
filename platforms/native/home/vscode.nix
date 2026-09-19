@@ -297,6 +297,9 @@ in {
             # CSS
             sysoev.language-stylus
 
+            # Astro
+            astro-build.astro-vscode
+
             # Rust
             jscearcy.rust-doc-viewer
             dustypomerleau.rust-syntax
