@@ -34,6 +34,7 @@
     # Minecraft launchers
     prismlauncher
     portablemc
+    ferium
 
     gtkwave
     surfer
