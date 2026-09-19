@@ -25,6 +25,7 @@ in
 
     ./texlive
     ./yazi
+    ./pi-coding-agent
   ];
 
   home = {
