@@ -4,7 +4,12 @@
 , inputs
 , ...
 }: {
-  imports = [ ./pure ./system ];
+  imports = [
+    ./pure
+    ./system
+
+    ./modules/pi-coding-agent.nix
+  ];
 
   nixpkgs.overlays = [
     (final: prev: {
