@@ -1,5 +1,4 @@
-{ ...
-}:
+{ ... }:
 let
   gitignore = ./ignore;
 in
