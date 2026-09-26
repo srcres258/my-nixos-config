@@ -16,6 +16,7 @@ in
 
     ./newsboat.nix
     ./git.nix
+    ./jujutsu.nix
     ./fish.nix
     ./opencode.nix
     ./neovim.nix
