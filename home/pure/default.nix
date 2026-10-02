@@ -19,7 +19,6 @@ in
     ./jujutsu.nix
     ./fish.nix
     ./opencode.nix
-    ./neovim.nix
     ./gh.nix
     ./codex.nix
     ./neomutt.nix
@@ -27,6 +26,7 @@ in
     ./texlive
     ./yazi
     ./pi-coding-agent
+    ./neovim
   ];
 
   home = {
