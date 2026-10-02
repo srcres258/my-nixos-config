@@ -37,7 +37,7 @@ in {
     jetbrains.idea
     #jetbrains.clion
 
-    libreoffice
+    #libreoffice
 
     wf-recorder
 
