@@ -32,6 +32,8 @@
 
     zpaper.url = "git+https://codeberg.org/srcres258/zpaper.git?ref=refs/tags/v0.1.4";
 
+    pi.url = "github:earendil-works/pi";
+
     # my-nur = {
     #     url = "github:srcres258/nur-packages";
     #     inputs.nixpkgs.follows = "nixpkgs";
@@ -50,6 +52,7 @@
     , vscode-extensions
     , yazi
     , zpaper
+    , pi
     , # my-nur,
       ...
     }@inputs:
