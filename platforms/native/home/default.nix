@@ -37,8 +37,6 @@ in {
     jetbrains.idea
     #jetbrains.clion
 
-    #libreoffice
-
     wf-recorder
 
     # Screenshot tools
@@ -67,4 +65,6 @@ in {
   };
 
   programs.bluetuith.enable = true;
+
+  programs.libreoffice.enable = true;
 }
