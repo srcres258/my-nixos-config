@@ -18,7 +18,6 @@ in
     ./git.nix
     ./jujutsu.nix
     ./fish.nix
-    ./opencode.nix
     ./gh.nix
     ./codex.nix
     ./neomutt.nix

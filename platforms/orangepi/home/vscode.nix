@@ -53,7 +53,6 @@ in
 
               # AI coding helpers
               github.copilot
-              sst-dev.opencode
 
               # Nix / C / Rust toolchain
               jnoortheen.nix-ide
