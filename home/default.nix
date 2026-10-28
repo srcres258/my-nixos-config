@@ -7,8 +7,6 @@
   imports = [
     ./pure
     ./system
-
-    ./modules/pi-coding-agent.nix
   ];
 
   nixpkgs.overlays = [
