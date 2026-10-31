@@ -34,6 +34,17 @@
 
     pi.url = "github:earendil-works/pi";
 
+    pi-gpt-conv-decode = {
+      url = "github:srcres258/pi-gpt-conv-decode";
+      inputs.nixpkgs.follows = "nixpkgs";
+      inputs.pi.follows = "pi";
+    };
+
+    pi-furry-partner = {
+      url = "github:srcres258/pi-furry-partner/nix/hd-packaging";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+
     # my-nur = {
     #     url = "github:srcres258/nur-packages";
     #     inputs.nixpkgs.follows = "nixpkgs";

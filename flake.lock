@@ -249,6 +249,50 @@
         "type": "github"
       }
     },
+    "pi-furry-partner": {
+      "inputs": {
+        "nixpkgs": [
+          "nixpkgs"
+        ]
+      },
+      "locked": {
+        "lastModified": 1793379303,
+        "narHash": "sha256-5U6udmO+oHZgz9hqPgeKnOKKM36J0veSpZBhCWWzQps=",
+        "owner": "srcres258",
+        "repo": "pi-furry-partner",
+        "rev": "97084a903f9a7c0a8dc11c8c9e49ee6b1f866185",
+        "type": "github"
+      },
+      "original": {
+        "owner": "srcres258",
+        "ref": "nix/hd-packaging",
+        "repo": "pi-furry-partner",
+        "type": "github"
+      }
+    },
+    "pi-gpt-conv-decode": {
+      "inputs": {
+        "nixpkgs": [
+          "nixpkgs"
+        ],
+        "pi": [
+          "pi"
+        ]
+      },
+      "locked": {
+        "lastModified": 1793439344,
+        "narHash": "sha256-5mTPBGJTO9n80G2sihQt9Fr/jnJyKNATnFBMLLr+qwQ=",
+        "owner": "srcres258",
+        "repo": "pi-gpt-conv-decode",
+        "rev": "170f1756f65b35b3b936ee45a8015bdf8fe192ce",
+        "type": "github"
+      },
+      "original": {
+        "owner": "srcres258",
+        "repo": "pi-gpt-conv-decode",
+        "type": "github"
+      }
+    },
     "root": {
       "inputs": {
         "home-manager": "home-manager",
@@ -258,6 +302,8 @@
         "nixpkgs-unstable": "nixpkgs-unstable",
         "nur": "nur",
         "pi": "pi",
+        "pi-furry-partner": "pi-furry-partner",
+        "pi-gpt-conv-decode": "pi-gpt-conv-decode",
         "vscode-extensions": "vscode-extensions",
         "vscode-legacy-nixpkgs": "vscode-legacy-nixpkgs",
         "yazi": "yazi",
