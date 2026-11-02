@@ -304,5 +304,10 @@
     install rxrpc ${pkgs.coreutils}/bin/false
   '';
   boot.kernel.sysctl."kernel.yama.ptrace_scope" = 2;
+
+  # Settings for systemd --user, written to /etc/systemd/user.conf.
+  systemd.user.extraConfig = ''
+    DefaultTimeoutStopSec=30s
+  '';
 }
 
