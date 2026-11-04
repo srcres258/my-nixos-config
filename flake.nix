@@ -40,11 +40,6 @@
       inputs.pi.follows = "pi";
     };
 
-    pi-furry-partner = {
-      url = "github:srcres258/pi-furry-partner/nix/hd-packaging";
-      inputs.nixpkgs.follows = "nixpkgs";
-    };
-
     # my-nur = {
     #     url = "github:srcres258/nur-packages";
     #     inputs.nixpkgs.follows = "nixpkgs";

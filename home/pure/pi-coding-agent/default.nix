@@ -20,6 +20,7 @@ let
   #         (needs index.ts or package.json with `pi.extensions`) and
   #         `foo.ts` for a single file.
   # Value = a store path or Nix path. Typical sources:
+  #         - pkgs.nur.repos.<user>.<package> for a NUR repository's package.
   #         - inputs.<flake>.packages.${system}.default
   #           for a package directory that ships extensions/, package.json and
   #           its own node_modules/.
@@ -39,8 +40,7 @@ let
   # Anything beyond a plain source (custom `target`, `recursive`, ...) is
   # better written as a regular `home.file` entry further down.
   piExtensions = {
-    pi-furry-partner =
-      inputs.pi-furry-partner.packages.${system}.pi-hd-extension;
+    pi-furry-partner = pkgs.nur.repos.srcres258.pi-furry-partner-hd;
     pi-gpt-conv-decode =
       inputs.pi-gpt-conv-decode.packages.${system}.default;
   };
