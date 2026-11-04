@@ -283,9 +283,15 @@
     #"https://mirror.sjtu.edu.cn/nix-channels/store"
   ];
 
-  # Cachix: yazi
-  nix.settings.extra-substituters = [ "https://yazi.cachix.org" ];
-  nix.settings.extra-trusted-public-keys = [ "yazi.cachix.org-1:Dcdz63NZKfvUCbDGngQDAZq6kOroIrFoyO064uvLh8k=" ];
+  # Cachix: yazi, nur-packages-srcres258
+  nix.settings.extra-substituters = [
+    "https://yazi.cachix.org"
+    "https://nur-packages-srcres258.cachix.org"
+  ];
+  nix.settings.extra-trusted-public-keys = [
+    "yazi.cachix.org-1:Dcdz63NZKfvUCbDGngQDAZq6kOroIrFoyO064uvLh8k="
+    "nur-packages-srcres258.cachix.org-1:3Nn/bNoV5HnI1RoN5uOtkHrPq078veIhjJZmF0FUGP0="
+  ];
 
   nix.settings.trusted-users = [
     "root"

@@ -46,7 +46,7 @@ Run from repo root.
 - WSL host imports `nixos-wsl.nixosModules.default`; WSL config is in `devices/srcres-wsl/configuration.nix`.
 - Login and desktop stack: `programs.niri.enable = true` and the `xwayland-satellite` package are enabled in the base configuration. The native and Orange Pi platform modules enable `services.greetd` with `tuigreet`; WSL and `srcres-desktop-x99` do not receive those platform settings. Native additionally enables `programs.river-classic` with `pkgs.river`. Native PipeWire enables Pulse, while Orange Pi additionally enables ALSA and 32-bit ALSA support.
 - `nix.channel.enable = false` — flakes only.
-- Substituters / trusted-public-keys: Tsinghua + USTC mirrors (`nix.settings.substituters`), plus `https://yazi.cachix.org` (`nix.settings.extra-substituters`). `trusted-users` includes `root` and `srcres`.
+- Substituters / trusted-public-keys: Tsinghua + USTC mirrors (`nix.settings.substituters`), plus `https://yazi.cachix.org` and `https://nur-packages-srcres258.cachix.org` (`nix.settings.extra-substituters`). `trusted-users` includes `root` and `srcres`.
 - `users.users.srcres` extra groups: `wheel networkmanager audio video render docker wireshark i2c input`. Shell is `pkgs.fish`.
 - `home/develop.nix` is loaded **only** for the dev env, not for any host. `packages.srcres` will not pick up changes to `home/system/` or platform/device home modules.
 - `nix flake check --no-build` does **not** evaluate `homeConfigurations` (non-standard output, and its values are not derivations), so a broken pure-home config only surfaces via `nix build .#homeConfigurations."srcres@<host>".activationPackage`. The WSL pure home is the one to watch.
