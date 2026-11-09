@@ -209,12 +209,13 @@ in
     (coq.withPackages (ps: [
       ps.stdlib
     ]))
-  ] ++ (with nur.repos; [
-    srcres258.jyyslide-util
-    srcres258.adif-manage
-    srcres258.bibox
-    srcres258.sootty
-    srcres258.waveql
+  ] ++ (with nur.repos.srcres258; [
+    jyyslide-util
+    adif-manage
+    bibox
+    sootty
+    waveql
+    docx-cli
   ]) ++ [ javaPkg scalaPkg ];
   home.sessionVariables = {
     EDITOR = "nvim";
