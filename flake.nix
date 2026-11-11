@@ -23,6 +23,11 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
+    nixos-hardware = {
+      url = "github:nixos/nixos-hardware";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+
     vscode-extensions = {
       url = "github:nix-community/nix-vscode-extensions";
       inputs.nixpkgs.follows = "nixpkgs";
@@ -55,6 +60,7 @@
     , nur
     , home-manager
     , nixos-wsl
+    , nixos-hardware
     , vscode-extensions
     , yazi
     , zpaper
@@ -88,10 +94,13 @@
     {
       nixosConfigurations =
         let
+          # `withBase = false` keeps a host off the shared desktop base
+          # (./configuration.nix), for boards that define a minimal system
+          # themselves.
           mkNixOSConfig =
             { system
             , extraModules
-            ,
+            , withBase ? true
             }:
             let
               pkgs = mkPkgs system;
@@ -104,9 +113,7 @@
                 inherit pkgs-unstable;
                 srcres-password = builtins.getEnv "SRCRES_PASSWORD";
               };
-              modules = [
-                ./configuration.nix
-              ] ++ extraModules;
+              modules = nixpkgs.lib.optionals withBase [ ./configuration.nix ] ++ extraModules;
             };
         in
         {
@@ -143,6 +150,14 @@
             extraModules = [
               ./platforms/orangepi/configuration.nix
               ./devices/srcres-orange-pi/configuration.nix
+            ];
+          };
+          srcres-rpi = mkNixOSConfig {
+            system = "aarch64-linux";
+            withBase = false;
+            extraModules = [
+              nixos-hardware.nixosModules.raspberry-pi-4
+              ./devices/srcres-rpi/configuration.nix
             ];
           };
         };
@@ -219,6 +234,13 @@
             extraModules = [
               ./platforms/orangepi/home
               ./devices/srcres-orange-pi/home
+            ];
+          };
+          "${username}@srcres-rpi" = mkPureHomeConfig {
+            system = "aarch64-linux";
+            extraModules = [
+              ./home/pure
+              ./devices/srcres-rpi/home
             ];
           };
         };

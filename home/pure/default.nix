@@ -100,8 +100,13 @@ in
 
     jadx
 
+    # thunderbird sets `meta.hydraPlatforms = [ ]`, so it is never substituted
+    # from cache.nixos.org (on any platform) and always builds from source. On
+    # an aarch64 SBC that single build dominates everything else in this
+    # profile, so keep it on the x86 hosts only.
+  ] ++ pkgs.lib.optionals (!pkgs.stdenv.hostPlatform.isAarch64) [
     thunderbird
-
+  ] ++ [
     espeak
 
     haskellPackages.pandoc-crossref
@@ -136,9 +141,12 @@ in
     ncdu
 
     mesa-demos
-    rocmPackages.rocm-smi
     radeontop
 
+    # AMD ROCm tools are x86-only; rocm-smi has no aarch64 build.
+  ] ++ pkgs.lib.optionals (!pkgs.stdenv.hostPlatform.isAarch64) [
+    rocmPackages.rocm-smi
+  ] ++ [
     # Nix language
     nixd
     nixpkgs-fmt
