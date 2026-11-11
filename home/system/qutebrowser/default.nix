@@ -1,6 +1,6 @@
 { ... }: {
   programs.qutebrowser = {
-    enable = true;
+    enable = false;
 
     settings = {
       editor.command = [ "kitty" "nvim" "{file}" "-c" "normal {line}G{column0}|" ];

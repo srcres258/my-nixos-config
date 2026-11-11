@@ -40,7 +40,6 @@ in
     kitty
     wofi
     kdePackages.dolphin
-    qutebrowser
     wlrctl
     wtype
     ydotool
