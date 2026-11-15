@@ -86,8 +86,10 @@ jobs:
         # Do not cancel a run that is already warming the cache: a kernel build
         # takes far longer than the edit that would replace it, and the store
         # paths it produces stay useful as long as flake.lock is unchanged.
+        # The matrix entry is part of the key so the three targets build in
+        # parallel instead of queueing behind each other.
         concurrency:
-            group: cache-aarch64-${{ github.ref }}
+            group: cache-aarch64-${{ github.ref }}-${{ matrix.name }}
             cancel-in-progress: false
         strategy:
             fail-fast: false
