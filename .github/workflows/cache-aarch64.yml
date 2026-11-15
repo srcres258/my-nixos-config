@@ -1,0 +1,128 @@
+# Pre-build the aarch64-only workloads and push them to a personal Cachix
+# cache, so the Orange Pi and Raspberry Pi hosts never compile them locally.
+#
+# Only the aarch64 side is cached on purpose:
+#
+#   * x86_64 system closures are already fully covered by cache.nixos.org;
+#     the handful of paths that are not (generated `unit-*.service`,
+#     `X-Restart-Triggers-*`, `*-fish-completions`, ...) rebuild in seconds.
+#   * the aarch64 home configurations pull in the NUR Rust tools (bibox,
+#     waveql, sootty, docx-cli, adif-manage, jyyslide-util) plus hundreds of
+#     vendored crates that have no aarch64 output in the NUR cache.
+#   * `linux-rpi` (the nixos-hardware vendor kernel) is not in cache.nixos.org
+#     at all, so the Pi always compiles it.
+#
+# Cachix skips paths that already exist upstream, so the 5 GiB free quota is
+# only spent on what is genuinely missing.
+#
+# Repository setup:
+#   * create the cache (public, free for this public repo)
+#   * add the `CACHIX_AUTH_TOKEN` Actions secret
+#   * keep the cache name below in sync with the substituter configured in
+#     platforms/native/configuration.nix and platforms/orangepi/configuration.nix
+
+name: Cache aarch64 builds
+
+on:
+    push:
+        branches: [ master ]
+    workflow_dispatch:
+
+permissions:
+    contents: read
+
+concurrency:
+    group: ${{ github.workflow }}-${{ github.ref }}
+    # Do not cancel a run that is already warming the cache: a kernel build
+    # takes far longer than the edit that would replace it, and the store
+    # paths it produces stay useful as long as flake.lock is unchanged.
+    cancel-in-progress: false
+
+jobs:
+    # Cheap safety net for the parts the aarch64 jobs below do not touch:
+    # `nix flake check` only walks nixosConfigurations, and the WSL pure home
+    # (./home/pure, no ./home) is otherwise only ever evaluated on the machine
+    # itself, so a broken change surfaces at `nixos-rebuild` time. Nothing is
+    # pushed from this job; x86_64 stays fully served by cache.nixos.org.
+    verify-x86_64:
+        name: verify x86_64
+        runs-on: ubuntu-latest
+        steps:
+            - name: Checkout
+              uses: actions/checkout@v4
+
+            - name: Reclaim runner disk
+              uses: wimpysworld/nothing-but-nix@v12
+              with:
+                  hatchet-protocol: cleave
+
+            - name: Install Nix
+              uses: cachix/install-nix-action@v31
+              with:
+                  github_access_token: ${{ secrets.GITHUB_TOKEN }}
+
+            # `nix flake check --no-build` cannot be used here: evaluating
+            # packages.x86_64-linux.srcres reads a Cargo.lock through
+            # import-from-derivation, and a --no-build check will not realise
+            # the source path on a cold store ("path ... is not valid"). It
+            # only passes locally because that path is already in the store.
+            # Evaluate the host systems directly instead.
+            - name: Evaluate every host
+              run: |
+                  for host in $(nix eval --json '.#nixosConfigurations' \
+                      --apply builtins.attrNames | jq -r '.[]'); do
+                      echo "== $host"
+                      nix eval --raw \
+                          ".#nixosConfigurations.$host.config.system.build.toplevel.drvPath"
+                      echo
+                  done
+
+            - name: Build the WSL pure home
+              run: |
+                  nix build --no-link \
+                    '.#homeConfigurations."srcres@srcres-wsl".activationPackage'
+
+    build:
+        name: ${{ matrix.name }}
+        runs-on: ubuntu-24.04-arm
+        timeout-minutes: 350
+        strategy:
+            fail-fast: false
+            matrix:
+                include:
+                    - name: srcres-orange-pi home
+                      attr: homeConfigurations."srcres@srcres-orange-pi".activationPackage
+                    - name: srcres-rpi home
+                      attr: homeConfigurations."srcres@srcres-rpi".activationPackage
+                    - name: srcres-rpi kernel
+                      attr: nixosConfigurations.srcres-rpi.config.system.build.kernel
+        steps:
+            - name: Checkout
+              uses: actions/checkout@v4
+
+            # The stock runner disk cannot hold a kernel build plus a few
+            # hundred crate builds; this reclaims ~96 GiB on arm64.
+            - name: Reclaim runner disk
+              uses: wimpysworld/nothing-but-nix@v12
+              with:
+                  hatchet-protocol: cleave
+
+            - name: Install Nix
+              uses: cachix/install-nix-action@v31
+              with:
+                  github_access_token: ${{ secrets.GITHUB_TOKEN }}
+
+            # cachix-action watches the Nix store for the rest of the job and
+            # uploads every newly built path, so the plain `nix build` below is
+            # all that is needed.
+            - name: Set up Cachix
+              uses: cachix/cachix-action@v17
+              with:
+                  name: srcres-nixos-config
+                  authToken: ${{ secrets.CACHIX_AUTH_TOKEN }}
+
+            - name: Build and push
+              env:
+                  ATTR: ${{ matrix.attr }}
+              run: |
+                  nix build --no-link --print-out-paths ".#${ATTR}"
