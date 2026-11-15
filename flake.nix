@@ -111,7 +111,6 @@
               specialArgs = {
                 inherit inputs system;
                 inherit pkgs-unstable;
-                srcres-password = builtins.getEnv "SRCRES_PASSWORD";
               };
               modules = nixpkgs.lib.optionals withBase [ ./configuration.nix ] ++ extraModules;
             };

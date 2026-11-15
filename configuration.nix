@@ -3,7 +3,6 @@
 , lib
 , pkgs
 , pkgs-unstable
-, srcres-password
 , ...
 }: {
   nix.gc.automatic = false;
@@ -48,7 +47,14 @@
 
   # Define a user account. Don't forget to set a password with ‘passwd’.
   users.users.srcres = {
-    initialPassword = srcres-password;
+    # Read at activation time (not evaluation time), so the hash never enters
+    # the Nix store and the system closure stays bit-for-bit reproducible. If
+    # the file is absent, activation only warns and the account keeps whatever
+    # password it already had; create it once with:
+    #
+    #   sudo install -d -m 0700 /var/lib/nixos/secrets
+    #   mkpasswd -m yescrypt | sudo tee /var/lib/nixos/secrets/srcres.passwd
+    hashedPasswordFile = "/var/lib/nixos/secrets/srcres.passwd";
     isNormalUser = true;
     description = "src_resources";
     extraGroups = [
@@ -283,14 +289,17 @@
     #"https://mirror.sjtu.edu.cn/nix-channels/store"
   ];
 
-  # Cachix: yazi, nur-packages-srcres258
+  # Cachix: yazi, nur-packages-srcres258, and the CI-built aarch64 cache.
+  # Drop the last entry from both lists if the cache is ever deleted.
   nix.settings.extra-substituters = [
     "https://yazi.cachix.org"
     "https://nur-packages-srcres258.cachix.org"
+    "https://srcres-nixos-config.cachix.org"
   ];
   nix.settings.extra-trusted-public-keys = [
     "yazi.cachix.org-1:Dcdz63NZKfvUCbDGngQDAZq6kOroIrFoyO064uvLh8k="
     "nur-packages-srcres258.cachix.org-1:3Nn/bNoV5HnI1RoN5uOtkHrPq078veIhjJZmF0FUGP0="
+    "srcres-nixos-config.cachix.org-1:BOlbM7cuGZ1trhfpJ3Yhtr1jHff1hIkM8NUhvqK/ISg="
   ];
 
   nix.settings.trusted-users = [

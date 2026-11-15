@@ -6,7 +6,6 @@
 # Everything required to boot and administer the machine lives here.
 { lib
 , pkgs
-, srcres-password
 , inputs
 , ...
 }: {
@@ -119,7 +118,11 @@
   };
 
   users.users.srcres = {
-    initialPassword = srcres-password;
+    # See ./configuration.nix: the hash is read at activation time so the
+    # closure stays reproducible. On a freshly flashed card there is no file
+    # yet, so log in on the serial console / attached keyboard and run
+    # `passwd` once, or drop the file into /var/lib/nixos/secrets first.
+    hashedPasswordFile = "/var/lib/nixos/secrets/srcres.passwd";
     isNormalUser = true;
     description = "src_resources";
     extraGroups = [
@@ -169,14 +172,17 @@
       "https://mirrors.tuna.tsinghua.edu.cn/nix-channels/store"
       "https://mirrors.ustc.edu.cn/nix-channels/store"
     ];
-    # Cachix: yazi, nur-packages-srcres258
+    # Cachix: yazi, nur-packages-srcres258, and the CI-built aarch64 cache.
+    # Drop the last entry from both lists if the cache is ever deleted.
     extra-substituters = [
       "https://yazi.cachix.org"
       "https://nur-packages-srcres258.cachix.org"
+      "https://srcres-nixos-config.cachix.org"
     ];
     extra-trusted-public-keys = [
       "yazi.cachix.org-1:Dcdz63NZKfvUCbDGngQDAZq6kOroIrFoyO064uvLh8k="
       "nur-packages-srcres258.cachix.org-1:3Nn/bNoV5HnI1RoN5uOtkHrPq078veIhjJZmF0FUGP0="
+      "srcres-nixos-config.cachix.org-1:BOlbM7cuGZ1trhfpJ3Yhtr1jHff1hIkM8NUhvqK/ISg="
     ];
   };
 
