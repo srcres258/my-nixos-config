@@ -31,22 +31,19 @@ on:
 permissions:
     contents: read
 
-concurrency:
-    group: ${{ github.workflow }}-${{ github.ref }}
-    # Do not cancel a run that is already warming the cache: a kernel build
-    # takes far longer than the edit that would replace it, and the store
-    # paths it produces stay useful as long as flake.lock is unchanged.
-    cancel-in-progress: false
-
 jobs:
-    # Cheap safety net for the parts the aarch64 jobs below do not touch:
-    # `nix flake check` only walks nixosConfigurations, and the WSL pure home
-    # (./home/pure, no ./home) is otherwise only ever evaluated on the machine
-    # itself, so a broken change surfaces at `nixos-rebuild` time. Nothing is
-    # pushed from this job; x86_64 stays fully served by cache.nixos.org.
+    # Cheap safety net for the parts the aarch64 jobs below do not touch.
+    # `nix flake check` cannot be used here (see the step below), so this
+    # evaluates every host's toplevel and builds the WSL pure home, which is
+    # otherwise only ever evaluated on the machine itself. Nothing is pushed
+    # from this job; x86_64 stays fully served by cache.nixos.org.
     verify-x86_64:
         name: verify x86_64
         runs-on: ubuntu-latest
+        # Cheap check: a newer push should replace an older pending run.
+        concurrency:
+            group: verify-${{ github.ref }}
+            cancel-in-progress: true
         steps:
             - name: Checkout
               uses: actions/checkout@v4
@@ -86,6 +83,12 @@ jobs:
         name: ${{ matrix.name }}
         runs-on: ubuntu-24.04-arm
         timeout-minutes: 350
+        # Do not cancel a run that is already warming the cache: a kernel build
+        # takes far longer than the edit that would replace it, and the store
+        # paths it produces stay useful as long as flake.lock is unchanged.
+        concurrency:
+            group: cache-aarch64-${{ github.ref }}
+            cancel-in-progress: false
         strategy:
             fail-fast: false
             matrix:
