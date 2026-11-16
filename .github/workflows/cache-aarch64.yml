@@ -11,6 +11,10 @@
 #     vendored crates that have no aarch64 output in the NUR cache.
 #   * `linux-rpi` (the nixos-hardware vendor kernel) is not in cache.nixos.org
 #     at all, so the Pi always compiles it.
+#   * the aarch64 system toplevels, not just the kernel: `modules-shrunk` and
+#     the initrd are host-specific derivations that only get evaluated when the
+#     toplevel is built, and they are exactly where a vendor kernel that lacks
+#     modules listed by all-hardware.nix shows up.
 #
 # Cachix skips paths that already exist upstream, so the 5 GiB free quota is
 # only spent on what is genuinely missing.
@@ -99,8 +103,10 @@ jobs:
                       attr: homeConfigurations."srcres@srcres-orange-pi".activationPackage
                     - name: srcres-rpi home
                       attr: homeConfigurations."srcres@srcres-rpi".activationPackage
-                    - name: srcres-rpi kernel
-                      attr: nixosConfigurations.srcres-rpi.config.system.build.kernel
+                    - name: srcres-rpi system
+                      attr: nixosConfigurations.srcres-rpi.config.system.build.toplevel
+                    - name: srcres-orange-pi system
+                      attr: nixosConfigurations.srcres-orange-pi.config.system.build.toplevel
         steps:
             - name: Checkout
               uses: actions/checkout@v4
