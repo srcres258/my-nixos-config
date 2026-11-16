@@ -45,6 +45,35 @@
   # Uncomment the next line to fall back to the mainline kernel instead.
   # boot.kernelPackages = pkgs.linuxPackages_latest;
 
+  # boot.initrd.includeDefaultModules pulls in
+  # nixos/modules/hardware/all-hardware.nix, which names a broad set of
+  # modules that the vendor `linux-rpi` config does not build. The initrd
+  # module closure aborts on the first unresolvable name:
+  #
+  #   modprobe: FATAL: Module dw-hdmi not found in directory .../6.18.50
+  #
+  # Everything below is absent from Linux 6.18.50 on this board and belongs to
+  # other SoCs (Rockchip, Allwinner), FireWire (ohci1394, sbp2) or ancient
+  # parallel ATA. Dropping them individually keeps the build-time check alive
+  # for modules that are genuinely missing, which is why
+  # boot.initrd.allowMissingModules is deliberately not used here.
+  boot.initrd.availableKernelModules = lib.genAttrs [
+    "dw-hdmi"
+    "dw-mipi-dsi"
+    "ohci1394"
+    "pata_qdi"
+    "pata_winbond"
+    "pcie-rockchip-host"
+    "phy-rockchip-pcie"
+    "pwm-sun4i"
+    "rockchip-rga"
+    "rockchipdrm"
+    "sbp2"
+    "sun4i-drm"
+    "sun8i-mixer"
+  ]
+    (_: lib.mkForce false);
+
   # --------------------------------------------------------------------------
   # SD card write reduction
   #
