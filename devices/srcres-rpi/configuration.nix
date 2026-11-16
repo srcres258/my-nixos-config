@@ -163,6 +163,10 @@
 
   programs.fish.enable = true;
 
+  # The shared base (./configuration.nix) enables this; this host does not load
+  # it, so the same option has to be repeated here.
+  programs.nh.enable = true;
+
   environment.systemPackages = with pkgs; [
     # Editors and shell basics.
     vim
