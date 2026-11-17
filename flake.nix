@@ -28,6 +28,14 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
+    # Live audio relay used by devices/srcres-rpi. Its module builds the Go
+    # package with the host nixpkgs, so following "nixpkgs" avoids a second
+    # nixpkgs in the lock file.
+    audiorelay = {
+      url = "github:srcres258/audiorelay";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+
     vscode-extensions = {
       url = "github:nix-community/nix-vscode-extensions";
       inputs.nixpkgs.follows = "nixpkgs";
@@ -61,6 +69,7 @@
     , home-manager
     , nixos-wsl
     , nixos-hardware
+    , audiorelay
     , vscode-extensions
     , yazi
     , zpaper

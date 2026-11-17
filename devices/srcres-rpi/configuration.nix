@@ -15,6 +15,9 @@
     # expects. Build with:
     #   nix build .#nixosConfigurations.srcres-rpi.config.system.build.sdImage
     "${inputs.nixpkgs}/nixos/modules/installer/sd-card/sd-image-aarch64.nix"
+
+    # Live audio relay (upstream HLS -> Ogg Opus) plus the local Icecast sink.
+    ./audiorelay.nix
   ];
 
   # The Raspberry Pi GPU firmware cannot read extlinux.conf, so stage the
