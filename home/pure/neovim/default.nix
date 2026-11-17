@@ -1,4 +1,6 @@
-{ pkgs
+{ config
+, lib
+, pkgs
 , ...
 }: {
   programs.neovim = let
@@ -136,7 +138,10 @@
       end
     '' + (
       let
-        metalsBinaryPath = "${pkgs.metals}";
+        # my.minimal drops the Scala tooling, so the template must not embed a
+        # store path for metals: that reference alone keeps ~1 GiB of JVM in
+        # the closure, even when metals is not in extraPackages.
+        metalsBinaryPath = lib.optionalString (!config.my.minimal) "${pkgs.metals}";
         customReplace = builtins.replaceStrings [ "{{METALS_BINARY_PATH}}" ] [ metalsBinaryPath ];
       in
       customReplace (builtins.readFile ./init.lua)
@@ -146,16 +151,17 @@
       let g:dbext_default_CALCULATOR_enable = 0
       let g:loaded_dbext = 1
     '';
-    extraPackages = with pkgs; [
-      sqls # The SQL language server.
-      metals
-      coursier
-      jdk17
+    extraPackages = with pkgs;
+      [ sqls ] # The SQL language server.
+      ++ lib.optionals (!config.my.minimal) [
+        metals
+        coursier
+        jdk17
 
-      # nodePackages removed from nixpkgs; packages moved to top level
-      typescript
-      typescript-language-server
-    ];
+        # nodePackages removed from nixpkgs; packages moved to top level
+        typescript
+        typescript-language-server
+      ];
     withRuby = false;
     withPython3 = false;
   };

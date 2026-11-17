@@ -238,7 +238,8 @@
           "${username}@srcres-rpi" = mkPureHomeConfig {
             system = "aarch64-linux";
             extraModules = [
-              ./home/pure
+              # A trimmed profile, not ./home/pure: the full set is ~27 GiB.
+              ./home/pure/minimal.nix
               ./devices/srcres-rpi/home
             ];
           };
