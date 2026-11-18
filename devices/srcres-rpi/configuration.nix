@@ -140,7 +140,11 @@
   networking = {
     hostName = "srcres-rpi";
     networkmanager.enable = true;
-    firewall.enable = true;
+    firewall = {
+      enable = true;
+      # ddns-go web UI/API; the service binds 0.0.0.0:9876.
+      allowedTCPPorts = [ 9876 ];
+    };
   };
 
   services.openssh = {
