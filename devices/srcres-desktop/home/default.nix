@@ -1,11 +1,14 @@
 { inputs
 , system
+, pkgs
 , ...
 }:
 let
   zpaper = inputs.zpaper.packages.${system}.default;
 in
 {
+  home.packages = with pkgs; [ android-cli ];
+
   my.python.packageGenerator = (ps: with ps; [
     # torchWithRocm
     # (torchvision.override { torch = ps.torchWithRocm; })
