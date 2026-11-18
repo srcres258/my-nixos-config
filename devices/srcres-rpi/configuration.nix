@@ -222,6 +222,29 @@
     ];
   };
 
+  # DDNS config
+  systemd.services.ddns-go = {
+    description = "ddns-go Dynamic DNS Client";
+
+    wantedBy = [ "multi-user.target" ];
+    wants = [ "network-online.target" ];
+    after = [ "network-online.target" ];
+
+    serviceConfig = {
+      Type = "simple";
+
+      ExecStart = ''
+        ${pkgs.ddns-go}/bin/ddns-go \
+          -l 0.0.0.0:9876 \
+          -f 300 \
+          -c /var/lib/ddns-go/config.yaml
+      '';
+
+      Restart = "on-failure";
+      RestartSec = "10s";
+    };
+  };
+
   # This option defines the first version of NixOS installed on this host.
   system.stateVersion = "26.05";
 }
