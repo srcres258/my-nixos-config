@@ -36,6 +36,21 @@
   # boot) and stop tracking access times on the FAT partition too.
   fileSystems."/boot/firmware".options = lib.mkForce [ "nofail" "noatime" ];
 
+  # The sd-image default of 30 MiB (nixos/modules/installer/sd-card/
+  # sd-image.nix) dates from when the firmware partition held ~18 MiB. The
+  # nixos-hardware installer above stages the whole vendor set instead: 8
+  # start*.elf (~22 MB), 28 device trees, 356 overlays and u-boot.bin, i.e.
+  # ~25.5 MB, and it writes each file through a `cp` to `<name>.tmp` plus a
+  # rename, so the peak demand is that plus the largest single file
+  # (start_db.elf, 4.8 MB). A 30 MiB partition leaves ~5 MiB free and fails
+  # with ENOSPC on a live switch. 100 MiB costs nothing on a 64 GiB card and
+  # leaves room for the firmware set to grow.
+  #
+  # NOTE: this only sizes the partition when the image is built and flashed.
+  # The root partition is grown to fill the card on first boot, so a partition
+  # table that already has 30 MiB here cannot be enlarged in place.
+  sdImage.firmwareSize = 100;
+
   hardware.enableRedistributableFirmware = true;
 
   # NixOS enables zfs by default, which would build a zfs kernel module against
