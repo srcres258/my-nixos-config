@@ -34,9 +34,6 @@ in {
     spek
     fcrackzip
 
-    jetbrains.idea
-    #jetbrains.clion
-
     libreoffice
 
     wf-recorder
