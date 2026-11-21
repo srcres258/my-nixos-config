@@ -7,11 +7,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1794910032,
-        "narHash": "sha256-4YN8YJZN/xWyuRCqN3PJpIqwYcIeG9tDWjXn42ASqb8=",
+        "lastModified": 1795273965,
+        "narHash": "sha256-mZLG29ziQcINuY6gi0q9mfYTpsS5beV7V60Bcr96XSI=",
         "owner": "srcres258",
         "repo": "audiorelay",
-        "rev": "ce4b1e8b8e9206f680abbe3278b966be2d9d0877",
+        "rev": "8f672db31c3f44890c853051104b530ba4abfd38",
         "type": "github"
       },
       "original": {
