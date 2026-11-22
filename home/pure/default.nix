@@ -346,5 +346,20 @@ in
   programs.fd.enable = true;
 
   programs.eza.enable = true;
+
+  programs.bat = {
+    enable = true;
+    config = {
+      # "ansi" follows the terminal palette, so bat matches the fish colours
+      # instead of shipping its own baked-in theme.
+      theme = "ansi";
+      style = "numbers,changes,header,grid";
+      pager = "less -FR";
+    };
+  };
+
+  # `z` / `zi` / `zoxide` are fish functions created by `zoxide init fish`; the
+  # Home Manager module wires that up automatically via the fish integration.
+  programs.zoxide.enable = true;
 }
 

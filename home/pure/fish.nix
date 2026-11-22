@@ -1,8 +1,22 @@
 { config
+, lib
 , ...
 }: {
   programs.fish = {
     enable = true;
+
+    # Prefer abbreviations over aliases so modules that ship fish aliases (eza
+    # defines ls/ll/la/lla/lt) emit visible, editable prompt expansions instead.
+    preferAbbrs = true;
+
+    shellAbbrs = {
+      s = "sudo";
+    } // lib.optionalAttrs config.programs.bat.enable {
+      # Keep `cat` behaving like cat in pipelines, but with syntax highlighting
+      # when someone reads the output; `catp` pages through bat itself.
+      cat = "bat --paging=never";
+      catp = "bat";
+    };
 
     interactiveShellInit = ''
       fish_vi_key_bindings insert
@@ -29,9 +43,6 @@
       # ===== 自动建议 & 选中 =====
       set -U fish_color_autosuggestion 444 --dim
       set -U fish_color_selection      white --background=brblue
-
-      # ===== sudo 变通：打 s + 空格 自动展开为 sudo =====
-      abbr -a -g s sudo
 
       source /home/${config.home.username}/fishrc.fish
     '';

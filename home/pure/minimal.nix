@@ -83,6 +83,7 @@ in
   programs.fzf.enable = true;
   programs.fd.enable = true;
   programs.eza.enable = true;
+  programs.zoxide.enable = true;
 
   programs.direnv = {
     enable = true;
