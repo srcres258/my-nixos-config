@@ -170,6 +170,8 @@
     # man pages
     man-pages
     man-pages-posix
+
+    dust
   ]) ++ (with pkgs-unstable; [
     nix-sweep
   ]));
