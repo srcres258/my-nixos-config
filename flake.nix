@@ -81,22 +81,31 @@
       system = "x86_64-linux";
       username = "srcres";
 
-      mkPkgs = system: import nixpkgs {
-        inherit system;
-        config = {
-          allowUnfree = true;
-        };
-        overlays = [
-          nur.overlays.default
-        ];
-      };
-
       mkPkgsUnstable = system: import nixpkgs-unstable {
         inherit system;
         config = {
           allowUnfree = true;
         };
       };
+
+      mkPkgs = system:
+        let
+          unstable = mkPkgsUnstable system;
+        in
+        import nixpkgs {
+          inherit system;
+          config = {
+            allowUnfree = true;
+          };
+          overlays = [
+            # kwm needs Zig 0.17, which is not available in nixos-26.05 yet.
+            (_: _: {
+              zig_0_17 = unstable.zig_0_17;
+            })
+
+            nur.overlays.default
+          ];
+        };
 
       pkgs = mkPkgs system;
     in

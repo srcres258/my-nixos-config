@@ -1,6 +1,10 @@
 { pkgs
 , ...
 }: {
+  home.packages = [
+    pkgs.nur.repos.srcres258.kwm
+  ];
+
   my.python.packageGenerator = (ps: with ps; [
     # torchWithRocm
     # (torchvision.override { torch = ps.torchWithRocm; })
