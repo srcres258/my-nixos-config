@@ -20,7 +20,6 @@ let
     "lsmus"
     "clip"
     "damblocks"
-    "damblocks-mpdd"
     "exiland"
     "hibe"
     "wmenu-run-color"
@@ -92,7 +91,6 @@ in
       PATH="${lib.makeBinPath [ pkgs.ydotool ]}:$PATH" ${config.home.homeDirectory}/.local/bin/numlock-on &
 
       ${config.home.homeDirectory}/.local/bin/damblocks --fifo &
-      ${config.home.homeDirectory}/.local/bin/damblocks-mpdd &
 
       i=0
       while [ "$i" -lt 50 ] && [ ! -p "''${XDG_RUNTIME_DIR}/damblocks.fifo" ]; do

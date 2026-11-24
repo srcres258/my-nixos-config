@@ -24,48 +24,6 @@ update_time() {
     time="$(date '+%b-%d %a %H:%M:%S')"
 }
 
-update_battery() {
-    local POWER="/sys/class/power_supply"
-    ls ${POWER}/BAT? >/dev/null 2>&1 || {
-        battery=""
-        return
-    }
-
-    local icon=""
-    local status="$(cat "$POWER"/BAT?/status)"
-    local level="$(cat "$POWER"/BAT?/capacity)"
-
-    case "$status" in
-        Discharging)
-            case "$level" in
-                [0-5]) icon="󰂎" ;;
-                [6-9]) icon="󰁺" ;;
-                1[0-9]) icon="󰁻" ;;
-                2[0-9]) icon="󰁼" ;;
-                3[0-9]) icon="󰁽" ;;
-                4[0-9]) icon="󰁽" ;;
-                5[0-9]) icon="󰁾" ;;
-                6[0-9]) icon="󰁿" ;;
-                7[0-9]) icon="󰂀" ;;
-                8[0-9]) icon="󰂁" ;;
-                9[0-9]) icon="󰂂" ;;
-                100) icon="󰁹" ;;
-            esac
-            level="${level}%"
-            ;;
-        Not\ charging|Full)
-            icon=""
-            level="${level}%"
-            ;;
-        Charging)
-            icon=""
-            level="${level}%"
-            ;;
-    esac
-
-    battery="${icon}${level}"
-}
-
 update_brightness() {
     local level="$(cat "${XDG_CACHE_HOME}/brightness.level" 2>/dev/null)"
     local icon=""
@@ -84,24 +42,6 @@ update_brightness() {
     esac
     [ -z "$level" ] || level="${level}%"
     brightness="${icon}${level}"
-}
-
-update_volume() {
-    local level="$(cat "${XDG_CACHE_HOME}/audio-@DEFAULT_AUDIO_SINK@.level" 2>/dev/null)"
-    local muted="$(cat "${XDG_CACHE_HOME}/audio-@DEFAULT_AUDIO_SINK@.muted" 2>/dev/null)"
-    local icon=""
-    [ -z "$muted" ] || icon=""
-    [ -z "$level" ] || level="${level}%"
-    volume="${icon}${level}"
-}
-
-update_microphone() {
-    local level="$(cat "${XDG_CACHE_HOME}/audio-@DEFAULT_AUDIO_SOURCE@.level" 2>/dev/null)"
-    local muted="$(cat "${XDG_CACHE_HOME}/audio-@DEFAULT_AUDIO_SOURCE@.muted" 2>/dev/null)"
-    local icon=""
-    [ -z "$muted" ] || icon=""
-    [ -z "$level" ] || level="${level}%"
-    microphone="${icon}${level}"
 }
 
 update_cpu() {
@@ -145,47 +85,12 @@ update_uptime() {
     [ -n "$result" ] && uptime_text=" ${result}" || uptime_text=" ≤1h"
 }
 
-update_wifi() {
-    local status="$(cat /sys/class/net/w*/operstate 2>/dev/null)"
-    local level="$(awk '/^ *w/ {print int($3 * 100 / 70)"%"}' /proc/net/wireless 2>/dev/null)"
-    [ "$status" = "up" ] && wifi="󰖩 ${level}" || wifi="󰖪"
-}
-
-update_ethernet() {
-    local status="$(cat /sys/class/net/e*/operstate 2>/dev/null)"
-    [ "$status" = "up" ] && ethernet="󰛳" || ethernet="󰲛"
-}
-
-update_bluetooth() {
-    if pgrep -x 'bluetoothd' >/dev/null; then
-        bluetooth="󰂯"
-    else
-        bluetooth="󰂲"
-    fi
-}
-
-update_mpd() {
-    command -v mpc >/dev/null 2>&1 || {
-        mpd="󰝛"
-        return
-    }
-
-    local icon="󰝚"
-    if [ "$(mpc status '%state%')" != "playing" ]; then
-        icon="󰝛"
-    fi
-
-    local title="$(mpc current -f "[%title%]" | cut -c1-24 | sed 's/[[:space:],.{[-]*$//; s/[&]//g')"
-    [ -n "$title" ] || title=""
-    mpd="${icon}${title}"
-}
-
 display() {
     local space=" "
     local delimiter_home="["
     local delimiter_end="]"
     local separator="]["
-    local line="${delimiter_home}${mpd}${separator}${battery}${space}${bluetooth}${separator}${wifi}${space}${ethernet}${separator}${brightness}${space}${microphone}${space}${volume}${separator}${cpu}${space}${memory}${space}${root}${space}${home}${space}${uptime_text}${separator}${time}${delimiter_end}"
+    local line="${delimiter_home}${brightness}${separator}${cpu}${space}${memory}${space}${root}${space}${home}${space}${uptime_text}${separator}${time}${delimiter_end}"
 
     case "$mode" in
         fifo)
@@ -200,24 +105,14 @@ display() {
     esac
 }
 
-trap 'update_volume; display' RTMIN+2
-trap 'update_microphone; display' RTMIN+3
 trap 'update_brightness; display' RTMIN+4
-trap 'update_mpd; display' RTMIN+11
 
 update_time
-update_battery
 update_brightness
-update_volume
-update_microphone
 update_cpu
 update_memory
 update_disk
 update_uptime
-update_wifi
-update_ethernet
-update_bluetooth
-update_mpd
 display
 
 sec=0
@@ -226,18 +121,11 @@ while :; do
     sec=$((sec + 1))
 
     update_time
-    [ $((sec % 5)) -eq 0 ] && update_battery
     [ $((sec % 5)) -eq 0 ] && update_brightness
-    [ $((sec % 5)) -eq 0 ] && update_volume
-    [ $((sec % 5)) -eq 0 ] && update_microphone
     [ $((sec % 5)) -eq 0 ] && update_cpu
     [ $((sec % 5)) -eq 0 ] && update_memory
     [ $((sec % 60)) -eq 0 ] && update_disk
     [ $((sec % 60)) -eq 0 ] && update_uptime
-    [ $((sec % 10)) -eq 0 ] && update_wifi
-    [ $((sec % 10)) -eq 0 ] && update_ethernet
-    [ $((sec % 10)) -eq 0 ] && update_bluetooth
-    [ $((sec % 5)) -eq 0 ] && update_mpd
 
     display
 done
