@@ -1,5 +1,6 @@
 { pkgs
 , lib
+, config
 , inputs
 , ...
 }:
@@ -13,8 +14,9 @@ let
   # collectAutoExtensionEntries in packages/coding-agent/src/core/package-manager.ts).
   # Each entry below is therefore linked from the Nix store into the user
   # extension directory. That keeps extension code immutable while leaving
-  # `~/.pi/agent/settings.json` alone, which Pi writes itself
-  # (`lastChangelogVersion`, `pi install` adding to `packages`, ...).
+  # `~/.pi/agent/settings.json` writable, which Pi needs since it writes that
+  # file itself (`lastChangelogVersion`, `pi install` adding to `packages`, ...).
+  # The few keys Nix does own there are merged in by the activation step below.
   #
   # Key   = name inside ~/.pi/agent/extensions/. Use `foo` for a directory
   #         (needs index.ts or package.json with `pi.extensions`) and
@@ -47,6 +49,25 @@ let
 
   mkExtensionLink = name: source:
     lib.nameValuePair ".pi/agent/extensions/${name}" { inherit source; };
+
+  # Declarative Pi settings baseline.
+  #
+  # `~/.pi/agent/settings.json` must stay writable: Pi rewrites it itself
+  # (`lastChangelogVersion`, `pi install` appending to `packages`, and
+  # `setDefaultModelAndProvider` when a model switch is persisted), and a
+  # read-only store symlink would make those writes fail. So the keys below are
+  # merged into the existing file at activation time instead of being linked:
+  # baseline keys win, every other key Pi wrote is preserved.
+  #
+  # Consequence: persisting a different model inside Pi only lasts until the
+  # next `home-manager switch`, which restores the model set here.
+  piSettings = {
+    defaultProvider = "deepseek";
+    defaultModel = "deepseek-flash";
+  };
+  piSettingsBaseline = pkgs.writeText "pi-settings-baseline.json"
+    (builtins.toJSON piSettings);
+  piSettingsPath = "${config.home.homeDirectory}/.pi/agent/settings.json";
 in
 {
   home.packages = [ inputs.pi.packages.${pkgs.system}.default ];
@@ -57,4 +78,32 @@ in
     ".pi/agent/themes/pi-furry-night.json".source =
       "${piExtensions.pi-furry-partner}/themes/pi-furry-night.json";
   };
+
+  # ── Activation: merge the Nix baseline into the Pi-written settings file ──
+  home.activation.initPiSettings = lib.hm.dag.entryAfter [ "writeBoundary" ] ''
+    TARGET="${piSettingsPath}"
+    BASELINE="${piSettingsBaseline}"
+
+    mkdir -p "$(dirname "$TARGET")"
+    if [ ! -f "$TARGET" ]; then
+      # First run: seed the file from the baseline alone.
+      install -m 0644 "$BASELINE" "$TARGET"
+    else
+      # Subsequent runs: recursive merge, baseline keys override.
+      TMP="$(mktemp "$TARGET.XXXXXX")"
+      if ${pkgs.jq}/bin/jq -s '.[0] * .[1]' "$TARGET" "$BASELINE" > "$TMP"; then
+        chmod 644 "$TMP"
+        # Only replace on a real change, so the mtime stays put otherwise.
+        if cmp -s "$TMP" "$TARGET"; then
+          rm -f "$TMP"
+        else
+          mv "$TMP" "$TARGET"
+        fi
+      else
+        rm -f "$TMP"
+        echo "initPiSettings: could not parse $TARGET as JSON, leaving it untouched" >&2
+        exit 1
+      fi
+    fi
+  '';
 }
